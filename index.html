@@ -74,6 +74,155 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-如何优雅的学习JVM，升华篇（三）" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/02/10/%E5%A6%82%E4%BD%95%E4%BC%98%E9%9B%85%E7%9A%84%E5%AD%A6%E4%B9%A0JVM%EF%BC%8C%E5%8D%87%E5%8D%8E%E7%AF%87%EF%BC%88%E4%B8%89%EF%BC%89/" class="article-date">
+  <time datetime="2020-02-10T12:32:51.000Z" itemprop="datePublished">2020-02-10</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/02/10/%E5%A6%82%E4%BD%95%E4%BC%98%E9%9B%85%E7%9A%84%E5%AD%A6%E4%B9%A0JVM%EF%BC%8C%E5%8D%87%E5%8D%8E%E7%AF%87%EF%BC%88%E4%B8%89%EF%BC%89/">如何优雅的学习JVM，升华篇（三）</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>此次内容和大家分享JVM中关于垃圾回收（Garbage Collect）的相关知识。</p>
+<h1 id="一、如何确定一个对象是垃圾？"><a href="#一、如何确定一个对象是垃圾？" class="headerlink" title="一、如何确定一个对象是垃圾？"></a>一、如何确定一个对象是垃圾？</h1><p><strong>要想进行垃圾回收，得先知道什么样的对象是垃圾。</strong></p>
+<h2 id="1-1-引用计数法"><a href="#1-1-引用计数法" class="headerlink" title="1.1 引用计数法"></a>1.1 引用计数法</h2><p>对于某个对象而言，只要应用程序中持有该对象的引用，就说明该对象不是垃圾，如果一个对象没有任何指针对其引用，它就是垃圾。</p>
+<p><strong>注意：</strong> 如果A、B两个对象互相持有引用，会导致永远不能被回收。</p>
+<h2 id="1-2-可达性分析"><a href="#1-2-可达性分析" class="headerlink" title="1.2 可达性分析"></a>1.2 可达性分析</h2><p>通过GC Root的对象，可以开始向下寻找，看某个对象是否可达。<br>可以作为GC Root：类加载器、Thread、虚拟机栈的本地变量表、静态成员、常量引用、本地方法栈的变量等。</p>
+<h1 id="二、垃圾回收算法"><a href="#二、垃圾回收算法" class="headerlink" title="二、垃圾回收算法"></a>二、垃圾回收算法</h1><h2 id="2-1-标记-清除（Mark-Sweep）"><a href="#2-1-标记-清除（Mark-Sweep）" class="headerlink" title="2.1 标记-清除（Mark-Sweep）"></a>2.1 标记-清除（Mark-Sweep）</h2><p><strong>标记（Mark）</strong></p>
+<p>找出内存中需要回收的对象，并把它们标记出来。此时堆中所有的对象都会被扫描一遍，从而才能确定需要回收的对象，比较耗时。</p>
+<p><img src="https://user-gold-cdn.xitu.io/2020/2/9/170291940db6274f?w=1089&h=405&f=png&s=27984" alt=""></p>
+<p><strong>清除（Sweep）</strong></p>
+<p>清除掉被标记需要回收的对象，释放出对应的内存空间。</p>
+<p><img src="https://user-gold-cdn.xitu.io/2020/2/9/170291f1cf91e70f?w=1089&h=405&f=png&s=27600" alt=""></p>
+<p><strong>不足</strong></p>
+<p>1、标记和清除两个过程都比较耗时，效率不高</p>
+<p>2、会产生大量的不连续的内存碎片，空间碎片太多可能会导致在以后程序运行的过程中需要分配较大的对象时，无法找到足够的连续内存而不得不提前触发一次垃圾回收动作。</p>
+<h2 id="2-2-复制（Copying）"><a href="#2-2-复制（Copying）" class="headerlink" title="2.2 复制（Copying）"></a>2.2 复制（Copying）</h2><p>将内存划分为两块相等的区域，每次只使用其中一块，如下图</p>
+<p><img src="https://user-gold-cdn.xitu.io/2020/2/9/17029f3b74f9396f?w=1089&h=405&f=png&s=29603" alt=""></p>
+<p>当其中一块内存使用完了，就将还存活的对象复制到另一块上面，然后把已经使用过的内存空间一次清除掉。</p>
+<p><img src="https://user-gold-cdn.xitu.io/2020/2/9/17029f8ffbf82088?w=1089&h=405&f=png&s=28597" alt=""></p>
+<p><strong>不足</strong></p>
+<p>空间利用率降低。</p>
+<h2 id="2-3-标记-整理（Mark-Compact）"><a href="#2-3-标记-整理（Mark-Compact）" class="headerlink" title="2.3 标记-整理（Mark-Compact）"></a>2.3 标记-整理（Mark-Compact）</h2><p>标记的过程仍然与“标记-清除”的算法一样，但是后续的步骤不是直接对回收对象进行清理，而是让所有存活的对象都向一端移动，然后直接清理掉端边界以外的内存。</p>
+<p><img src="https://user-gold-cdn.xitu.io/2020/2/10/1702dc55145466eb?w=1089&h=405&f=png&s=27984" alt=""></p>
+<p>让所有存活的对象都向一端移动，清掉边界外的内存。</p>
+<p><img src="https://user-gold-cdn.xitu.io/2020/2/10/1702dc7ad25a5df8?w=1089&h=405&f=png&s=25892" alt=""></p>
+<h1 id="三、分代收集算法"><a href="#三、分代收集算法" class="headerlink" title="三、分代收集算法"></a>三、分代收集算法</h1><p>上面介绍了三种垃圾回收算法，那么在堆内存中到底用哪一种呢？</p>
+<p>1.<strong>Yonug区</strong>：复制算法（对象被分配之后，可能生命周期比较短，此区的复制效率比较高）</p>
+<p>2、<strong>Old区</strong>：标记清除或标记整理（Old区对象存活时间比较长，复制来复制去没必要，不如做个标记再清理）</p>
+<h1 id="四、-垃圾收集器"><a href="#四、-垃圾收集器" class="headerlink" title="四、 垃圾收集器"></a>四、 垃圾收集器</h1><h2 id="4-1-Serial收集器"><a href="#4-1-Serial收集器" class="headerlink" title="4.1 Serial收集器"></a>4.1 Serial收集器</h2><p>在JDK1.3.1之前，曾经是虚拟机新生代收集的唯一选择，它是最基本、发展历史最悠久的收集器。</p>
+<p>它是一种<strong>单线程</strong>收集器，不仅仅意味着它只会使用一个CPU或者一条收集线程去完成垃圾收集工作，更重要的是其在进行收集的同时需要暂停其它线程。</p>
+<p><img src="https://user-gold-cdn.xitu.io/2020/2/10/1702e0a78a1eb434?w=1017&h=576&f=png&s=38780" alt=""></p>
+<p>优点：简单高效，拥有很高的单线程收集效率</p>
+<p>缺点：收集过程中需要暂停其它所有的线程</p>
+<p>算法：复制算法</p>
+<p>使用范围：新生代</p>
+<p>应用：client模式下的默认新生代收集器</p>
+<h2 id="4-2-ParNew收集器"><a href="#4-2-ParNew收集器" class="headerlink" title="4.2 ParNew收集器"></a>4.2 ParNew收集器</h2><p>可以把ParNew收集器当作多线程版本的Serial收集器。</p>
+<p><img src="https://user-gold-cdn.xitu.io/2020/2/10/1702e16d4741267a?w=1017&h=595&f=png&s=41599" alt=""></p>
+<p>优点：在多CPU下，比Serial收集器效率高</p>
+<p>缺点：收集过程中需要暂停其它所有的线程，单CPU时比Serial效率差</p>
+<p>算法：复制算法</p>
+<p>使用范围：新生代</p>
+<p>应用：运行在server模式下的虚拟机首选新生代收集器</p>
+<h2 id="4-3-Parallel-Scavenge收集器"><a href="#4-3-Parallel-Scavenge收集器" class="headerlink" title="4.3 Parallel Scavenge收集器"></a>4.3 Parallel Scavenge收集器</h2><p>它是一个新生代收集器，使用<strong>复制算法</strong>，又是并行多线程收集器，看上去和ParNew一样，但是更多关注的是<strong>系统的吞吐量</strong>。</p>
+<p>吞吐量 = 运行用户程序的时间 / (运行用户程序时间 + 垃圾收集时间)</p>
+<p>例如：虚拟机总共运行了100m，垃圾收集用了1m，吞吐量 =(100 - 1) / 100 = 99%</p>
+<p>吞吐量越大，则垃圾收集时间越短，则用户程序可以充分利用CPU资源，尽快完成程序的运算任务。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">-XX:MaxGCPauseMillis 控制最大的垃圾收集停顿时间，</span><br><span class="line">-XX:GC Time Ratio 直接设置吞吐量的大小。</span><br></pre></td></tr></table></figure>
+
+<h2 id="4-4-Serial-Old收集器"><a href="#4-4-Serial-Old收集器" class="headerlink" title="4.4 Serial Old收集器"></a>4.4 Serial Old收集器</h2><p>它是Serial收集器的老年代版本，也是一个单线程收集器，不同的是采用“标记-整理”的算法，运行过程和Serial收集器一样。</p>
+<p><img src="https://user-gold-cdn.xitu.io/2020/2/10/1702e5514f36024b?w=1626&h=576&f=png&s=78910" alt=""></p>
+<h2 id="4-5-Parallel-Old收集器"><a href="#4-5-Parallel-Old收集器" class="headerlink" title="4.5 Parallel Old收集器"></a>4.5 Parallel Old收集器</h2><p>Parallel Old收集器是Parallel Scavenge收集器的老年代版本，使用“标记-整理”的算法进行垃圾回收。吞吐量优先。</p>
+<h2 id="4-6-CMS（Concurrent-Mark-Sweep）收集器"><a href="#4-6-CMS（Concurrent-Mark-Sweep）收集器" class="headerlink" title="4.6 CMS（Concurrent Mark Sweep）收集器"></a>4.6 CMS（Concurrent Mark Sweep）收集器</h2><p>CMS收集器是一种以获取<strong>最短回收停顿时间</strong>为目标的收集器。采用“标记-清除”算法，整个过程分为4步：</p>
+<p>1、<strong>初始标记</strong>（CMS initial mark），标记GC Roots能关联到的对象，Stop The World–&gt;速度很快</p>
+<p>2、<strong>并发标记</strong>（CMS ConCurrent mark），进行GC Roots Tracing</p>
+<p>3、<strong>重新标记</strong>（CMS remark），修改并发标记因用户程序变动的内容，Stop The World</p>
+<p>4、<strong>并发清除</strong>（CMS Concurrent Sweep）</p>
+<p>由于整个过程，并发标记和并发清除，收集器线程可以和用户线程一起工作，所以总体上来说，<strong>CMS收集器的内存回收过程是和用户线程一起并发执行的</strong>。</p>
+<p><img src="https://user-gold-cdn.xitu.io/2020/2/10/1702e886eccea396?w=1626&h=596&f=png&s=60610" alt=""><br>优点：并发收集、低停顿</p>
+<p>缺点：产生大量空间碎片，并发阶段会降低吞吐量</p>
+<h2 id="4-7-G1收集器"><a href="#4-7-G1收集器" class="headerlink" title="4.7 G1收集器"></a>4.7 G1收集器</h2><p>使用G1收集器时，Java堆的内存布局与其它收集器的差别很大，它<strong>将整个Java堆划分为多个大小相等的独立区域</strong>（Region），虽然还保留有新生代和老年代的概念，但新生代和老年代不再是物理隔离了，它们都是一部分Region（不需要连续）的集合。整体上属于“<strong>标记-整理</strong>”算法，不会到处连续的空间碎片，<strong>可预测的停顿</strong>（比CMS更先进的地方在于能够让使用者明确指定一个长度为m毫秒的时间片段内，消耗在垃圾收集上的时间不得超过m毫秒）。整个过程分为4部分：</p>
+<p>1、<strong>初始标记</strong>（Initial Marking）,标记一下GC Roots能够关联的对象，并且修改TAMS(top at mark start)的值，需要暂停用户线程</p>
+<p>2、<strong>并发标记</strong>（Concurrent Marking），从GC Roots进行可达性分析，找出存活的对象，与用户线程并发执行</p>
+<p>3、<strong>最终标记</strong>（Final Marking），修正在并发标记阶段因为用户程序的并发执行导致变动的数据，需暂停用户线程</p>
+<p>4、<strong>筛选回收</strong>（Live Data Counting And Evacuation），对各个Region的回收价值和成本进行排序，根据用户所期望的GC停顿时间制定回收计划。</p>
+<p><img src="https://user-gold-cdn.xitu.io/2020/2/10/1702ea2c3b877a18?w=1638&h=590&f=png&s=65534" alt=""></p>
+<h2 id="4-8-垃圾收集器分类"><a href="#4-8-垃圾收集器分类" class="headerlink" title="4.8 垃圾收集器分类"></a>4.8 垃圾收集器分类</h2><ul>
+<li><p>串行收集器</p>
+<p>  Serial、Old Serial</p>
+<p>  <strong>只有一个垃圾回收线程执行，用户线程暂停。</strong></p>
+<p>  适用于内存比较小的嵌入式设备。</p>
+</li>
+<li><p>并行收集</p>
+<p>  Parallel Scanvenge、Parallel Old</p>
+<p>  <strong>多条垃圾收集器线程并行工作，但此时用户线程仍然处于等待状态。</strong></p>
+<p>  适用于科学计算、后台处理等若干交互场景。</p>
+<p>  <strong>吞吐量优先</strong></p>
+</li>
+<li><p>并发收集器</p>
+<p>  CMS、G1</p>
+<p>  <strong>用户线程和垃圾收集器线程同时执行</strong>（但不一定是并行，可能是交替执行），垃圾收集线程在执行的时候不会停顿用户线程的运行。</p>
+<p>  适用于相对时间有要求的场景，比如Web</p>
+<p>  <strong>停顿时间优先</strong></p>
+</li>
+</ul>
+<h2 id="4-9-如何选择合适的垃圾收集器"><a href="#4-9-如何选择合适的垃圾收集器" class="headerlink" title="4.9 如何选择合适的垃圾收集器"></a>4.9 如何选择合适的垃圾收集器</h2><ul>
+<li>优先调整堆的大小让服务器自己来选择</li>
+<li>如果内存小于100M,使用串行收集器</li>
+<li>如果是CPU单核，并且没有停顿时间的要求，使用串行或者JVM自行选择</li>
+<li>如果允许停顿时间超过1S，选择并行或者JVM自行选择</li>
+<li>如果响应时间最重要，并且不能超过1S,使用并发收集器。</li>
+<li>来看看官网如何给出答案的： <a href="https://docs.oracle.com/javase/8/docs/technotes/guides/vm/gctuning/collectors.html#sthref28" target="_blank" rel="noopener">https://docs.oracle.com/javase/8/docs/technotes/guides/vm/gctuning/collectors.html#sthref28</a></li>
+</ul>
+<h2 id="4-10-如何开启垃圾收集器"><a href="#4-10-如何开启垃圾收集器" class="headerlink" title="4.10 如何开启垃圾收集器"></a>4.10 如何开启垃圾收集器</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">（1）串行</span><br><span class="line">-XX：+UseSerialGC</span><br><span class="line">-XX：+UseSerialOldGC</span><br><span class="line">（2）并行(吞吐量优先)：</span><br><span class="line"> -XX：+UseParallelGC</span><br><span class="line"> -XX：+UseParallelOldGC</span><br><span class="line">（3）并发收集器(响应时间优先)</span><br><span class="line">-XX：+UseConcMarkSweepGC</span><br><span class="line">-XX：+UseG1GC</span><br></pre></td></tr></table></figure>
+
+<h2 id="4-11-如何理解吞吐量和停顿时间"><a href="#4-11-如何理解吞吐量和停顿时间" class="headerlink" title="4.11 如何理解吞吐量和停顿时间"></a>4.11 如何理解吞吐量和停顿时间</h2><ul>
+<li><p>吞吐量</p>
+<p>  <strong>运行用户代码时间/(运行用户代码时间+垃圾收集时间)</strong></p>
+<p>  高吞吐量则可以高效地利用CPU时间，尽快完成程序的运算任务，主要适合在后台运算而不需要太多交互的任<br>务。</p>
+</li>
+</ul>
+<ul>
+<li><p>停顿时间</p>
+<p>  <strong>垃圾收集器进行垃圾回收终端应用执行响应的时间</strong></p>
+<p>  停顿时间越短就越适合需要和用户交互的程序，良好的响应速度能提升用户体验。</p>
+</li>
+</ul>
+<h2 id="4-12-在什么情况下使用G1？"><a href="#4-12-在什么情况下使用G1？" class="headerlink" title="4.12 在什么情况下使用G1？"></a>4.12 在什么情况下使用G1？</h2><p>JDK 7开始使用，JDK 8非常成熟，<strong>JDK 9</strong>默认的垃圾收集器，适用于<strong>新老生代</strong>。</p>
+<p>判断是否需要使用G1收集器？</p>
+<ul>
+<li>50%以上的堆被存活对象占用</li>
+<li>对象分配和晋升的速度变化非常大</li>
+<li>垃圾回收时间比较长</li>
+</ul>
+<h1 id="未完待续……"><a href="#未完待续……" class="headerlink" title="未完待续……"></a>未完待续……</h1>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://xkjava.github.io/2020/02/10/%E5%A6%82%E4%BD%95%E4%BC%98%E9%9B%85%E7%9A%84%E5%AD%A6%E4%B9%A0JVM%EF%BC%8C%E5%8D%87%E5%8D%8E%E7%AF%87%EF%BC%88%E4%B8%89%EF%BC%89/" data-id="ck6gfucrx0001gsra77exhgqq" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-如何优雅的学习JVM，进行篇（二）" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2020/02/08/%E5%A6%82%E4%BD%95%E4%BC%98%E9%9B%85%E7%9A%84%E5%AD%A6%E4%B9%A0JVM%EF%BC%8C%E8%BF%9B%E8%A1%8C%E7%AF%87%EF%BC%88%E4%BA%8C%EF%BC%89/" class="article-date">
@@ -209,7 +358,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://xkjava.github.io/2020/02/08/%E5%A6%82%E4%BD%95%E4%BC%98%E9%9B%85%E7%9A%84%E5%AD%A6%E4%B9%A0JVM%EF%BC%8C%E8%BF%9B%E8%A1%8C%E7%AF%87%EF%BC%88%E4%BA%8C%EF%BC%89/" data-id="ck6dfuwkb000210ra42dy0v1c" class="article-share-link">Share</a>
+      <a data-url="https://xkjava.github.io/2020/02/08/%E5%A6%82%E4%BD%95%E4%BC%98%E9%9B%85%E7%9A%84%E5%AD%A6%E4%B9%A0JVM%EF%BC%8C%E8%BF%9B%E8%A1%8C%E7%AF%87%EF%BC%88%E4%BA%8C%EF%BC%89/" data-id="ck6gfucrz0003gsra6zv9dv9k" class="article-share-link">Share</a>
       
       
     </footer>
@@ -384,7 +533,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://xkjava.github.io/2020/02/05/%E5%A6%82%E4%BD%95%E4%BC%98%E9%9B%85%E7%9A%84%E5%AD%A6%E4%B9%A0JVM%EF%BC%8C%E6%8F%AD%E5%BC%80%E7%AF%87%EF%BC%88%E4%B8%80%EF%BC%89/" data-id="ck6dfuwka000110ra5t7e2vff" class="article-share-link">Share</a>
+      <a data-url="https://xkjava.github.io/2020/02/05/%E5%A6%82%E4%BD%95%E4%BC%98%E9%9B%85%E7%9A%84%E5%AD%A6%E4%B9%A0JVM%EF%BC%8C%E6%8F%AD%E5%BC%80%E7%AF%87%EF%BC%88%E4%B8%80%EF%BC%89/" data-id="ck6gfucrz0002gsra23olatyn" class="article-share-link">Share</a>
       
       
     </footer>
@@ -433,7 +582,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://xkjava.github.io/2020/01/29/hello-world/" data-id="ck6dfuwjp000010rafpo303lt" class="article-share-link">Share</a>
+      <a data-url="https://xkjava.github.io/2020/01/29/hello-world/" data-id="ck6gfucrc0000gsradysr5pz8" class="article-share-link">Share</a>
       
       
     </footer>
@@ -472,6 +621,10 @@
     <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2020/02/10/%E5%A6%82%E4%BD%95%E4%BC%98%E9%9B%85%E7%9A%84%E5%AD%A6%E4%B9%A0JVM%EF%BC%8C%E5%8D%87%E5%8D%8E%E7%AF%87%EF%BC%88%E4%B8%89%EF%BC%89/">如何优雅的学习JVM，升华篇（三）</a>
+          </li>
         
           <li>
             <a href="/2020/02/08/%E5%A6%82%E4%BD%95%E4%BC%98%E9%9B%85%E7%9A%84%E5%AD%A6%E4%B9%A0JVM%EF%BC%8C%E8%BF%9B%E8%A1%8C%E7%AF%87%EF%BC%88%E4%BA%8C%EF%BC%89/">如何优雅的学习JVM，进行篇（二）</a>
