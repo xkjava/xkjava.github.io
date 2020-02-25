@@ -74,6 +74,173 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-架构师内功心法，干过中介干过快递的代理模式详解" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/02/25/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E5%B9%B2%E8%BF%87%E4%B8%AD%E4%BB%8B%E5%B9%B2%E8%BF%87%E5%BF%AB%E9%80%92%E7%9A%84%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" class="article-date">
+  <time datetime="2020-02-25T09:01:55.000Z" itemprop="datePublished">2020-02-25</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/02/25/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E5%B9%B2%E8%BF%87%E4%B8%AD%E4%BB%8B%E5%B9%B2%E8%BF%87%E5%BF%AB%E9%80%92%E7%9A%84%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/">架构师内功心法，干过中介干过快递的代理模式详解</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="一、代理模式的应用场景"><a href="#一、代理模式的应用场景" class="headerlink" title="一、代理模式的应用场景"></a>一、代理模式的应用场景</h1><p>在我们的生活中，经常会见到这样的场景，如：租售房中介、婚介、经纪人、快递等，这些都是代理模式的现实生活体现。代理模式（Proxy Pattern）是指为其它对象提供一种代理，以控制对这个对象的访问。代理对象在客户端和目标对象中间起到了中介的作用，使用代理模式主要有两个目的：<strong>一是保护目标对象，二是增强目标对象。</strong> </p>
+<p><img src="https://user-gold-cdn.xitu.io/2020/2/23/17070809577156fb?w=1712&h=1080&f=png&s=3560244" alt=""></p>
+<p><img src="https://user-gold-cdn.xitu.io/2020/2/23/1707081485369be2?w=1280&h=853&f=png&s=1671129" alt=""></p>
+<p><img src="https://user-gold-cdn.xitu.io/2020/2/23/1707082136eaba87?w=650&h=487&f=png&s=547465" alt=""></p>
+<p>代理模式的类图结构：</p>
+<p><img src="https://user-gold-cdn.xitu.io/2020/2/23/170702e8a82b99b5?w=451&h=379&f=png&s=126867" alt=""></p>
+<p>Subject是顶层设计的接口，RealSubject是真实的对象，Proxy是代理对象，代理对象持有真实对象的引用，客户端Client调用代理对象的方法，同时也调用真实对象的方法，在代理对象前后增加一些处理。我们一想到代理模式，就会理解为<strong>代码增强</strong>，其实就是在原本的代码逻辑前后增加一些逻辑，而使得调用者无感知。代理模式分为静态代理和动态代理。</p>
+<h1 id="二、代理模式的分类"><a href="#二、代理模式的分类" class="headerlink" title="二、代理模式的分类"></a>二、代理模式的分类</h1><h2 id="2-1-静态代理"><a href="#2-1-静态代理" class="headerlink" title="2.1 静态代理"></a>2.1 静态代理</h2><p>我们直接来举例说明静态代理，青年男女到了适婚的年龄，如果没有对象，周围的亲戚朋友总是张罗着要给某某某介绍对象，这个介绍对象相亲的过程，就是一种我们人人都有份的代理。来看代码实现：</p>
+<p>顶层接口设计Person类：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">public interface Person &#123;</span><br><span class="line"></span><br><span class="line">    &#x2F;**</span><br><span class="line">     * 寻找伴侣</span><br><span class="line">     *&#x2F;</span><br><span class="line">    void lookForMate();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>女儿要求找对象，实现Person接口：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">public class Daughter implements Person &#123;</span><br><span class="line">    @Override</span><br><span class="line">    public void lookForMate() &#123;</span><br><span class="line">        System.out.println(&quot;女儿要求：高大英俊且有钱！&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>母亲要帮闺女相亲，实现Mother类：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">public class Mother &#123;</span><br><span class="line"></span><br><span class="line">    private Daughter daughter;</span><br><span class="line">    &#x2F;&#x2F;如何扩展呢</span><br><span class="line">    public Mother(Daughter daughter) &#123;</span><br><span class="line">        this.daughter &#x3D; daughter;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F;目标对象的引用daughter拿到，可以调用</span><br><span class="line">    public void lookForMate() &#123;</span><br><span class="line">        System.out.println(&quot;母亲物色女儿的对象&quot;);</span><br><span class="line">        daughter.lookForMate();</span><br><span class="line">        System.out.println(&quot;双方同意交往并确立关系&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>测试内容：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">public static void main(String[] args) &#123;</span><br><span class="line">    &#x2F;&#x2F;只能帮女儿找对象，不能帮表妹、不能帮陌生人</span><br><span class="line">    Mother mother &#x3D; new Mother(new Daughter());</span><br><span class="line">    mother.lookForMate();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>运行结果：</p>
+<p><img src="https://user-gold-cdn.xitu.io/2020/2/23/170709c04b74144d?w=475&h=229&f=png&s=16047" alt=""></p>
+<p>上面的这个例子是生活中的例子，我们用代码实现了生活中的代理模式。再来一个具体的实际业务场景的例子吧。我们经常会对数据库进行分库分表，分库分表后用Java代码来操作，就需要配置多个数据源，通过设置数据源路由来动态动态切换数据源。<br>创建订单实体类：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;**</span><br><span class="line"> * 订单实体类</span><br><span class="line"> *&#x2F;</span><br><span class="line">public class Order &#123;</span><br><span class="line"></span><br><span class="line">    private String id;</span><br><span class="line"></span><br><span class="line">    private Object orderInfo;</span><br><span class="line"></span><br><span class="line">    private Long createTime;</span><br><span class="line"></span><br><span class="line">    public String getId() &#123;</span><br><span class="line">        return id;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void setId(String id) &#123;</span><br><span class="line">        this.id &#x3D; id;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public Object getOrderInfo() &#123;</span><br><span class="line">        return orderInfo;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void setOrderInfo(Object orderInfo) &#123;</span><br><span class="line">        this.orderInfo &#x3D; orderInfo;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public Long getCreateTime() &#123;</span><br><span class="line">        return createTime;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void setCreateTime(Long createTime) &#123;</span><br><span class="line">        this.createTime &#x3D; createTime;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>创建OrderDao持久层操作类：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">public class OrderDao &#123;</span><br><span class="line">    public int insert(Order order) &#123;</span><br><span class="line">        System.out.println(&quot;创建order对象成功!&quot;);</span><br><span class="line">        return 1;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>创建 IOrderService 接口：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">public interface IOrderService &#123;</span><br><span class="line">    int createOrder(Order order);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>创建 OrderService 实现类：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">public class OrderService implements IOrderService &#123;</span><br><span class="line"></span><br><span class="line">    private OrderDao orderDao;</span><br><span class="line"></span><br><span class="line">    public OrderService(OrderDao orderDao) &#123;</span><br><span class="line">        orderDao &#x3D; new OrderDao();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public int createOrder(Order order) &#123;</span><br><span class="line">        System.out.println(&quot;OrderService调用OrderDao创建订单&quot;);</span><br><span class="line">        return orderDao.insert(order);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们来使用静态代理，完成订单创建时间自动按年份进行分库，通过使用代理对象来完成接下来的代码。创建数据源路由对象，使用ThreadLocal单例实现，DynamicDataSourceEntity：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line">public class DynamicDataSourceEntity &#123;</span><br><span class="line"></span><br><span class="line">    &#x2F;**</span><br><span class="line">     * 默认数据源</span><br><span class="line">     *&#x2F;</span><br><span class="line">    public static final String DEFAULT_DATA_SOURCE &#x3D; null;</span><br><span class="line"></span><br><span class="line">    private static final ThreadLocal&lt;String&gt; local &#x3D; new ThreadLocal&lt;&gt;();</span><br><span class="line"></span><br><span class="line">    private DynamicDataSourceEntity() &#123;&#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;**</span><br><span class="line">     * 获取当前正在使用的数据源</span><br><span class="line">     * @return</span><br><span class="line">     *&#x2F;</span><br><span class="line">    public static String get() &#123;</span><br><span class="line">        return local.get();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;**</span><br><span class="line">     * 设置已知名字的数据源</span><br><span class="line">     * @param dataSource</span><br><span class="line">     *&#x2F;</span><br><span class="line">    public static void set(String dataSource) &#123;</span><br><span class="line">        local.set(dataSource);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;**</span><br><span class="line">     * 还原当前切面的数据源</span><br><span class="line">     *&#x2F;</span><br><span class="line">    public static void restore() &#123;</span><br><span class="line">        local.set(DEFAULT_DATA_SOURCE);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;**</span><br><span class="line">     * 根据年份动态设置数据源</span><br><span class="line">     * @param year</span><br><span class="line">     *&#x2F;</span><br><span class="line">    public static void set(int year) &#123;</span><br><span class="line">        local.set(&quot;DB_&quot; + year);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;**</span><br><span class="line">     * 清空数据源</span><br><span class="line">     *&#x2F;</span><br><span class="line">    public static void remove() &#123;</span><br><span class="line">        local.remove();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>创建切换数据源代理OrderServiceStaticProxy：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">public class OrderServiceStaticProxy implements IOrderService &#123;</span><br><span class="line"></span><br><span class="line">    private SimpleDateFormat yearFormat &#x3D; new SimpleDateFormat(&quot;yyyy&quot;);</span><br><span class="line"></span><br><span class="line">    private IOrderService orderService;</span><br><span class="line"></span><br><span class="line">    public OrderServiceStaticProxy(IOrderService orderService) &#123;</span><br><span class="line">        this.orderService &#x3D; orderService;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public int createOrder(Order order) &#123;</span><br><span class="line">        before();</span><br><span class="line">        Long time &#x3D; order.getCreateTime();</span><br><span class="line">        Integer dbRouter &#x3D; Integer.valueOf(yearFormat.format(new Date(time)));</span><br><span class="line">        System.out.println(&quot;静态代理类自动分配到【DB_&quot; + dbRouter + &quot;】数据源处理数据。&quot;);</span><br><span class="line">        DynamicDataSourceEntity.set(dbRouter);</span><br><span class="line">        orderService.createOrder(order);</span><br><span class="line">        after();</span><br><span class="line">        return 0;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private void before()&#123;</span><br><span class="line">        System.out.println(&quot;代理方法执行开始了......&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">    private void after()&#123;</span><br><span class="line">        System.out.println(&quot;代理方法执行结束了......&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>main方法的代码：</p>
+<p> public static void main(String[] args) throws ParseException {</p>
+<pre><code>Order order = new Order();
+order.setId(&quot;010101001&quot;);
+//Date today = new Date();
+//order.setCreateTime(today.getTime());
+
+SimpleDateFormat sdf = new SimpleDateFormat(&quot;yyyy/MM/dd&quot;);
+Date date = sdf.parse(&quot;2019/02/01&quot;);
+order.setCreateTime(date.getTime());
+
+
+IOrderService orderService = new OrderServiceStaticProxy(new OrderService());
+orderService.createOrder(order);</code></pre><p>}</p>
+<p>运行结果是：</p>
+<p><img src="https://user-gold-cdn.xitu.io/2020/2/23/17070e2f728d86b3?w=610&h=346&f=png&s=26911" alt=""></p>
+<p>符合我们的预期效果。现在我们再来回顾一下类图，看是不是和我们最先画的类结构一致：</p>
+<p><img src="https://user-gold-cdn.xitu.io/2020/2/23/17070e41a9eadcfb?w=1197&h=476&f=png&s=346255" alt=""></p>
+<h2 id="2-2-动态代理"><a href="#2-2-动态代理" class="headerlink" title="2.2 动态代理"></a>2.2 动态代理</h2><p>动态代理和静态代理的思路基本是一致的，只不过动态代理的功能更加强大，随着业务的扩展适应性更强。前面说到的母亲替闺女找对象的例子，如果找对象的业务发展为一个行业，那么就是婚姻中介了。来升级代码的实现过程，以满足帮助更多的单身人士找对象的需求。下面使用JDK的方式实现婚姻介绍所。</p>
+<h2 id="2-2-1-JDK实现方式"><a href="#2-2-1-JDK实现方式" class="headerlink" title="2.2.1 JDK实现方式"></a>2.2.1 JDK实现方式</h2><p>创建婚姻介绍JDKMarriage类：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">public class JDKMarriage implements InvocationHandler &#123;</span><br><span class="line"></span><br><span class="line">    private Object target;</span><br><span class="line"></span><br><span class="line">    public Object getInstance(Object target) &#123;</span><br><span class="line">        this.target &#x3D; target;</span><br><span class="line"></span><br><span class="line">        Class&lt;?&gt; clazz &#x3D; target.getClass();</span><br><span class="line">        return Proxy.newProxyInstance(clazz.getClassLoader(), clazz.getInterfaces(), this);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable &#123;</span><br><span class="line">        before();</span><br><span class="line">        Object object &#x3D; method.invoke(this.target, args);</span><br><span class="line">        after();</span><br><span class="line">        return object;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private void before()&#123;</span><br><span class="line">        System.out.println(&quot;我是婚姻介绍所：要给你找对象，现在已经拿到你的需求&quot;);</span><br><span class="line">        System.out.println(&quot;开始物色&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">    private void after()&#123;</span><br><span class="line">        System.out.println(&quot;如果合适的话，就准备办事&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>创建单身客户Customer类：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">public class Customer implements Person &#123;</span><br><span class="line">    @Override</span><br><span class="line">    public void lookForMate() &#123;</span><br><span class="line">        System.out.println(&quot;高富帅&quot;);</span><br><span class="line">        System.out.println(&quot;身高180cm&quot;);</span><br><span class="line">        System.out.println(&quot;有房有车&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>测试main方法代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"> public static void main(String[] args) &#123;</span><br><span class="line"></span><br><span class="line">    JDKMarriage marriage &#x3D; new JDKMarriage();</span><br><span class="line"></span><br><span class="line">    Person person &#x3D; (Person) marriage.getInstance(new Customer());</span><br><span class="line">    person.lookForMate();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>运行结果：</p>
+<p><img src="https://user-gold-cdn.xitu.io/2020/2/23/170712617edfebb2?w=670&h=364&f=png&s=25490" alt=""></p>
+<p>上面的动态代理案例通过实现InvocationHandler接口来完成的，在前面的数据源路由业务，也要用动态代理来实现一下，我们来看下代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">public class OrderServiceDynamicProxy implements InvocationHandler &#123;</span><br><span class="line"></span><br><span class="line">    private SimpleDateFormat yearFormat &#x3D; new SimpleDateFormat(&quot;yyyy&quot;);</span><br><span class="line"></span><br><span class="line">    public Object target;</span><br><span class="line"></span><br><span class="line">    public Object getInstance(Object target) &#123;</span><br><span class="line">        this.target &#x3D; target;</span><br><span class="line">        Class&lt;?&gt; clazz &#x3D; target.getClass();</span><br><span class="line">        return Proxy.newProxyInstance(clazz.getClassLoader(), clazz.getInterfaces(), this);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable &#123;</span><br><span class="line">        before(args[0]);</span><br><span class="line">        Object object &#x3D; method.invoke(target, args);</span><br><span class="line">        after();</span><br><span class="line">        return object;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void before(Object target) &#123;</span><br><span class="line">        try &#123;</span><br><span class="line">            System.out.println(&quot;代理方法执行开始了......&quot;);</span><br><span class="line">            Long time &#x3D; (Long)target.getClass().getMethod(&quot;getCreateTime&quot;).invoke(target);</span><br><span class="line">            Integer dbRouter &#x3D; Integer.valueOf(yearFormat.format(new Date(time)));</span><br><span class="line">            System.out.println(&quot;动态代理类自动分配到【DB_&quot; + dbRouter + &quot;】数据源处理数据&quot;);</span><br><span class="line">            DynamicDataSourceEntity.set(dbRouter);</span><br><span class="line">        &#125; catch (IllegalAccessException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125; catch (InvocationTargetException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125; catch (NoSuchMethodException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void after() &#123;</span><br><span class="line">        System.out.println(&quot;代理方法执行结束了......&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>测试main方法代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">public static void main(String[] args) throws ParseException &#123;</span><br><span class="line">        Order order &#x3D; new Order();</span><br><span class="line">        order.setId(&quot;010101001&quot;);</span><br><span class="line">&#x2F;&#x2F;        Date today &#x3D; new Date();</span><br><span class="line">&#x2F;&#x2F;        order.setCreateTime(today.getTime());</span><br><span class="line"></span><br><span class="line">        SimpleDateFormat sdf &#x3D; new SimpleDateFormat(&quot;yyyy&#x2F;MM&#x2F;dd&quot;);</span><br><span class="line">        Date date &#x3D; sdf.parse(&quot;2019&#x2F;02&#x2F;01&quot;);</span><br><span class="line">        order.setCreateTime(date.getTime());</span><br><span class="line"></span><br><span class="line">        IOrderService orderService &#x3D; (IOrderService) new OrderServiceDynamicProxy().getInstance(new OrderService());</span><br><span class="line">        orderService.createOrder(order);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果：</p>
+<p><img src="https://user-gold-cdn.xitu.io/2020/2/23/170715f8efe2d262?w=553&h=298&f=png&s=25414" alt=""></p>
+<p>依然可以达到想要的运行效果。但是，动态代理实现之后，我们不仅能实现 Order 的数据源动态路由，还可以实现其他任何类的数据源路由。</p>
+<h2 id="2-2-2-CGLib代理调用API及原理分析"><a href="#2-2-2-CGLib代理调用API及原理分析" class="headerlink" title="2.2.2 CGLib代理调用API及原理分析"></a>2.2.2 CGLib代理调用API及原理分析</h2><p>pom依赖：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">	&lt;groupId&gt;cglib&lt;&#x2F;groupId&gt;</span><br><span class="line">	&lt;artifactId&gt;cglib&lt;&#x2F;artifactId&gt;</span><br><span class="line">	&lt;version&gt;3.3.0&lt;&#x2F;version&gt;</span><br><span class="line">&lt;&#x2F;dependency&gt;</span><br></pre></td></tr></table></figure>
+
+<p>还是以婚姻介绍所为例，创建CglibMarriage类：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">public class CglibMarriage implements MethodInterceptor &#123;</span><br><span class="line"></span><br><span class="line">    public Object getInstance(Class&lt;?&gt; clazz) throws Exception &#123;</span><br><span class="line">        Enhancer enhancer &#x3D; new Enhancer();</span><br><span class="line">        &#x2F;&#x2F;要把哪个类设置成为生成的新类的父类</span><br><span class="line">        enhancer.setSuperclass(clazz);</span><br><span class="line">        enhancer.setCallback(this);</span><br><span class="line"></span><br><span class="line">        return enhancer.create();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public Object intercept(Object o, Method method, Object[] objects,</span><br><span class="line">                            MethodProxy methodProxy) throws Throwable &#123;</span><br><span class="line">        before();</span><br><span class="line">        Object obj &#x3D; methodProxy.invokeSuper(o, objects);</span><br><span class="line">        after();</span><br><span class="line">        return obj;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private void before()&#123;</span><br><span class="line">        System.out.println(&quot;我是婚姻介绍所：要给你找对象，现在已经拿到你的需求&quot;);</span><br><span class="line">        System.out.println(&quot;开始物色&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">    private void after()&#123;</span><br><span class="line">        System.out.println(&quot;如果合适的话，就准备办事&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>接着创建单身客户类Customer：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">public class Customer &#123;</span><br><span class="line">    </span><br><span class="line">    public void lookForMate() &#123;</span><br><span class="line">        System.out.println(&quot;高富帅&quot;);</span><br><span class="line">        System.out.println(&quot;身高180cm&quot;);</span><br><span class="line">        System.out.println(&quot;有房有车&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>注意：<strong>CGLib代理的目标对象不需要实现任何接口，它是通过动态继承目标对象实现动态代理的。</strong> 来看测试代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">public static void main(String[] args) &#123;</span><br><span class="line"></span><br><span class="line">        try &#123;</span><br><span class="line">            Customer customer &#x3D; (Customer)new CglibMarriage().getInstance(Customer.class);</span><br><span class="line">            customer.lookForMate();</span><br><span class="line">        &#125; catch (Exception e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>CGLib代理执行代理对象的方法效率之所以比JDK的高，是因为CGLib采用了FastClass机制，FastClass的原理是：为代理类和被代理类各生成一个class，这个class会为代理类或被代理类的方法分配一个index(int类型)，这个index当作入参，FastClass就可以直接定位要调用的方法直接进行调用，这样省去了反射调用，所以调用效率比JDK动态代理通过反射调用高。</strong></p>
+<h2 id="2-2-3-CGLib和JDK动态代理对比"><a href="#2-2-3-CGLib和JDK动态代理对比" class="headerlink" title="2.2.3 CGLib和JDK动态代理对比"></a>2.2.3 CGLib和JDK动态代理对比</h2><p>1、JDK动态代理实现了被代理对象的接口，CGLib代理继承了被代理对象。</p>
+<p>2、JDK和CGLib都在运行期间生成字节码，JDK动态代理直接生成class字节码，CGLib代理通过asm框架生成class字节码，CGLib代理实现更复杂，生成代理类比JDK动态代理效率低。</p>
+<p>3、JDK动态代理调用代理方法是通过反射机制调用的，CGLib代理是通过FastClass机制直接调用方法的，CGLib代理的执行效率高。</p>
+<h1 id="三、Spring与代理模式"><a href="#三、Spring与代理模式" class="headerlink" title="三、Spring与代理模式"></a>三、Spring与代理模式</h1><h2 id="3-1-代理模式在Spring源码中的应用"><a href="#3-1-代理模式在Spring源码中的应用" class="headerlink" title="3.1 代理模式在Spring源码中的应用"></a>3.1 代理模式在Spring源码中的应用</h2><p>先看 <strong>ProxyFactoryBean</strong>  核心的方法就是 <strong>getObject()</strong> 方法，我们来看一下源码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">@Nullable</span><br><span class="line">public Object getObject() throws BeansException &#123;</span><br><span class="line">    this.initializeAdvisorChain();</span><br><span class="line">    if (this.isSingleton()) &#123;</span><br><span class="line">        return this.getSingletonInstance();</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        if (this.targetName &#x3D;&#x3D; null) &#123;</span><br><span class="line">            this.logger.info(&quot;Using non-singleton proxies with singleton targets is often undesirable. Enable prototype proxies by setting the &#39;targetName&#39; property.&quot;);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        return this.newPrototypeInstance();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在 getObject()方法中，主要调用 <strong>getSingletonInstance()</strong> 和<strong>newPrototypeInstance()</strong> ；<br>在 Spring 的配置中，如果不做任何设置，那么 Spring 代理生成的 Bean 都是单例对象。如果修改 scope则每次创建一个新的原型对象。newPrototypeInstance()里面的逻辑比较复杂，我们后面的课程再做深入研究，这里我们先做简单的了解。</p>
+<h2 id="3-2-Spring-中的代理选择原则"><a href="#3-2-Spring-中的代理选择原则" class="headerlink" title="3.2 Spring 中的代理选择原则"></a>3.2 Spring 中的代理选择原则</h2><p>Spring 利用动态代理实现 AOP 有两个非常重要的类，一个是 <strong>JdkDynamicAopProxy</strong> 类和 <strong>CglibAopProxy</strong> 类，来看一下类图：</p>
+<p><img src="https://user-gold-cdn.xitu.io/2020/2/24/17075edc2fd9e1a9?w=1195&h=469&f=png&s=29406" alt=""></p>
+<ul>
+<li>当 Bean 有实现接口时，Spring 就会用 JDK 的动态代理；</li>
+</ul>
+<ul>
+<li>当 Bean 没有实现接口时，Spring 选择 CGLib。</li>
+</ul>
+<h1 id="三、-静态代理和动态的本质区别"><a href="#三、-静态代理和动态的本质区别" class="headerlink" title="三、 静态代理和动态的本质区别"></a>三、 静态代理和动态的本质区别</h1><p>1、静态代理只能通过手动完成代理操作，如果被代理类增加新的方法，代理类需要同步新增，违背开闭原则。</p>
+<p>2、动态代理采用在运行时动态生成代码的方式，取消了对被代理类的扩展限制，遵循开闭原则。</p>
+<p>3、若动态代理要对目标类的增强逻辑扩展，结合策略模式，只需要新增策略类便可完成，无需修改代理类的代码。</p>
+<h1 id="四、代理模式的优缺点"><a href="#四、代理模式的优缺点" class="headerlink" title="四、代理模式的优缺点"></a>四、代理模式的优缺点</h1><p>使用代理模式具有以下几个优点：</p>
+<ul>
+<li>代理模式能将代理对象与真实被调用的目标对象分离；</li>
+</ul>
+<ul>
+<li>一定程度上降低了系统的耦合度，扩展性好；</li>
+</ul>
+<ul>
+<li>可以起到保护目标对象的作用；</li>
+</ul>
+<ul>
+<li>可以对目标对象的功能增强。</li>
+</ul>
+<p>当然，代理模式也是有缺点的：</p>
+<ul>
+<li>代理模式会造成系统设计中类的数量增加；</li>
+</ul>
+<ul>
+<li>在客户端和目标对象增加一个代理对象，会造成请求处理速度变慢；</li>
+</ul>
+<ul>
+<li>增加了系统的复杂度。</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://xkjava.github.io/2020/02/25/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E5%B9%B2%E8%BF%87%E4%B8%AD%E4%BB%8B%E5%B9%B2%E8%BF%87%E5%BF%AB%E9%80%92%E7%9A%84%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" data-id="ck71nw9ji0009rtradq0q08aa" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-架构师内功心法，只是单纯听说过的原型模式详解" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2020/02/22/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E5%8F%AA%E6%98%AF%E5%8D%95%E7%BA%AF%E5%90%AC%E8%AF%B4%E8%BF%87%E7%9A%84%E5%8E%9F%E5%9E%8B%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" class="article-date">
@@ -160,7 +327,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://xkjava.github.io/2020/02/22/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E5%8F%AA%E6%98%AF%E5%8D%95%E7%BA%AF%E5%90%AC%E8%AF%B4%E8%BF%87%E7%9A%84%E5%8E%9F%E5%9E%8B%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" data-id="ck6xmifo9000643rahj93bns2" class="article-share-link">Share</a>
+      <a data-url="https://xkjava.github.io/2020/02/22/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E5%8F%AA%E6%98%AF%E5%8D%95%E7%BA%AF%E5%90%AC%E8%AF%B4%E8%BF%87%E7%9A%84%E5%8E%9F%E5%9E%8B%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" data-id="ck71nw9j70006rtradz0i91a0" class="article-share-link">Share</a>
       
       
     </footer>
@@ -332,7 +499,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://xkjava.github.io/2020/02/21/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E7%BB%8F%E5%85%B8%E9%AB%98%E9%A2%91%E9%9D%A2%E8%AF%95%E7%9A%84%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" data-id="ck6xmifp4000a43ra15hl7j41" class="article-share-link">Share</a>
+      <a data-url="https://xkjava.github.io/2020/02/21/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E7%BB%8F%E5%85%B8%E9%AB%98%E9%A2%91%E9%9D%A2%E8%AF%95%E7%9A%84%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" data-id="ck71nw9js000brtracbld5lsu" class="article-share-link">Share</a>
       
       
     </footer>
@@ -453,7 +620,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://xkjava.github.io/2020/02/21/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E7%BB%8F%E5%85%B8%E6%A1%86%E6%9E%B6%E9%83%BD%E5%9C%A8%E7%94%A8%E7%9A%84%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" data-id="ck6xmifoa000743ra8psxdb17" class="article-share-link">Share</a>
+      <a data-url="https://xkjava.github.io/2020/02/21/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E7%BB%8F%E5%85%B8%E6%A1%86%E6%9E%B6%E9%83%BD%E5%9C%A8%E7%94%A8%E7%9A%84%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" data-id="ck71nw9j80007rtraa61b0zee" class="article-share-link">Share</a>
       
       
     </footer>
@@ -660,7 +827,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://xkjava.github.io/2020/02/19/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E8%BD%AF%E4%BB%B6%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1%E7%9A%84%E4%B8%83%E5%A4%A7%E5%8E%9F%E5%88%99%E7%B2%BE%E9%80%89%E6%A1%88%E4%BE%8B/" data-id="ck6xmifp2000943ra0dyo4z0f" class="article-share-link">Share</a>
+      <a data-url="https://xkjava.github.io/2020/02/19/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E8%BD%AF%E4%BB%B6%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1%E7%9A%84%E4%B8%83%E5%A4%A7%E5%8E%9F%E5%88%99%E7%B2%BE%E9%80%89%E6%A1%88%E4%BE%8B/" data-id="ck71nw9jj000artracgqa1juc" class="article-share-link">Share</a>
       
       
     </footer>
@@ -891,7 +1058,7 @@ b、可以Linux基准测试工具，得到文件系统、磁盘I/O、网络等�
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://xkjava.github.io/2020/02/17/%E5%A6%82%E4%BD%95%E4%BC%98%E9%9B%85%E7%9A%84%E5%AD%A6%E4%B9%A0JVM%EF%BC%8C%E7%BB%88%E7%BB%93%E7%AF%87%EF%BC%88%E5%85%AD%EF%BC%89/" data-id="ck6xmifp1000843racp3ngf04" class="article-share-link">Share</a>
+      <a data-url="https://xkjava.github.io/2020/02/17/%E5%A6%82%E4%BD%95%E4%BC%98%E9%9B%85%E7%9A%84%E5%AD%A6%E4%B9%A0JVM%EF%BC%8C%E7%BB%88%E7%BB%93%E7%AF%87%EF%BC%88%E5%85%AD%EF%BC%89/" data-id="ck71nw9jh0008rtra7hh9fw5b" class="article-share-link">Share</a>
       
       
     </footer>
@@ -1027,7 +1194,7 @@ b、可以Linux基准测试工具，得到文件系统、磁盘I/O、网络等�
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://xkjava.github.io/2020/02/13/%E5%A6%82%E4%BD%95%E4%BC%98%E9%9B%85%E7%9A%84%E5%AD%A6%E4%B9%A0JVM%EF%BC%8C%E7%BB%BC%E5%90%88%E7%AF%87%EF%BC%88%E4%BA%94%EF%BC%89/" data-id="ck6xmifo7000443rad2vu621y" class="article-share-link">Share</a>
+      <a data-url="https://xkjava.github.io/2020/02/13/%E5%A6%82%E4%BD%95%E4%BC%98%E9%9B%85%E7%9A%84%E5%AD%A6%E4%B9%A0JVM%EF%BC%8C%E7%BB%BC%E5%90%88%E7%AF%87%EF%BC%88%E4%BA%94%EF%BC%89/" data-id="ck71nw9j50004rtrah17t92ws" class="article-share-link">Share</a>
       
       
     </footer>
@@ -1259,7 +1426,7 @@ Root以及原因</code></p>
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://xkjava.github.io/2020/02/12/%E5%A6%82%E4%BD%95%E4%BC%98%E9%9B%85%E7%9A%84%E5%AD%A6%E4%B9%A0JVM%EF%BC%8C%E5%AE%9E%E6%88%98%E7%AF%87%EF%BC%88%E5%9B%9B%EF%BC%89/" data-id="ck6xmifo5000243ra0rihfqti" class="article-share-link">Share</a>
+      <a data-url="https://xkjava.github.io/2020/02/12/%E5%A6%82%E4%BD%95%E4%BC%98%E9%9B%85%E7%9A%84%E5%AD%A6%E4%B9%A0JVM%EF%BC%8C%E5%AE%9E%E6%88%98%E7%AF%87%EF%BC%88%E5%9B%9B%EF%BC%89/" data-id="ck71nw9j30002rtrahvws4sp3" class="article-share-link">Share</a>
       
       
     </footer>
@@ -1408,7 +1575,7 @@ Root以及原因</code></p>
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://xkjava.github.io/2020/02/10/%E5%A6%82%E4%BD%95%E4%BC%98%E9%9B%85%E7%9A%84%E5%AD%A6%E4%B9%A0JVM%EF%BC%8C%E5%8D%87%E5%8D%8E%E7%AF%87%EF%BC%88%E4%B8%89%EF%BC%89/" data-id="ck6xmifo4000143raa6q746ve" class="article-share-link">Share</a>
+      <a data-url="https://xkjava.github.io/2020/02/10/%E5%A6%82%E4%BD%95%E4%BC%98%E9%9B%85%E7%9A%84%E5%AD%A6%E4%B9%A0JVM%EF%BC%8C%E5%8D%87%E5%8D%8E%E7%AF%87%EF%BC%88%E4%B8%89%EF%BC%89/" data-id="ck71nw9j20001rtrabn8ub434" class="article-share-link">Share</a>
       
       
     </footer>
@@ -1553,182 +1720,7 @@ Root以及原因</code></p>
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://xkjava.github.io/2020/02/08/%E5%A6%82%E4%BD%95%E4%BC%98%E9%9B%85%E7%9A%84%E5%AD%A6%E4%B9%A0JVM%EF%BC%8C%E8%BF%9B%E8%A1%8C%E7%AF%87%EF%BC%88%E4%BA%8C%EF%BC%89/" data-id="ck6xmifo8000543racgyg7ule" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-如何优雅的学习JVM，揭开篇（一）" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2020/02/05/%E5%A6%82%E4%BD%95%E4%BC%98%E9%9B%85%E7%9A%84%E5%AD%A6%E4%B9%A0JVM%EF%BC%8C%E6%8F%AD%E5%BC%80%E7%AF%87%EF%BC%88%E4%B8%80%EF%BC%89/" class="article-date">
-  <time datetime="2020-02-05T05:39:38.000Z" itemprop="datePublished">2020-02-05</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/02/05/%E5%A6%82%E4%BD%95%E4%BC%98%E9%9B%85%E7%9A%84%E5%AD%A6%E4%B9%A0JVM%EF%BC%8C%E6%8F%AD%E5%BC%80%E7%AF%87%EF%BC%88%E4%B8%80%EF%BC%89/">如何优雅的学习JVM，揭开篇（一）</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>尽管目前oracle官方给出JDK的最新版本已经到达V13了，经过调查得知还是有很多公司使用的是V8，本次学习JVM中所有的内容针对的V8版本。</p>
-<h2 id="一、官网（权威文档）"><a href="#一、官网（权威文档）" class="headerlink" title="一、官网（权威文档）"></a>一、官网（权威文档）</h2><p>链接地址：<a href="https://docs.oracle.com/javase/8/" target="_blank" rel="noopener">https://docs.oracle.com/javase/8/</a></p>
-<p>如何看待JDK/JRE/JVM之间的关系，官方给出下面的图应该很容易看明白了</p>
-<p><img src="https://user-gold-cdn.xitu.io/2019/12/9/16eea90d6fa365bf?w=1159&h=784&f=png&s=232601" alt=""></p>
-<p>Oracle有两个产品实现了Java平台标准版（Java SE）8:JavaSE开发工具包（JDK）8和JavaSE运行时环境（JRE）8。</p>
-<p>JDK 8是jre8的超集，包含jre8中的所有内容，另外开发applet和应用。JRE8提供了库、Java虚拟机（JVM）和运行用Java编程编写的小程序和应用程序的其他组件语言。注意，JRE包含Java SE不需要的组件规范，包括标准和非标准Java组件。</p>
-<h2 id="二、源码到类文件"><a href="#二、源码到类文件" class="headerlink" title="二、源码到类文件"></a>二、源码到类文件</h2><p><strong>2.1 源代码</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">public class Student&#123;</span><br><span class="line">    private String name;</span><br><span class="line">    private int age;</span><br><span class="line">    private static String sex;</span><br><span class="line">    public void say()&#123;</span><br><span class="line">        System.out.println(&quot;student say...&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">    public int calcStudents(int op1,int op2)&#123;</span><br><span class="line">        return op1 + op2;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>编译: javac Student.java —&gt; Student.class</p>
-<p><strong>2.2 编译过程</strong></p>
-<p>Student.java -&gt; 词法分析器 -&gt; tokens流 -&gt; 语法分析器 -&gt; 语法树/抽象语法树 -&gt; 语义分析器-&gt; 注解抽象语法树 -&gt; 字节码生成器 -&gt; Student.class文件</p>
-<p><strong>2.3 类文件</strong></p>
-<p>The class File Format，官方地址：</p>
-<p><a href="https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html" target="_blank" rel="noopener">https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html</a></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">cafe babe 0000 0031 0028 0a00 0600 1a09</span><br><span class="line">001b 001c 0800 1d0a 001e 001f 0700 2007</span><br><span class="line">0021 0100 046e 616d 6501 0012 4c6a 6176</span><br><span class="line">612f 6c61 6e67 2f53 7472 696e 673b 0100</span><br><span class="line">0361 6765 0100 0149 0100 0373 6578 0100</span><br><span class="line">063c 696e 6974 3e01 0003 2829 5601 0004</span><br><span class="line">436f 6465 0100 0f4c 696e 654e 756d 6265</span><br><span class="line">7254 6162 6c65 0100 124c 6f63 616c 5661</span><br><span class="line">......</span><br></pre></td></tr></table></figure>
-<p>magic(魔数)</p>
-<p>The magic item supplies the magic number identifying the class file format; it has the value 0xCAFEBABE.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cafe babe</span><br></pre></td></tr></table></figure>
-
-<p>minor_version, major_version</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">0000 0031</span><br></pre></td></tr></table></figure>
-<p>31对应10进制的49，代表JDK 8中的一个版本</p>
-<p>constant_pool_count</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">0028</span><br></pre></td></tr></table></figure>
-<p>对应十进制28，代表常量池中28个常量</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">ClassFile &#123;</span><br><span class="line">    u4             magic;</span><br><span class="line">    u2             minor_version;</span><br><span class="line">    u2             major_version;</span><br><span class="line">    u2             constant_pool_count;</span><br><span class="line">    cp_info        constant_pool[constant_pool_count-1];</span><br><span class="line">    u2             access_flags;</span><br><span class="line">    u2             this_class;</span><br><span class="line">    u2             super_class;</span><br><span class="line">    u2             interfaces_count;</span><br><span class="line">    u2             interfaces[interfaces_count];</span><br><span class="line">    u2             fields_count;</span><br><span class="line">    field_info     fields[fields_count];</span><br><span class="line">    u2             methods_count;</span><br><span class="line">    method_info    methods[methods_count];</span><br><span class="line">    u2             attributes_count;</span><br><span class="line">    attribute_info attributes[attributes_count];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>.class字节码文件</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">魔数与class文件版本</span><br><span class="line">常量池</span><br><span class="line">访问标志</span><br><span class="line">类索引、父类索引、接口索引</span><br><span class="line">字段表集合</span><br><span class="line">方法表集合</span><br><span class="line">属性表集合</span><br></pre></td></tr></table></figure>
-
-<h2 id="三、类文件到虚拟机（类加载机制）"><a href="#三、类文件到虚拟机（类加载机制）" class="headerlink" title="三、类文件到虚拟机（类加载机制）"></a>三、类文件到虚拟机（类加载机制）</h2><p><strong>3.1 图解</strong></p>
-<p><img src="https://user-gold-cdn.xitu.io/2019/12/9/16eeacb6bfe81f72?w=1190&h=327&f=png&s=55252" alt=""></p>
-<p>上图中的使用和卸载不属于类加载的过程阶段，为了表现完整，所以全画上去了。</p>
-<p><strong>3.2 装载(Load)</strong></p>
-<p>查找和导入class文件</p>
-<ul>
-<li>(1)通过一个类的全限定名获取定义此类的二进制字节流</li>
-</ul>
-<ul>
-<li>(2)将这个字节流所代表的静态存储结构转化为方法区的运行时数据结构</li>
-</ul>
-<ul>
-<li>(3)在Java堆中生成一个代表这个类的java.lang.Class对象，作为对方法区中这些数据的访问入口</li>
-</ul>
-<p>在装载(Load)阶段，其中第(1)步:通过类的全限定名获取其定义的二进制字节流，需要借助类装载器完成，顾名思义，就是用来装载Class文件的。</p>
-<p>(1)通过一个类的全限定名获取定义此类的二进制字节流</p>
-<p>在装载阶段的第(2),(3)步可以发现有运行时数据，堆，方法区等名词</p>
-<p>(2)将这个字节流所代表的静态存储结构转化为方法区的运行时数据结构</p>
-<p>(3)在Java堆中生成一个代表这个类的java.lang.Class对象，作为对方法区中这些数据的访问入口<br>说白了就是类文件被类装载器装载进来之后，类中的内容(比如变量，常量，方法，对象等这些数<br>据得要有个去处，也就是要存储起来，存储的位置肯定是在JVM中有对应的空间)</p>
-<p><strong>3.3 链接(Link)</strong></p>
-<p><strong>3.3.1 验证（Verify）</strong></p>
-<ul>
-<li>保证被加载类的正确性</li>
-</ul>
-<ul>
-<li>文件格式验证</li>
-</ul>
-<ul>
-<li>元数据验证</li>
-</ul>
-<ul>
-<li>字节码验证</li>
-</ul>
-<ul>
-<li>符号引用验证</li>
-</ul>
-<p><strong>3.3.2 准备(Prepare)</strong></p>
-<p>为类的静态变量分配内存，并将其初始化为默认值</p>
-<p><strong>3.3.3 解析(Resolve)</strong></p>
-<p>把类中的符号引用转换为直接引用</p>
-<p><strong>3.4 初始化(Initialize)</strong></p>
-<p>对类的静态变量，静态代码块执行初始化操作</p>
-<h2 id="四、类装载器（ClassLoader）"><a href="#四、类装载器（ClassLoader）" class="headerlink" title="四、类装载器（ClassLoader）"></a>四、类装载器（ClassLoader）</h2><p><strong>4.1 图解</strong></p>
-<p><img src="https://user-gold-cdn.xitu.io/2019/12/9/16eeadc9eec271ba?w=1141&h=500&f=png&s=151270" alt=""></p>
-<p><strong>4.2 分类解释</strong></p>
-<ul>
-<li>（1）Bootstrap ClassLoader 负责加载$JAVA_HOME中 jre/lib/rt.jar 里所有的class或Xbootclassoath选项指定的jar包。由C++实现，不是ClassLoader子类。</li>
-</ul>
-<ul>
-<li>（2）Extension ClassLoader 负责加载java平台中扩展功能的一些jar包，包括$JAVA_HOME中jre/lib/*.jar 或 -Djava.ext.dirs指定目录下的jar包。</li>
-</ul>
-<ul>
-<li>（3）App ClassLoader 负责加载classpath中指定的jar包及Djava.class.path 所指定目录下的类和jar包。</li>
-</ul>
-<ul>
-<li>（4）Custom ClassLoader 通过java.lang.ClassLoader的子类自定义加载class，属于应用程序根据自身需要自定义的ClassLoader，如tomcat、jboss都会根据j2ee规范自行实现ClassLoader。</li>
-</ul>
-<p>4.3 加载原则</p>
-<p>检查某个类是否已经加载：顺序是自底向上，从Custom ClassLoader到BootStrap ClassLoader逐层检查，只要某个Classloader已加载，就视为已加载此类，保证此类只所有ClassLoader加载一次。<br>加载的顺序：加载的顺序是自顶向下，也就是由上层来逐层尝试加载此类。</p>
-<p><strong>双亲委派机制</strong></p>
-<p>定义：如果一个类加载器在接到加载类的请求时，它首先不会自己尝试去加载这个类，而是把这个请求任务委托给父类加载器去完成，依次递归，如果父类加载器可以完成类加载任务，就成功返回；只有父类加载器无法完成此加载任务时，才自己去加载。</p>
-<p>优势：Java类随着加载它的类加载器一起具备了一种带有优先级的层次关系。比如，Java中的Object类，它存放在rt.jar之中,无论哪一个类加载器要加载这个类，最终都是委派给处于模型最顶端的启动类加载器进行加载，因此Object在各种类加载环境中都是同一个类。如果不采用双亲委派模型，那么由各个类加载器自己取加载的话，那么系统中会存在多种不同的Object类。</p>
-<p>破坏：可以继承ClassLoader类，然后重写其中的loadClass方法，其他方式大家可以自己了解拓展一下。</p>
-<h2 id="五、运行时数据区（Run-Time-Data-Areas）"><a href="#五、运行时数据区（Run-Time-Data-Areas）" class="headerlink" title="五、运行时数据区（Run-Time Data Areas）"></a>五、运行时数据区（Run-Time Data Areas）</h2><p><strong>官方地址：</strong></p>
-<p><a href="https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-2.html#jvms-2.5" target="_blank" rel="noopener">https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-2.html#jvms-2.5</a></p>
-<p>Java虚拟机定义了在程序执行期间使用的各种运行时数据区域。这些数据区域中的一些是在Java虚拟机启动时创建的，只有在Java虚拟机退出时才被销毁。其他数据区域是每个线程。当线程在线程退出时创建和销毁时，每个线程数据区域都会创建。</p>
-<p><strong>5.1 图解</strong></p>
-<p><img src="https://user-gold-cdn.xitu.io/2019/12/9/16eeae7891ffb9c6?w=1131&h=397&f=png&s=57530" alt=""></p>
-<p><strong>5.2 常规理解</strong></p>
-<p><strong>5.2.1 Method Area（方法区）</strong></p>
-<p>方法区是各个线程共享的内存区域，在虚拟机启动时创建。<br>用于存储已被虚拟机加载的类信息、常量、静态变量、即时编译器编译后的代码等数据。</p>
-<p>虽然Java虚拟机规范把方法区描述为堆的一个逻辑部分，但是它却又一个别名叫做Non-Heap(非堆)，目<br>的是与Java堆区分开来。<br>当方法区无法满足内存分配需求时，将抛出OutOfMemoryError异常。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">The Java Virtual Machine defines various run-time data areas that are used</span><br><span class="line">during execution of a program. Some of these data areas are created on Java</span><br><span class="line">Virtual Machine start-up and are destroyed only when the Java Virtual Machine</span><br><span class="line">exits. Other data areas are per thread. Per-thread data areas are created when a</span><br><span class="line">thread is created and destroyed when the thread exits.</span><br></pre></td></tr></table></figure>
-
-<p>此时回看装载阶段的第2步：</p>
-<p>(2)将这个字节流所代表的静态存储结构转化为方法区的运行时数据结构</p>
-<p>如果这时候把从Class文件到装载的第(1)和(2)步合并起来理解的话，可以画个图</p>
-<p><img src="https://user-gold-cdn.xitu.io/2019/12/9/16eeaea54583b040?w=1200&h=459&f=png&s=71516" alt=""></p>
-<ul>
-<li>(1)方法区在JDK 8中就是Metaspace，在JDK6或7中就是Perm Space</li>
-</ul>
-<ul>
-<li>(2)Run-Time Constant Pool</li>
-</ul>
-<p>Class文件中除了有类的版本、字段、方法、接口等描述信息外，还有一项信息就是常量池，用于存放编译时期生成的各种字面量和符号引用，这部分内容将在类加载后进入方法区的运行时常量池中存放。</p>
-<p><strong>5.2.2 Heap（堆）</strong></p>
-<p>Java堆是Java虚拟机所管理内存中最大的一块，在虚拟机启动时创建，被所有线程共享。</p>
-<p>Java对象实例以及数组都在堆上分配。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">The Java Virtual Machine has a heap that is shared among all Java Virtual Machine threads. The heap is the run-time data area from which memory for all class instances and arrays is allocated.</span><br><span class="line"></span><br><span class="line">The heap is created on virtual machine start-up.</span><br></pre></td></tr></table></figure>
-
-<p>此时回看装载阶段的第3步：<br>(3)在Java堆中生成一个代表这个类的java.lang.Class对象，作为对方法区中这些数据的访问入口<br>此时装载(1)(2)(3)的图可以改动一下</p>
-<p><img src="https://user-gold-cdn.xitu.io/2019/12/9/16eeaedf98e263cc?w=1166&h=546&f=png&s=85350" alt=""></p>
-<p><strong>5.2.3 Java Virtual Machine Stacks（虚拟机栈）</strong></p>
-<p>经过上面的分析，类加载机制的装载过程已经完成，后续的链接，初始化也会相应的生效。</p>
-<p>假如目前的阶段是初始化完成了，后续做啥呢？肯定是Use使用咯，不用的话这样折腾来折腾去<br>有什么意义？那怎样才能被使用到？换句话说里面内容怎样才能被执行？比如通过主函数main调<br>用其他方法，这种方式实际上是main线程执行之后调用的方法，即要想使用里面的各种内容，得<br>要以线程为单位，执行相应的方法才行。</p>
-<p>那一个线程执行的状态如何维护？一个线程可以执行多少个方法？这样的关系怎么维护呢？</p>
-<p>虚拟机栈是一个线程执行的区域，保存着一个线程中方法的调用状态。换句话说，一个Java线程的运行<br>状态，由一个虚拟机栈来保存，所以虚拟机栈肯定是线程私有的，独有的，随着线程的创建而创建。</p>
-<p>每一个被线程执行的方法，为该栈中的栈帧，即每个方法对应一个栈帧。</p>
-<p>调用一个方法，就会向栈中压入一个栈帧；一个方法调用完成，就会把该栈帧从栈中弹出。</p>
-<p><strong>画图理解栈和栈帧</strong></p>
-<p><img src="https://user-gold-cdn.xitu.io/2019/12/9/16eeaf06dbd40151?w=1131&h=391&f=png&s=48456" alt=""></p>
-<p><strong>5.2.4 The pc Register（程序计数器）</strong></p>
-<p>我们都知道一个JVM进程中有多个线程在执行，而线程中的内容是否能够拥有执行权，是根据<br>CPU调度来的。</p>
-<p>假如线程A正在执行到某个地方，突然失去了CPU的执行权，切换到线程B了，然后当线程A再获<br>得CPU执行权的时候，怎么能继续执行呢？这就是需要在线程中维护一个变量，记录线程执行到<br>的位置。</p>
-<p>程序计数器占用的内存空间很小，由于Java虚拟机的多线程是通过线程轮流切换，并分配处理器执行时<br>间的方式来实现的，在任意时刻，一个处理器只会执行一条线程中的指令。因此，为了线程切换后能够<br>恢复到正确的执行位置，每条线程需要有一个独立的程序计数器(线程私有)。</p>
-<p>如果线程正在执行Java方法，则计数器记录的是正在执行的虚拟机字节码指令的地址；<br>如果正在执行的是Native方法，则这个计数器为空。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">The Java Virtual Machine can support many threads of execution at once (JLS</span><br><span class="line">§17). Each Java Virtual Machine thread has its own pc (program counter)</span><br><span class="line">register. At any point, each Java Virtual Machine thread is executing the code</span><br><span class="line">of a single method, namely the current method (§2.6) for that thread. If that</span><br><span class="line">method is not native, the pc register contains the address of the Java Virtual</span><br><span class="line">Machine instruction currently being executed. If the method currently being</span><br><span class="line">executed by the thread is native, the value of the Java Virtual Machine&#39;s pc</span><br><span class="line">register is undefined. The Java Virtual Machine&#39;s pc register is wide enough to</span><br><span class="line">hold a returnAddress or a native pointer on the specific platform.</span><br></pre></td></tr></table></figure>
-
-<p>5.2.5 Native Method Stacks（本地方法栈）</p>
-<p>如果当前线程执行的方法是Native类型的，这些方法就会在本地方法栈中执行。</p>
-<h2 id="未完待续。。。。。。"><a href="#未完待续。。。。。。" class="headerlink" title="未完待续。。。。。。"></a>未完待续。。。。。。</h2>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://xkjava.github.io/2020/02/05/%E5%A6%82%E4%BD%95%E4%BC%98%E9%9B%85%E7%9A%84%E5%AD%A6%E4%B9%A0JVM%EF%BC%8C%E6%8F%AD%E5%BC%80%E7%AF%87%EF%BC%88%E4%B8%80%EF%BC%89/" data-id="ck6xmifo6000343rag2n04hax" class="article-share-link">Share</a>
+      <a data-url="https://xkjava.github.io/2020/02/08/%E5%A6%82%E4%BD%95%E4%BC%98%E9%9B%85%E7%9A%84%E5%AD%A6%E4%B9%A0JVM%EF%BC%8C%E8%BF%9B%E8%A1%8C%E7%AF%87%EF%BC%88%E4%BA%8C%EF%BC%89/" data-id="ck71nw9j60005rtra3etv1601" class="article-share-link">Share</a>
       
       
     </footer>
@@ -1774,6 +1766,10 @@ Root以及原因</code></p>
       <ul>
         
           <li>
+            <a href="/2020/02/25/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E5%B9%B2%E8%BF%87%E4%B8%AD%E4%BB%8B%E5%B9%B2%E8%BF%87%E5%BF%AB%E9%80%92%E7%9A%84%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/">架构师内功心法，干过中介干过快递的代理模式详解</a>
+          </li>
+        
+          <li>
             <a href="/2020/02/22/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E5%8F%AA%E6%98%AF%E5%8D%95%E7%BA%AF%E5%90%AC%E8%AF%B4%E8%BF%87%E7%9A%84%E5%8E%9F%E5%9E%8B%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/">架构师内功心法，只是单纯听说过的原型模式详解</a>
           </li>
         
@@ -1787,10 +1783,6 @@ Root以及原因</code></p>
         
           <li>
             <a href="/2020/02/19/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E8%BD%AF%E4%BB%B6%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1%E7%9A%84%E4%B8%83%E5%A4%A7%E5%8E%9F%E5%88%99%E7%B2%BE%E9%80%89%E6%A1%88%E4%BE%8B/">架构师内功心法，软件架构设计的七大原则精选案例</a>
-          </li>
-        
-          <li>
-            <a href="/2020/02/17/%E5%A6%82%E4%BD%95%E4%BC%98%E9%9B%85%E7%9A%84%E5%AD%A6%E4%B9%A0JVM%EF%BC%8C%E7%BB%88%E7%BB%93%E7%AF%87%EF%BC%88%E5%85%AD%EF%BC%89/">如何优雅的学习JVM，终结篇（六）</a>
           </li>
         
       </ul>
