@@ -74,6 +74,143 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-架构师内功心法，属于游戏设计模式的策略模式详解" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/02/25/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E5%B1%9E%E4%BA%8E%E6%B8%B8%E6%88%8F%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E7%9A%84%E7%AD%96%E7%95%A5%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" class="article-date">
+  <time datetime="2020-02-25T09:03:29.000Z" itemprop="datePublished">2020-02-25</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/02/25/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E5%B1%9E%E4%BA%8E%E6%B8%B8%E6%88%8F%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E7%9A%84%E7%AD%96%E7%95%A5%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/">架构师内功心法，属于游戏设计模式的策略模式详解</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="一、策略模式的应用场景"><a href="#一、策略模式的应用场景" class="headerlink" title="一、策略模式的应用场景"></a>一、策略模式的应用场景</h1><p>策略模式（Strategy Pattern）是指定义了算法家族、分别封装起来，让它们之间可以相互替换，此模式让算法的变化不会影响到使用算法的用户。</p>
+<h2 id="1-1-应用场景"><a href="#1-1-应用场景" class="headerlink" title="1.1 应用场景"></a>1.1 应用场景</h2><ul>
+<li>假如系统中有很多类，而他们的区别仅仅在于他们的行为不同。</li>
+</ul>
+<ul>
+<li>一个系统需要动态地在几种算法中选择一种。</li>
+</ul>
+<h2 id="1-2-实现餐饮行业选择支付方式的业务场景"><a href="#1-2-实现餐饮行业选择支付方式的业务场景" class="headerlink" title="1.2 实现餐饮行业选择支付方式的业务场景"></a>1.2 实现餐饮行业选择支付方式的业务场景</h2><p>我们在外面去吃饭的时候，不同的饭店经常会有优惠活动，优惠策略也有很多很多，比如优惠券折扣、返现促销、拼团下单等等。我们来用程序模拟这样的业务场景，首先创建一个促销策略的接口：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">public interface IPromotionStrategy &#123;</span><br><span class="line"></span><br><span class="line">    void doPromotion();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后分别创建优惠券抵扣策略 CouponStrategy 类：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">public class CouponStrategy implements IPromotionStrategy &#123;</span><br><span class="line">    @Override</span><br><span class="line">    public void doPromotion() &#123;</span><br><span class="line">        System.out.println(&quot;领取的优惠券在指定时间到店消费，订单的价格直接减优惠券面额抵扣！&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>返现促销策略 CashBackStrategy 类：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">public class CashBackStrategy implements IPromotionStrategy &#123;</span><br><span class="line">    @Override</span><br><span class="line">    public void doPromotion() &#123;</span><br><span class="line">        System.out.println(&quot;返现促销，返回的金额转到支付账号！&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>拼团优惠策略 GroupBuyStrategy 类：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">public class GroupBuyStrategy implements IPromotionStrategy &#123;</span><br><span class="line">    @Override</span><br><span class="line">    public void doPromotion() &#123;</span><br><span class="line">        System.out.println(&quot;拼团，满5人成团，全团享受团购价！&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>无优惠策略 EmptyStrategy 类：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">public class EmptyStrategy implements IPromotionStrategy &#123;</span><br><span class="line">    @Override</span><br><span class="line">    public void doPromotion() &#123;</span><br><span class="line">        System.out.println(&quot;无促销活动！&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后创建促销活动方案 PromotionActivity 类：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">public class PromotionActivity &#123;</span><br><span class="line"></span><br><span class="line">    private IPromotionStrategy promotionStrategy;</span><br><span class="line"></span><br><span class="line">    public PromotionActivity(IPromotionStrategy promotionStrategy) &#123;</span><br><span class="line">        this.promotionStrategy &#x3D; promotionStrategy;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void execute() &#123;</span><br><span class="line">        promotionStrategy.doPromotion();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>编写测试类：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">public static void main(String[] args) &#123;</span><br><span class="line">    PromotionActivity activity_618 &#x3D; new PromotionActivity(new CouponStrategy());</span><br><span class="line">    PromotionActivity activity_1212 &#x3D; new PromotionActivity(new CashBackStrategy());</span><br><span class="line">    activity_618.execute();</span><br><span class="line">    activity_1212.execute();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>此时，上面的这段测试代码放到实际的业务场景并不实用，因为餐饮门店做活动的时候是要根据不同需求对促销策略进行动态选择的，并不会一次性执行多种优惠。所以代码会这样写：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"> public static void main(String[] args) &#123;</span><br><span class="line">    PromotionActivity promotionActivity &#x3D; null;</span><br><span class="line">    String promotionKey &#x3D; &quot;COUPON&quot;;</span><br><span class="line">    if(promotionKey.equals(&quot;COUPON&quot;))&#123;</span><br><span class="line">        promotionActivity &#x3D; new PromotionActivity(new CouponStrategy());</span><br><span class="line">    &#125;else if(promotionKey.equals(&quot;CASHBACK&quot;))&#123;</span><br><span class="line">        promotionActivity &#x3D; new PromotionActivity(new CashBackStrategy());</span><br><span class="line">    &#125;&#x2F;&#x2F;......</span><br><span class="line">    promotionActivity.execute();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这样改造之后，满足了业务需求，客户可根据自己的需求选择不同的优惠策略了。但是，经过一段时间的业务积累，我们的促销活动会越来越多。于是，我们的程序猿小哥哥就忙不赢了，每次上活动之前都要通宵改代码，而且要做重复测试，判断逻辑可能也变得越来越复杂。这时候，我们是不需要思考代码是不是应该重构了？</p>
+<p>其实我们可以结合工厂模式和单例模式来进行优化改造。创建PromotionActivityFactory：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">public class PromotionActivityFactory &#123;</span><br><span class="line"></span><br><span class="line">    public interface PromotionKey &#123;</span><br><span class="line">        String COUPON &#x3D; &quot;COUPON&quot;;</span><br><span class="line">        String CASHBACK &#x3D; &quot;CASHBACK&quot;;</span><br><span class="line">        String GROUPBUY &#x3D; &quot;GROUPBUY&quot;;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private static Map&lt;String, IPromotionStrategy&gt; PROMOTION_STRATEGY_MAP &#x3D;</span><br><span class="line">            new HashMap&lt;&gt;();</span><br><span class="line">    static &#123;</span><br><span class="line">        PROMOTION_STRATEGY_MAP.put(PromotionKey.COUPON, new CouponStrategy());</span><br><span class="line">        PROMOTION_STRATEGY_MAP.put(PromotionKey.CASHBACK, new CashBackStrategy());</span><br><span class="line">        PROMOTION_STRATEGY_MAP.put(PromotionKey.GROUPBUY, new GroupBuyStrategy());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private static final IPromotionStrategy NO_PROMOTION &#x3D; new EmptyStrategy();</span><br><span class="line"></span><br><span class="line">    private PromotionActivityFactory() &#123;&#125;</span><br><span class="line"></span><br><span class="line">    public static IPromotionStrategy getPromotionStrategy(String promotionKey) &#123;</span><br><span class="line">        IPromotionStrategy promotionStrategy &#x3D; PROMOTION_STRATEGY_MAP.get(promotionKey);</span><br><span class="line">        return promotionStrategy &#x3D;&#x3D; null ? NO_PROMOTION : promotionStrategy;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>测试代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">public static void main(String[] args) &#123;</span><br><span class="line">    String promotionKey &#x3D; &quot;COUPON&quot;;</span><br><span class="line">    PromotionActivity promotionActivity &#x3D;  new PromotionActivity(PromotionActivityFactory.getPromotionStrategy(promotionKey));</span><br><span class="line">    promotionActivity.execute();</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>修改代码之后维护工作应该轻松了很多，每次上新活动，不会影响原来的代码逻辑。来看一下完整的类图：</p>
+<p><img src="https://user-gold-cdn.xitu.io/2020/2/25/1707b0d517cdd627?w=1246&h=490&f=png&s=43282" alt=""></p>
+<p>为了加深大家对策略模式的理解，结合实际生活场景再举一个例子。大家都用过移动支付进行付款，比较流行的支付方式有支付宝、微信、银联等。一个场景的支付场景就是在支付的时候提示会选择支付方式，如果用户没有进行选择，那么系统会使用默认的支付方式进行结算。</p>
+<p>创建抽象类Payment：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">public abstract class Payment &#123;</span><br><span class="line"></span><br><span class="line">    public abstract String getType();</span><br><span class="line"></span><br><span class="line">    public PayState pay(String id, double amount) &#123;</span><br><span class="line">        if(queryBalance(id) &lt; amount) &#123;</span><br><span class="line">            return new PayState(500,&quot;支付失败&quot;,&quot;余额不足&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">        return new PayState(200,&quot;支付成功&quot;,&quot;支付金额：&quot; + amount);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public abstract double queryBalance(String id);</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>分别创建具体的支付方式，支付宝 AliPay 类：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">public class AliPay extends Payment &#123;</span><br><span class="line">    @Override</span><br><span class="line">    public String getType() &#123;</span><br><span class="line">        return &quot;支付宝&quot;;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public double queryBalance(String id) &#123;</span><br><span class="line">        return 1000;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>微信支付 WechatPay 类：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">public class WechatPay extends Payment &#123;</span><br><span class="line">    @Override</span><br><span class="line">    public String getType() &#123;</span><br><span class="line">        return &quot;微信支付&quot;;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public double queryBalance(String id) &#123;</span><br><span class="line">        return 512;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>银联云闪付支付 UnionPay 类：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">public class UnionPay extends Payment &#123;</span><br><span class="line">    @Override</span><br><span class="line">    public String getType() &#123;</span><br><span class="line">        return &quot;云闪付&quot;;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public double queryBalance(String id) &#123;</span><br><span class="line">        return 380;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>创建支付状态的包装类 PayState:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">public class PayState &#123;</span><br><span class="line"></span><br><span class="line">    private int code;</span><br><span class="line">    private Object data;</span><br><span class="line">    private String msg;</span><br><span class="line"></span><br><span class="line">    public PayState(int code, Object data, String msg) &#123;</span><br><span class="line">        this.code &#x3D; code;</span><br><span class="line">        this.data &#x3D; data;</span><br><span class="line">        this.msg &#x3D; msg;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public String toString() &#123;</span><br><span class="line">        return &quot;PayState&#123;&quot; +</span><br><span class="line">                &quot;code&#x3D;&quot; + code +</span><br><span class="line">                &quot;, data&#x3D;&quot; + data +</span><br><span class="line">                &quot;, msg&#x3D;&#39;&quot; + msg + &#39;\&#39;&#39; +</span><br><span class="line">                &#39;&#125;&#39;;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>创建支付策略管理工厂类：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">public class PayStrategyFactory &#123;</span><br><span class="line"></span><br><span class="line">    public interface PayKey &#123;</span><br><span class="line">        String DEFAULTPAY &#x3D; &quot;ALIPAY&quot;;</span><br><span class="line">        String ALIPAY &#x3D; &quot;ALIPAY&quot;;</span><br><span class="line">        String WECHATPAY &#x3D; &quot;WECHATPAY&quot;;</span><br><span class="line">        String UNIONPAY &#x3D; &quot;UNIONPAY&quot;;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public static final Map&lt;String, Payment&gt; PAYMENT_MAP &#x3D; new HashMap&lt;&gt;();</span><br><span class="line"></span><br><span class="line">    static  &#123;</span><br><span class="line">        PAYMENT_MAP.put(PayKey.ALIPAY, new AliPay());</span><br><span class="line">        PAYMENT_MAP.put(PayKey.WECHATPAY, new WechatPay());</span><br><span class="line">        PAYMENT_MAP.put(PayKey.UNIONPAY, new UnionPay());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private static Payment getPayment(String payKey) &#123;</span><br><span class="line">        if(!PAYMENT_MAP.containsKey(payKey))&#123;</span><br><span class="line">            return PAYMENT_MAP.get(PayKey.DEFAULTPAY);</span><br><span class="line">        &#125;</span><br><span class="line">        return PAYMENT_MAP.get(payKey);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>创建订单 Order 类：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">public class Order &#123;</span><br><span class="line"></span><br><span class="line">    private String id;</span><br><span class="line">    private String orderId;</span><br><span class="line">    private double amount;</span><br><span class="line"></span><br><span class="line">    public Order(String id, String orderId, double amount) &#123;</span><br><span class="line">        this.id &#x3D; id;</span><br><span class="line">        this.orderId &#x3D; orderId;</span><br><span class="line">        this.amount &#x3D; amount;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public PayState pay()&#123;</span><br><span class="line">        return pay(PayStrategyFactory.PayKey.DEFAULTPAY);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public PayState pay(String payKey)&#123;</span><br><span class="line">        Payment payment &#x3D; PayStrategyFactory.PAYMENT_MAP.get(payKey);</span><br><span class="line">        System.out.println(&quot;欢迎使用&quot; + payment.getType());</span><br><span class="line">        System.out.println(&quot;本次交易金额为：&quot; + amount + &quot;，开始扣款...&quot;);</span><br><span class="line">        return payment.pay(id,amount);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>测试代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">public static void main(String[] args) &#123;</span><br><span class="line"></span><br><span class="line">    Order order &#x3D; new Order(&quot;1&quot;, &quot;20200225000001&quot;, 120.98);</span><br><span class="line"></span><br><span class="line">    System.out.println(order.pay(PayStrategyFactory.PayKey.ALIPAY));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>运行结果：</p>
+<p><img src="https://user-gold-cdn.xitu.io/2020/2/25/1707b50d93119f88?w=742&h=214&f=png&s=22506" alt=""></p>
+<p>最后来看一下类图结构：</p>
+<p><img src="https://user-gold-cdn.xitu.io/2020/2/25/1707b54365747dac?w=1066&h=769&f=png&s=67982" alt=""></p>
+<h1 id="二、源码中的策略模式"><a href="#二、源码中的策略模式" class="headerlink" title="二、源码中的策略模式"></a>二、源码中的策略模式</h1><h2 id="2-1-Compartor接口"><a href="#2-1-Compartor接口" class="headerlink" title="2.1 Compartor接口"></a>2.1 Compartor接口</h2><p>Compartor接口中的compare()方法就是一个策略模式的抽象实现。</p>
+<p>int compare(T o1, T o2);</p>
+<p>Comparator 接口下面有非常多的实现类，我们经常会把 Comparator 作为参数传入作为排序策略，例如 Arrays 类的 parallelSort 方法等：</p>
+<p><img src="https://user-gold-cdn.xitu.io/2020/2/25/1707b643e817639c?w=1645&h=496&f=png&s=70716" alt=""></p>
+<p>还有 TreeMap 的构造方法:</p>
+<p><img src="https://user-gold-cdn.xitu.io/2020/2/25/1707b6689c6d7218?w=1162&h=259&f=png&s=36243" alt=""></p>
+<h2 id="2-2-Spring中的策略模式"><a href="#2-2-Spring中的策略模式" class="headerlink" title="2.2 Spring中的策略模式"></a>2.2 Spring中的策略模式</h2><h2 id="2-2-1-Resouce类"><a href="#2-2-1-Resouce类" class="headerlink" title="2.2.1 Resouce类"></a>2.2.1 Resouce类</h2><p>我们来看Resource类的源码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line">package org.springframework.core.io;</span><br><span class="line"></span><br><span class="line">import java.io.File;</span><br><span class="line">import java.io.IOException;</span><br><span class="line">import java.net.URI;</span><br><span class="line">import java.net.URL;</span><br><span class="line">import java.nio.channels.Channels;</span><br><span class="line">import java.nio.channels.ReadableByteChannel;</span><br><span class="line">import org.springframework.lang.Nullable;</span><br><span class="line"></span><br><span class="line">public interface Resource extends InputStreamSource &#123;</span><br><span class="line">    boolean exists();</span><br><span class="line"></span><br><span class="line">    default boolean isReadable() &#123;</span><br><span class="line">        return this.exists();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    default boolean isOpen() &#123;</span><br><span class="line">        return false;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    default boolean isFile() &#123;</span><br><span class="line">        return false;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    URL getURL() throws IOException;</span><br><span class="line"></span><br><span class="line">    URI getURI() throws IOException;</span><br><span class="line"></span><br><span class="line">    File getFile() throws IOException;</span><br><span class="line"></span><br><span class="line">    default ReadableByteChannel readableChannel() throws IOException &#123;</span><br><span class="line">        return Channels.newChannel(this.getInputStream());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    long contentLength() throws IOException;</span><br><span class="line"></span><br><span class="line">    long lastModified() throws IOException;</span><br><span class="line"></span><br><span class="line">    Resource createRelative(String var1) throws IOException;</span><br><span class="line"></span><br><span class="line">    @Nullable</span><br><span class="line">    String getFilename();</span><br><span class="line"></span><br><span class="line">    String getDescription();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们虽然没有直接使用 Resource 类，但是我们经常使用它的子类，例如：</p>
+<p><img src="https://user-gold-cdn.xitu.io/2020/2/25/1707b7cc055b952d?w=1885&h=568&f=png&s=186061" alt=""></p>
+<p>Spring 的初始化也采用了策略模式，不同的类型的类采用不<br>同的初始化策略。首先有一个 <strong>InstantiationStrategy</strong> 接口，我们来看一下源码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">public interface InstantiationStrategy &#123;</span><br><span class="line">    Object instantiate(RootBeanDefinition var1, @Nullable String var2, BeanFactory var3) throws BeansException;</span><br><span class="line"></span><br><span class="line">    Object instantiate(RootBeanDefinition var1, @Nullable String var2, BeanFactory var3, Constructor&lt;?&gt; var4, Object... var5) throws BeansException;</span><br><span class="line"></span><br><span class="line">    Object instantiate(RootBeanDefinition var1, @Nullable String var2, BeanFactory var3, @Nullable Object var4, Method var5, Object... var6) throws BeansException;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>顶层的策略抽象非常简单，但是它下面有两种策略 <strong>SimpleInstantiationStrategy</strong> 和<strong>CglibSubclassingInstantiationStrategy</strong>，我们看一下类图：</p>
+<p><img src="https://user-gold-cdn.xitu.io/2020/2/25/1707b81615f908ef?w=1057&h=724&f=png&s=80916" alt=""><br>打开类图我们还发现 CglibSubclassingInstantiationStrategy 策略类还继承了<br>SimpleInstantiationStrategy类，说明在实际应用中多种策略之间还可以继承使用。</p>
+<h1 id="三、策略模式的优缺点"><a href="#三、策略模式的优缺点" class="headerlink" title="三、策略模式的优缺点"></a>三、策略模式的优缺点</h1><p>优点：</p>
+<ul>
+<li>策略模式符合开闭原则；</li>
+</ul>
+<ul>
+<li>避免使用多重条件转移语句，如 if…else…语句、switch 语句；</li>
+</ul>
+<ul>
+<li>使用策略模式可以提高算法的保密性和安全性。</li>
+</ul>
+<p>缺点：</p>
+<ul>
+<li>客户端必须知道所有的策略，并且自行决定使用哪一个策略类；</li>
+</ul>
+<ul>
+<li>代码中会产生非常多策略类，增加维护难度。</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://xkjava.github.io/2020/02/25/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E5%B1%9E%E4%BA%8E%E6%B8%B8%E6%88%8F%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E7%9A%84%E7%AD%96%E7%95%A5%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" data-id="ck71nyx940007w7rag4u96pze" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-架构师内功心法，干过中介干过快递的代理模式详解" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2020/02/25/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E5%B9%B2%E8%BF%87%E4%B8%AD%E4%BB%8B%E5%B9%B2%E8%BF%87%E5%BF%AB%E9%80%92%E7%9A%84%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" class="article-date">
@@ -231,7 +368,7 @@ orderService.createOrder(order);</code></pre><p>}</p>
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://xkjava.github.io/2020/02/25/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E5%B9%B2%E8%BF%87%E4%B8%AD%E4%BB%8B%E5%B9%B2%E8%BF%87%E5%BF%AB%E9%80%92%E7%9A%84%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" data-id="ck71nw9ji0009rtradq0q08aa" class="article-share-link">Share</a>
+      <a data-url="https://xkjava.github.io/2020/02/25/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E5%B9%B2%E8%BF%87%E4%B8%AD%E4%BB%8B%E5%B9%B2%E8%BF%87%E5%BF%AB%E9%80%92%E7%9A%84%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" data-id="ck71nyx9e000aw7rah902a6ev" class="article-share-link">Share</a>
       
       
     </footer>
@@ -327,7 +464,7 @@ orderService.createOrder(order);</code></pre><p>}</p>
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://xkjava.github.io/2020/02/22/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E5%8F%AA%E6%98%AF%E5%8D%95%E7%BA%AF%E5%90%AC%E8%AF%B4%E8%BF%87%E7%9A%84%E5%8E%9F%E5%9E%8B%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" data-id="ck71nw9j70006rtradz0i91a0" class="article-share-link">Share</a>
+      <a data-url="https://xkjava.github.io/2020/02/22/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E5%8F%AA%E6%98%AF%E5%8D%95%E7%BA%AF%E5%90%AC%E8%AF%B4%E8%BF%87%E7%9A%84%E5%8E%9F%E5%9E%8B%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" data-id="ck71nyx930006w7rafhy8360n" class="article-share-link">Share</a>
       
       
     </footer>
@@ -499,7 +636,7 @@ orderService.createOrder(order);</code></pre><p>}</p>
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://xkjava.github.io/2020/02/21/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E7%BB%8F%E5%85%B8%E9%AB%98%E9%A2%91%E9%9D%A2%E8%AF%95%E7%9A%84%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" data-id="ck71nw9js000brtracbld5lsu" class="article-share-link">Share</a>
+      <a data-url="https://xkjava.github.io/2020/02/21/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E7%BB%8F%E5%85%B8%E9%AB%98%E9%A2%91%E9%9D%A2%E8%AF%95%E7%9A%84%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" data-id="ck71nyx9h000cw7ra4u7s224b" class="article-share-link">Share</a>
       
       
     </footer>
@@ -620,7 +757,7 @@ orderService.createOrder(order);</code></pre><p>}</p>
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://xkjava.github.io/2020/02/21/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E7%BB%8F%E5%85%B8%E6%A1%86%E6%9E%B6%E9%83%BD%E5%9C%A8%E7%94%A8%E7%9A%84%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" data-id="ck71nw9j80007rtraa61b0zee" class="article-share-link">Share</a>
+      <a data-url="https://xkjava.github.io/2020/02/21/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E7%BB%8F%E5%85%B8%E6%A1%86%E6%9E%B6%E9%83%BD%E5%9C%A8%E7%94%A8%E7%9A%84%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" data-id="ck71nyx940008w7ra4efdfn9v" class="article-share-link">Share</a>
       
       
     </footer>
@@ -827,7 +964,7 @@ orderService.createOrder(order);</code></pre><p>}</p>
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://xkjava.github.io/2020/02/19/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E8%BD%AF%E4%BB%B6%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1%E7%9A%84%E4%B8%83%E5%A4%A7%E5%8E%9F%E5%88%99%E7%B2%BE%E9%80%89%E6%A1%88%E4%BE%8B/" data-id="ck71nw9jj000artracgqa1juc" class="article-share-link">Share</a>
+      <a data-url="https://xkjava.github.io/2020/02/19/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E8%BD%AF%E4%BB%B6%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1%E7%9A%84%E4%B8%83%E5%A4%A7%E5%8E%9F%E5%88%99%E7%B2%BE%E9%80%89%E6%A1%88%E4%BE%8B/" data-id="ck71nyx9f000bw7ra3uqt24lo" class="article-share-link">Share</a>
       
       
     </footer>
@@ -1058,7 +1195,7 @@ b、可以Linux基准测试工具，得到文件系统、磁盘I/O、网络等�
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://xkjava.github.io/2020/02/17/%E5%A6%82%E4%BD%95%E4%BC%98%E9%9B%85%E7%9A%84%E5%AD%A6%E4%B9%A0JVM%EF%BC%8C%E7%BB%88%E7%BB%93%E7%AF%87%EF%BC%88%E5%85%AD%EF%BC%89/" data-id="ck71nw9jh0008rtra7hh9fw5b" class="article-share-link">Share</a>
+      <a data-url="https://xkjava.github.io/2020/02/17/%E5%A6%82%E4%BD%95%E4%BC%98%E9%9B%85%E7%9A%84%E5%AD%A6%E4%B9%A0JVM%EF%BC%8C%E7%BB%88%E7%BB%93%E7%AF%87%EF%BC%88%E5%85%AD%EF%BC%89/" data-id="ck71nyx9d0009w7rae3p7cqi2" class="article-share-link">Share</a>
       
       
     </footer>
@@ -1194,7 +1331,7 @@ b、可以Linux基准测试工具，得到文件系统、磁盘I/O、网络等�
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://xkjava.github.io/2020/02/13/%E5%A6%82%E4%BD%95%E4%BC%98%E9%9B%85%E7%9A%84%E5%AD%A6%E4%B9%A0JVM%EF%BC%8C%E7%BB%BC%E5%90%88%E7%AF%87%EF%BC%88%E4%BA%94%EF%BC%89/" data-id="ck71nw9j50004rtrah17t92ws" class="article-share-link">Share</a>
+      <a data-url="https://xkjava.github.io/2020/02/13/%E5%A6%82%E4%BD%95%E4%BC%98%E9%9B%85%E7%9A%84%E5%AD%A6%E4%B9%A0JVM%EF%BC%8C%E7%BB%BC%E5%90%88%E7%AF%87%EF%BC%88%E4%BA%94%EF%BC%89/" data-id="ck71nyx870004w7raer1og339" class="article-share-link">Share</a>
       
       
     </footer>
@@ -1426,7 +1563,7 @@ Root以及原因</code></p>
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://xkjava.github.io/2020/02/12/%E5%A6%82%E4%BD%95%E4%BC%98%E9%9B%85%E7%9A%84%E5%AD%A6%E4%B9%A0JVM%EF%BC%8C%E5%AE%9E%E6%88%98%E7%AF%87%EF%BC%88%E5%9B%9B%EF%BC%89/" data-id="ck71nw9j30002rtrahvws4sp3" class="article-share-link">Share</a>
+      <a data-url="https://xkjava.github.io/2020/02/12/%E5%A6%82%E4%BD%95%E4%BC%98%E9%9B%85%E7%9A%84%E5%AD%A6%E4%B9%A0JVM%EF%BC%8C%E5%AE%9E%E6%88%98%E7%AF%87%EF%BC%88%E5%9B%9B%EF%BC%89/" data-id="ck71nyx850002w7ra6c4o93yy" class="article-share-link">Share</a>
       
       
     </footer>
@@ -1575,152 +1712,7 @@ Root以及原因</code></p>
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://xkjava.github.io/2020/02/10/%E5%A6%82%E4%BD%95%E4%BC%98%E9%9B%85%E7%9A%84%E5%AD%A6%E4%B9%A0JVM%EF%BC%8C%E5%8D%87%E5%8D%8E%E7%AF%87%EF%BC%88%E4%B8%89%EF%BC%89/" data-id="ck71nw9j20001rtrabn8ub434" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-如何优雅的学习JVM，进行篇（二）" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2020/02/08/%E5%A6%82%E4%BD%95%E4%BC%98%E9%9B%85%E7%9A%84%E5%AD%A6%E4%B9%A0JVM%EF%BC%8C%E8%BF%9B%E8%A1%8C%E7%AF%87%EF%BC%88%E4%BA%8C%EF%BC%89/" class="article-date">
-  <time datetime="2020-02-08T10:10:01.000Z" itemprop="datePublished">2020-02-08</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/02/08/%E5%A6%82%E4%BD%95%E4%BC%98%E9%9B%85%E7%9A%84%E5%AD%A6%E4%B9%A0JVM%EF%BC%8C%E8%BF%9B%E8%A1%8C%E7%AF%87%EF%BC%88%E4%BA%8C%EF%BC%89/">如何优雅的学习JVM，进行篇（二）</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="一、理解Java虚拟机栈和栈帧"><a href="#一、理解Java虚拟机栈和栈帧" class="headerlink" title="一、理解Java虚拟机栈和栈帧"></a>一、理解Java虚拟机栈和栈帧</h2><p><strong>1.1 什么是栈帧呢？</strong></p>
-<p>每个栈帧被认为对应是一个被调用的方法，可以理解为一个方法的运行空间。</p>
-<p><strong>官方地址</strong>：<a href="https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-2.html#jvms-2.6" target="_blank" rel="noopener">https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-2.html#jvms-2.6</a></p>
-<p>栈帧的组成部分：</p>
-<p>1、局部变量表（Local Variables）：方法中的局部变量以及方法的参数存放在这张表中，局部变量中的变量不可以直接使用，如果需要使用的话，必须<strong>通过相关指令将其加载到操作数栈中作为操作数使用。</strong></p>
-<p>2、操作数栈（Operand Stack）：以<strong>压栈</strong>和<strong>出栈</strong>的方式存储操作数。</p>
-<p>3、动态链接（Dynamic Linking）：每个栈帧都包含<strong>指向运行时常量池中该栈帧所属方法的引用</strong>，持有这个引用是为了支持方法调用过程中的动态链接。</p>
-<p>4、方法返回地址（Return Address）：当一个方法执行时，只有两种方式可以退出，<strong>一种是遇到方法返回的字节码指令，一种是遇见异常</strong>，并且这个异常没有在方法体内得到处理。</p>
-<p>5、附加信息</p>
-<p><img src="https://user-gold-cdn.xitu.io/2020/2/5/17014951f1bbb3d3?w=530&h=535&f=png&s=27757" alt=""></p>
-<p><img src="https://user-gold-cdn.xitu.io/2020/2/5/17014b874c1a2f2e?w=255&h=255&f=png&s=55454" alt=""></p>
-<p><strong>Person.java</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">public class Person &#123;</span><br><span class="line">    private String name &#x3D; &quot;Kevin&quot;;</span><br><span class="line">    private int age;</span><br><span class="line">    private final double salary &#x3D; 100;</span><br><span class="line">    private static String address;</span><br><span class="line">    private final static String hobby &#x3D; &quot;Programming&quot;;</span><br><span class="line">    public void say() &#123;</span><br><span class="line">        System.out.println(&quot;person say...&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">    public static int calc(int op1,int op2) &#123;</span><br><span class="line">        op1 &#x3D; 3;</span><br><span class="line">        int result &#x3D; op1 + op2;</span><br><span class="line">        return result;</span><br><span class="line">    &#125;</span><br><span class="line">    public static void order() &#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        calc(1,2);</span><br><span class="line">        order();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p><strong>反编译指令宝典</strong>，oracle官网：</p>
-<p><a href="https://docs.oracle.com/javase/specs/jvms/se8/html/index.html" target="_blank" rel="noopener">https://docs.oracle.com/javase/specs/jvms/se8/html/index.html</a></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">Compiled from &quot;Person.java&quot;</span><br><span class="line">public class Person &#123;</span><br><span class="line">...     </span><br><span class="line"> public static int calc(int, int);</span><br><span class="line">  Code:</span><br><span class="line">   0: iconst_3   &#x2F;&#x2F;将int类型常量3压入[操作数栈]</span><br><span class="line">   1: istore_0   &#x2F;&#x2F;将int类型值存入[局部变量0]</span><br><span class="line">   2: iload_0    &#x2F;&#x2F;从[局部变量0]中装载int类型值入栈</span><br><span class="line">   3: iload_1    &#x2F;&#x2F;从[局部变量1]中装载int类型值入栈</span><br><span class="line">   4: iadd     &#x2F;&#x2F;将栈顶元素弹出栈，执行int类型的加法，结果入栈</span><br><span class="line">   【For example, the iadd instruction (§iadd) adds two int values together. It</span><br><span class="line">requires that the int values to be added be the top two values of the operand stack, pushed</span><br><span class="line">there by previous instructions. Both of the int values are popped from the operand stack.</span><br><span class="line">They are added, and their sum is pushed back onto the operand stack. Subcomputations may be</span><br><span class="line">nested on the operand stack, resulting in values that can be used by the encompassing</span><br><span class="line">computation.】</span><br><span class="line">   5: istore_2   &#x2F;&#x2F;将栈顶int类型值保存到[局部变量2]中</span><br><span class="line">   6: iload_2    &#x2F;&#x2F;从[局部变量2]中装载int类型值入栈</span><br><span class="line">   7: ireturn    &#x2F;&#x2F;从方法中返回int类型的数据</span><br><span class="line">...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p><strong>例子中的Java虚拟机和栈帧，如图：</strong></p>
-<p><img src="https://user-gold-cdn.xitu.io/2020/2/5/170155a0ebeb2122?w=936&h=900&f=png&s=87800" alt=""></p>
-<p><strong>1.2 栈指向堆</strong></p>
-<p>如果在栈帧中有一个变量，类型为引用类型，比如Object obj = new Object()，这个时候就是典型的<strong>栈中的元素指向堆中的对象</strong>。</p>
-<p><img src="https://user-gold-cdn.xitu.io/2020/2/5/1701573b6b7e82bb?w=1557&h=900&f=png&s=160972" alt=""></p>
-<p><strong>1.3 方法区指向堆</strong></p>
-<p>方法区会存放静态变量，常量等数据。如果是下面这种情况，就是典型的<strong>方法区中的元素指向堆中的对象</strong>。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">private static Object obj &#x3D; new Object();</span><br></pre></td></tr></table></figure>
-
-
-<p><img src="https://user-gold-cdn.xitu.io/2020/2/5/170157f9e339acc8?w=652&h=540&f=png&s=61891" alt=""></p>
-<p><strong>1.4 堆指向方法区</strong></p>
-<p>方法区中会包含类的信息，堆中会有对象，那么一个对象是由哪个类创建出来的呢？它是如何记录信息的呢？我们需要了解一个Java对象的具体信息。</p>
-<p><img src="https://user-gold-cdn.xitu.io/2020/2/5/1701585ffd9d184f?w=652&h=540&f=png&s=62365" alt=""></p>
-<p><strong>1.5 Java对象内存布局</strong></p>
-<p>一个Java对象在内存中的布局分为3个部分：</p>
-<p>1、对象头：一系列的标记位（Mark Word）、指向对象对应的类元数据的内存地址（Class Pointer）、数组长度（Length）</p>
-<p>2、实例数据：包含各对象所有的成员变量，其大小由变量类型决定</p>
-<p>3、对齐填充：为了对象的大小为8字节的整数倍</p>
-<p><img src="https://user-gold-cdn.xitu.io/2020/2/6/170195a0b832430c?w=1282&h=613&f=png&s=103107" alt=""></p>
-<h2 id="二、JVM内存模型"><a href="#二、JVM内存模型" class="headerlink" title="二、JVM内存模型"></a>二、JVM内存模型</h2><p><strong>2.1 内存模型结构</strong></p>
-<p>内存模型结构分为2个部分：</p>
-<p>1、非堆区：</p>
-<p>2、堆区：一个是<strong>Old区</strong>，另一个是<strong>Young区</strong></p>
-<p>另：Young区分为2个部分，一个是Survivor区（S0+S1），另一个是Eden区。</p>
-<p>Eden : S0 : S1 = 8 : 1 : 1，S0和S1一样大，也可以叫做From和To。</p>
-<p><img src="https://user-gold-cdn.xitu.io/2020/2/6/1701a8bb065949dd?w=1149&h=586&f=png&s=34782" alt=""></p>
-<p><strong>2.2 对象创建所在区域</strong></p>
-<p>在一般情况下：</p>
-<p>1、<strong>新创建的对象</strong>都会分配到<strong>Eden区</strong></p>
-<p>2、一些<strong>特殊的大对象</strong>都会分配到<strong>Old区</strong></p>
-<p>例如：有对象A、B、C等创建在Eden区，但是由于Eden区的内存空间有限，其大小只有100M，假如意见使用了100M或达到了一个设定的临界值，这个时候就需要对Eden区的内存空间进行清理，即<strong>垃圾回收</strong>（Garbage Collect），这样的GC也被称为Minor GC,<br><strong>Minor GC指的是Young区的GC</strong>。</p>
-<p><strong>2.3 Survivor区</strong></p>
-<p>Survivor分为两块，即S0和S1，也可以叫做From和To。</p>
-<p>在同一个时间点上，S0和S1只能有一区有数据，另一区只能空着。</p>
-<p>例如：接着上面示例的GC来说，一开始只有Eden区和S0中有对象，S1是空的。此时<strong>进行一次GC操作</strong>，S0区中的对象年龄<strong>就会+1</strong>，Eden区中的所有存活的对象会被复制到S1区，S0区中还能存活的对象会有两个去处。</p>
-<p>若对象年龄达到之前设置好的年龄阈值，此时对象会被移动到<strong>Old区</strong>，没有达到阈值的对象会被复制到<strong>S1区</strong>。此时Eden区和S0区已经被清空（被GC的对象肯定是没有了，没有被GC的对象都有各自的去处了）。</p>
-<p>这个时候S0和S1交换角色，之前的<strong>S0变成S1</strong>，之前的<strong>S1变成S0</strong>了。也就是说无论如何<strong>都要保证名为S1的Survivor区域都是空的</strong>。</p>
-<p>Minor GC会一直重复这样的过程，直到S1区被填满，然后会将所有的对象复制到Old区中。</p>
-<p><strong>2.4 Old区</strong></p>
-<p>一般Old区都是年龄较大的对象，或者相对超过了某个阈值的对象。在Old区也会有GC操作，Old区的GC操作我们被称为<strong>Major GC</strong>，每次GC之后还能存活的对象年龄<strong>也会+1</strong>，如果超过了某个阈值，也会被回收的。</p>
-<p><strong>2.5 如何理解对象的一辈子</strong></p>
-<p><img src="https://user-gold-cdn.xitu.io/2020/2/7/1701ff221cd8682d?w=1689&h=1020&f=png&s=128968" alt=""></p>
-<p>我是一个普通的Java对象，我出生在Eden区，在Eden区我还看到了跟我长得很像的兄弟，我们在Eden区玩了挺长时间。有一天Eden区的人实在太多了，我就被迫去了Survivor区的S0区，自从去了Survivor区，我就开始漂了，有时候在Survivor区的S0区，有时候在Survivor区的S1区，居无定所。直到我18岁的时候，爸爸说我成人了，该去社会上闯荡了。</p>
-<p>于是我就去Old区了，老年代里，人很多，并且年龄都挺大的，我在这里认识了很多人。在Old区里我生活了20年（每次GC加一岁），最后就被回收了。</p>
-<p><strong>2.6 常见的问题</strong></p>
-<p>1、如何理解Minor/Major/Full GC?</p>
-<p><strong>Minor GC</strong>：新生代</p>
-<p><strong>Major GC</strong>：老年代</p>
-<p><strong>Full GC</strong>：新生代+老年代</p>
-<p>2、为什么需要Survivor区？只有Eden区不行吗？</p>
-<p>如果没有Survivor，Eden区每次进行一次Minor GC，存活的对象就会被送到老年代。这样一来，老年代很快被填满，触发Major GC（因为Major GC一直伴随Minor GC，也可以看做触发了Full GC）。</p>
-<p>老年代的空间远远大于新生代，进行一次Full GC消耗的时间比Minor GC长得多。执行时间长有什么坏处呢？<strong>频繁的Full GC消耗的时间很长，会影响程序的执行和响应速度</strong>。</p>
-<p>如果对老年代的空间进行增加或者减少呢，能够解决以上问题吗？</p>
-<p>假如增加老年代的空间，更多的存活对象才能填满老年代。虽然降低了Full GC的频率，但是随着老年代的空间加大，一旦发生Full GC，执行所需要的时间更长。<br>假如减少老年代的空间，虽然Full GC的时间减少，但是老年代很快被存活的对象填满，Full GC的频率增加。</p>
-<p>所以Survivor存在的意义，就是减少被送到老年代的对象，进而减少Full GC的发生，Survivor的预筛选保证，只有经历16次Minor GC还能在新生代中存活的对象，才会被送到老年代。</p>
-<p>3、为什么需要两个Survivor区？</p>
-<p>最大的好处就是解决了碎片化。如果只有一个Survivor区，在刚刚新建的对象在Eden中，一单Eden满了，触发一次Minor GC，Eden中的存活对象就会被移动到Survivor区中，这样循环下去，下一次Eden满了的时候，那么这样问题就来了，<strong>此时进行Minor GC，Eden和Survivor各有一些存活的对象，如果此时把Eden区中存活的对象硬是放到Survivor区，很明显这两部分对象所占的内存是不连续的，也就导致了内存碎片化</strong>。永远只有一个Survivor 空间是空的，而另一个Survivor 空间无碎片。</p>
-<p>4、新生代中的Eden:S0:S1为什么是8:1:1?</p>
-<p>新生代中的可用内存：复制算法用来担保的内存为9：1<br>可用内存中的Eden:S0为8:1<br>即新生代中的Eden:S0:S1位8:1:1</p>
-<h2 id="三、使用与验证"><a href="#三、使用与验证" class="headerlink" title="三、使用与验证"></a>三、使用与验证</h2><p><strong>3.1 使用VisualVM</strong></p>
-<p>使用JDK自带的VisualVM工具进行查看：</p>
-<p><img src="https://user-gold-cdn.xitu.io/2020/2/8/17023e7660f8ad4c?w=1468&h=826&f=png&s=86397" alt=""></p>
-<p><strong>3.2 堆内存溢出</strong></p>
-<p>示例代码：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">import java.util.List;</span><br><span class="line"></span><br><span class="line">public class HeapOut &#123;</span><br><span class="line"></span><br><span class="line">    public static void main(String[] args) throws Exception &#123;</span><br><span class="line"></span><br><span class="line">        List&lt;Person&gt; personList &#x3D; new ArrayList&lt;&gt;();</span><br><span class="line">        while (true) &#123;</span><br><span class="line">            personList.add(new Person());</span><br><span class="line">            Thread.sleep(1);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p><strong>设置启动参数</strong>：-Xmx20M -Xms20M，我们启动main方法后，让程序持续运行一段时间可以看到控制台出现如下信息：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"> com.gooagoo.dop.trans.test.json.HeapOut</span><br><span class="line">Exception in thread &quot;main&quot; java.lang.OutOfMemoryError: Java heap space</span><br><span class="line">	at java.util.Arrays.copyOf(Arrays.java:3181)</span><br><span class="line">	at java.util.ArrayList.grow(ArrayList.java:261)</span><br><span class="line">	at java.util.ArrayList.ensureExplicitCapacity(ArrayList.java:235)</span><br><span class="line">	at java.util.ArrayList.ensureCapacityInternal(ArrayList.java:227)</span><br><span class="line">	at java.util.ArrayList.add(ArrayList.java:458)</span><br><span class="line">	at com.gooagoo.dop.trans.test.json.HeapOut.main(HeapOut.java:12)</span><br></pre></td></tr></table></figure>
-<p>使用visualVM查看：</p>
-<p><img src="https://user-gold-cdn.xitu.io/2020/2/8/17023ff92d4190fb?w=1477&h=889&f=png&s=107310" alt=""></p>
-<p><strong>3.3 方法区内存溢出</strong></p>
-<p>示例：向方法区中添加class信息</p>
-<p><strong>asm依赖</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">  &lt;groupId&gt;asm&lt;&#x2F;groupId&gt;</span><br><span class="line">  &lt;artifactId&gt;asm&lt;&#x2F;artifactId&gt;</span><br><span class="line">  &lt;version&gt;3.3.1&lt;&#x2F;version&gt;</span><br><span class="line">&lt;&#x2F;dependency&gt;</span><br></pre></td></tr></table></figure>
-
-<p><strong>代码</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">package com.gooagoo.dop.trans.test.json;</span><br><span class="line">import org.objectweb.asm.ClassWriter;</span><br><span class="line">import org.objectweb.asm.MethodVisitor;</span><br><span class="line">import org.objectweb.asm.Opcodes;</span><br><span class="line">import java.util.ArrayList;</span><br><span class="line">import java.util.List;</span><br><span class="line">public class MyMetaspace extends ClassLoader &#123;</span><br><span class="line">    public static List&lt;Class&lt;?&gt;&gt; createClasses() &#123;</span><br><span class="line">    List&lt;Class&lt;?&gt;&gt; classes &#x3D; new ArrayList&lt;Class&lt;?&gt;&gt;();</span><br><span class="line">    for (int i &#x3D; 0; i &lt; 10000000; ++i) &#123;</span><br><span class="line">        ClassWriter cw &#x3D; new ClassWriter(0);</span><br><span class="line">        cw.visit(Opcodes.V1_1, Opcodes.ACC_PUBLIC, &quot;Class&quot; + i, null, &quot;java&#x2F;lang&#x2F;Object&quot;, null);</span><br><span class="line">        MethodVisitor mw &#x3D; cw.visitMethod(Opcodes.ACC_PUBLIC, &quot;&lt;init&gt;&quot;, &quot;()V&quot;, null, null);</span><br><span class="line">        mw.visitVarInsn(Opcodes.ALOAD, 0);</span><br><span class="line">        mw.visitMethodInsn(Opcodes.INVOKESPECIAL, &quot;java&#x2F;lang&#x2F;Object&quot;, &quot;&lt;init&gt;&quot;, &quot;()V&quot;);</span><br><span class="line">        mw.visitInsn(Opcodes.RETURN);</span><br><span class="line">        mw.visitMaxs(1, 1);</span><br><span class="line">        mw.visitEnd();</span><br><span class="line">        MyMetaspace test &#x3D; new MyMetaspace();</span><br><span class="line">        byte[] code &#x3D; cw.toByteArray();</span><br><span class="line">        Class&lt;?&gt; exampleClass &#x3D; test.defineClass(&quot;Class&quot; + i, code, 0, code.length);</span><br><span class="line">        classes.add(exampleClass);</span><br><span class="line">    &#125;</span><br><span class="line">    return classes;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">     public static void main(String[] args) throws Exception &#123;</span><br><span class="line">        List&lt;Class&lt;?&gt;&gt; list&#x3D;new ArrayList&lt;Class&lt;?&gt;&gt;();</span><br><span class="line">        while(true)&#123;</span><br><span class="line">            list.addAll(MyMetaspace.createClasses());</span><br><span class="line">            Thread.sleep(5); </span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p><strong>设置启动参数Metaspace的大小</strong>，比如-XX:MetaspaceSize=50M -XX:MaxMetaspaceSize=50M，我们启动main方法后，让程序持续运行一段时间可以看到控制台出现如下信息：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Exception in thread &quot;main&quot; java.lang.OutOfMemoryError: Metaspace</span><br><span class="line">	at java.lang.ClassLoader.defineClass1(Native Method)</span><br><span class="line">	at java.lang.ClassLoader.defineClass(ClassLoader.java:763)</span><br><span class="line">	at java.lang.ClassLoader.defineClass(ClassLoader.java:642)</span><br><span class="line">	at com.gooagoo.dop.trans.test.json.MyMetaspace.createClasses(MyMetaspace.java:21)</span><br><span class="line">	at com.gooagoo.dop.trans.test.json.MyMetaspace.main(MyMetaspace.java:30)</span><br></pre></td></tr></table></figure>
-
-<p><strong>3.4 虚拟机栈StackOvewFlow</strong></p>
-<p>代码示例：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">public class JvmStack &#123;</span><br><span class="line"></span><br><span class="line">    public static long count &#x3D; 0;</span><br><span class="line">    public static void method(long i) &#123;</span><br><span class="line">        System.out.println(count++);</span><br><span class="line">        method(i);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        method(1);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>启动main方法后，让程序持续运行一段时间可以看到控制台出现如下信息：</p>
-<p><img src="https://user-gold-cdn.xitu.io/2020/2/8/170242b7df81ac22?w=505&h=454&f=png&s=15477" alt=""></p>
-<p><strong>说明：</strong></p>
-<p>Stack Space用来做方法的递归调用时压入Stack Frame（栈帧）。所以当递归调用太深的时候，就有可能耗尽Stack Space，所以出现StackOverFlow的错误。</p>
-<p>线程栈的大小是个双刃剑，如果设置过小，可能会出现溢出，特别是在该线程递归、大的循环时出现溢出的可能性更大；如果设置过大，就有影响到创建栈的数量，如果是多线程应用，就会出现内存溢出的错误。</p>
-<p>-Xss128k：设置每个线程的堆栈大小。JDK 5以后每个线程堆栈大小为1M，以前每个线程堆栈大小为256K。根据应用的线<br>程所需内存大小进行调整。在相同物理内存下，减小这个值能生成更多的线程。但是操作系统对一个进程内的线程数还是有<br>限制的，不能无限生成，经验值在3000~5000左右。</p>
-<h2 id="未完待续……"><a href="#未完待续……" class="headerlink" title="未完待续……"></a>未完待续……</h2>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://xkjava.github.io/2020/02/08/%E5%A6%82%E4%BD%95%E4%BC%98%E9%9B%85%E7%9A%84%E5%AD%A6%E4%B9%A0JVM%EF%BC%8C%E8%BF%9B%E8%A1%8C%E7%AF%87%EF%BC%88%E4%BA%8C%EF%BC%89/" data-id="ck71nw9j60005rtra3etv1601" class="article-share-link">Share</a>
+      <a data-url="https://xkjava.github.io/2020/02/10/%E5%A6%82%E4%BD%95%E4%BC%98%E9%9B%85%E7%9A%84%E5%AD%A6%E4%B9%A0JVM%EF%BC%8C%E5%8D%87%E5%8D%8E%E7%AF%87%EF%BC%88%E4%B8%89%EF%BC%89/" data-id="ck71nyx830001w7raawgg1pdt" class="article-share-link">Share</a>
       
       
     </footer>
@@ -1766,6 +1758,10 @@ Root以及原因</code></p>
       <ul>
         
           <li>
+            <a href="/2020/02/25/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E5%B1%9E%E4%BA%8E%E6%B8%B8%E6%88%8F%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E7%9A%84%E7%AD%96%E7%95%A5%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/">架构师内功心法，属于游戏设计模式的策略模式详解</a>
+          </li>
+        
+          <li>
             <a href="/2020/02/25/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E5%B9%B2%E8%BF%87%E4%B8%AD%E4%BB%8B%E5%B9%B2%E8%BF%87%E5%BF%AB%E9%80%92%E7%9A%84%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/">架构师内功心法，干过中介干过快递的代理模式详解</a>
           </li>
         
@@ -1779,10 +1775,6 @@ Root以及原因</code></p>
         
           <li>
             <a href="/2020/02/21/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E7%BB%8F%E5%85%B8%E6%A1%86%E6%9E%B6%E9%83%BD%E5%9C%A8%E7%94%A8%E7%9A%84%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/">架构师内功心法，经典框架都在用的工厂模式详解</a>
-          </li>
-        
-          <li>
-            <a href="/2020/02/19/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E8%BD%AF%E4%BB%B6%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1%E7%9A%84%E4%B8%83%E5%A4%A7%E5%8E%9F%E5%88%99%E7%B2%BE%E9%80%89%E6%A1%88%E4%BE%8B/">架构师内功心法，软件架构设计的七大原则精选案例</a>
           </li>
         
       </ul>

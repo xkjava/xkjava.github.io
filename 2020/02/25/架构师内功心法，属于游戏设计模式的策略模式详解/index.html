@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>架构师内功心法，属于游戏设计模式的策略模式详解 | 来一杯咖啡</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="一、策略模式的应用场景策略模式（Strategy Pattern）是指定义了算法家族、分别封装起来，让它们之间可以相互替换，此模式让算法的变化不会影响到使用算法的用户。 1.1 应用场景 假如系统中有很多类，而他们的区别仅仅在于他们的行为不同。   一个系统需要动态地在几种算法中选择一种。  1.2 实现餐饮行业选择支付方式的业务场景我们在外面去吃饭的时候，不同的饭店经常会有优惠活动，优惠策略也有">
+<meta property="og:type" content="article">
+<meta property="og:title" content="架构师内功心法，属于游戏设计模式的策略模式详解">
+<meta property="og:url" content="https://xkjava.github.io/2020/02/25/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E5%B1%9E%E4%BA%8E%E6%B8%B8%E6%88%8F%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E7%9A%84%E7%AD%96%E7%95%A5%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/index.html">
+<meta property="og:site_name" content="来一杯咖啡">
+<meta property="og:description" content="一、策略模式的应用场景策略模式（Strategy Pattern）是指定义了算法家族、分别封装起来，让它们之间可以相互替换，此模式让算法的变化不会影响到使用算法的用户。 1.1 应用场景 假如系统中有很多类，而他们的区别仅仅在于他们的行为不同。   一个系统需要动态地在几种算法中选择一种。  1.2 实现餐饮行业选择支付方式的业务场景我们在外面去吃饭的时候，不同的饭店经常会有优惠活动，优惠策略也有">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2020/2/25/1707b0d517cdd627?w=1246&h=490&f=png&s=43282">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2020/2/25/1707b50d93119f88?w=742&h=214&f=png&s=22506">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2020/2/25/1707b54365747dac?w=1066&h=769&f=png&s=67982">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2020/2/25/1707b643e817639c?w=1645&h=496&f=png&s=70716">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2020/2/25/1707b6689c6d7218?w=1162&h=259&f=png&s=36243">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2020/2/25/1707b7cc055b952d?w=1885&h=568&f=png&s=186061">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2020/2/25/1707b81615f908ef?w=1057&h=724&f=png&s=80916">
+<meta property="article:published_time" content="2020-02-25T09:03:29.000Z">
+<meta property="article:modified_time" content="2020-02-25T09:04:35.513Z">
+<meta property="article:author" content="Kevin Shaw">
+<meta property="article:tag" content="Java">
+<meta property="article:tag" content="Spring">
+<meta property="article:tag" content="Netty">
+<meta property="article:tag" content="Kafka...">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://user-gold-cdn.xitu.io/2020/2/25/1707b0d517cdd627?w=1246&h=490&f=png&s=43282">
+  
+    <link rel="alternate" href="/atom.xml" title="来一杯咖啡" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">来一杯咖啡</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">互联网技术无边界，学习与交流</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://xkjava.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-架构师内功心法，属于游戏设计模式的策略模式详解" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/02/25/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E5%B1%9E%E4%BA%8E%E6%B8%B8%E6%88%8F%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E7%9A%84%E7%AD%96%E7%95%A5%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" class="article-date">
+  <time datetime="2020-02-25T09:03:29.000Z" itemprop="datePublished">2020-02-25</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      架构师内功心法，属于游戏设计模式的策略模式详解
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="一、策略模式的应用场景"><a href="#一、策略模式的应用场景" class="headerlink" title="一、策略模式的应用场景"></a>一、策略模式的应用场景</h1><p>策略模式（Strategy Pattern）是指定义了算法家族、分别封装起来，让它们之间可以相互替换，此模式让算法的变化不会影响到使用算法的用户。</p>
+<h2 id="1-1-应用场景"><a href="#1-1-应用场景" class="headerlink" title="1.1 应用场景"></a>1.1 应用场景</h2><ul>
+<li>假如系统中有很多类，而他们的区别仅仅在于他们的行为不同。</li>
+</ul>
+<ul>
+<li>一个系统需要动态地在几种算法中选择一种。</li>
+</ul>
+<h2 id="1-2-实现餐饮行业选择支付方式的业务场景"><a href="#1-2-实现餐饮行业选择支付方式的业务场景" class="headerlink" title="1.2 实现餐饮行业选择支付方式的业务场景"></a>1.2 实现餐饮行业选择支付方式的业务场景</h2><p>我们在外面去吃饭的时候，不同的饭店经常会有优惠活动，优惠策略也有很多很多，比如优惠券折扣、返现促销、拼团下单等等。我们来用程序模拟这样的业务场景，首先创建一个促销策略的接口：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">public interface IPromotionStrategy &#123;</span><br><span class="line"></span><br><span class="line">    void doPromotion();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后分别创建优惠券抵扣策略 CouponStrategy 类：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">public class CouponStrategy implements IPromotionStrategy &#123;</span><br><span class="line">    @Override</span><br><span class="line">    public void doPromotion() &#123;</span><br><span class="line">        System.out.println(&quot;领取的优惠券在指定时间到店消费，订单的价格直接减优惠券面额抵扣！&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>返现促销策略 CashBackStrategy 类：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">public class CashBackStrategy implements IPromotionStrategy &#123;</span><br><span class="line">    @Override</span><br><span class="line">    public void doPromotion() &#123;</span><br><span class="line">        System.out.println(&quot;返现促销，返回的金额转到支付账号！&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>拼团优惠策略 GroupBuyStrategy 类：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">public class GroupBuyStrategy implements IPromotionStrategy &#123;</span><br><span class="line">    @Override</span><br><span class="line">    public void doPromotion() &#123;</span><br><span class="line">        System.out.println(&quot;拼团，满5人成团，全团享受团购价！&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>无优惠策略 EmptyStrategy 类：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">public class EmptyStrategy implements IPromotionStrategy &#123;</span><br><span class="line">    @Override</span><br><span class="line">    public void doPromotion() &#123;</span><br><span class="line">        System.out.println(&quot;无促销活动！&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后创建促销活动方案 PromotionActivity 类：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">public class PromotionActivity &#123;</span><br><span class="line"></span><br><span class="line">    private IPromotionStrategy promotionStrategy;</span><br><span class="line"></span><br><span class="line">    public PromotionActivity(IPromotionStrategy promotionStrategy) &#123;</span><br><span class="line">        this.promotionStrategy &#x3D; promotionStrategy;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void execute() &#123;</span><br><span class="line">        promotionStrategy.doPromotion();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>编写测试类：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">public static void main(String[] args) &#123;</span><br><span class="line">    PromotionActivity activity_618 &#x3D; new PromotionActivity(new CouponStrategy());</span><br><span class="line">    PromotionActivity activity_1212 &#x3D; new PromotionActivity(new CashBackStrategy());</span><br><span class="line">    activity_618.execute();</span><br><span class="line">    activity_1212.execute();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>此时，上面的这段测试代码放到实际的业务场景并不实用，因为餐饮门店做活动的时候是要根据不同需求对促销策略进行动态选择的，并不会一次性执行多种优惠。所以代码会这样写：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"> public static void main(String[] args) &#123;</span><br><span class="line">    PromotionActivity promotionActivity &#x3D; null;</span><br><span class="line">    String promotionKey &#x3D; &quot;COUPON&quot;;</span><br><span class="line">    if(promotionKey.equals(&quot;COUPON&quot;))&#123;</span><br><span class="line">        promotionActivity &#x3D; new PromotionActivity(new CouponStrategy());</span><br><span class="line">    &#125;else if(promotionKey.equals(&quot;CASHBACK&quot;))&#123;</span><br><span class="line">        promotionActivity &#x3D; new PromotionActivity(new CashBackStrategy());</span><br><span class="line">    &#125;&#x2F;&#x2F;......</span><br><span class="line">    promotionActivity.execute();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这样改造之后，满足了业务需求，客户可根据自己的需求选择不同的优惠策略了。但是，经过一段时间的业务积累，我们的促销活动会越来越多。于是，我们的程序猿小哥哥就忙不赢了，每次上活动之前都要通宵改代码，而且要做重复测试，判断逻辑可能也变得越来越复杂。这时候，我们是不需要思考代码是不是应该重构了？</p>
+<p>其实我们可以结合工厂模式和单例模式来进行优化改造。创建PromotionActivityFactory：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">public class PromotionActivityFactory &#123;</span><br><span class="line"></span><br><span class="line">    public interface PromotionKey &#123;</span><br><span class="line">        String COUPON &#x3D; &quot;COUPON&quot;;</span><br><span class="line">        String CASHBACK &#x3D; &quot;CASHBACK&quot;;</span><br><span class="line">        String GROUPBUY &#x3D; &quot;GROUPBUY&quot;;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private static Map&lt;String, IPromotionStrategy&gt; PROMOTION_STRATEGY_MAP &#x3D;</span><br><span class="line">            new HashMap&lt;&gt;();</span><br><span class="line">    static &#123;</span><br><span class="line">        PROMOTION_STRATEGY_MAP.put(PromotionKey.COUPON, new CouponStrategy());</span><br><span class="line">        PROMOTION_STRATEGY_MAP.put(PromotionKey.CASHBACK, new CashBackStrategy());</span><br><span class="line">        PROMOTION_STRATEGY_MAP.put(PromotionKey.GROUPBUY, new GroupBuyStrategy());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private static final IPromotionStrategy NO_PROMOTION &#x3D; new EmptyStrategy();</span><br><span class="line"></span><br><span class="line">    private PromotionActivityFactory() &#123;&#125;</span><br><span class="line"></span><br><span class="line">    public static IPromotionStrategy getPromotionStrategy(String promotionKey) &#123;</span><br><span class="line">        IPromotionStrategy promotionStrategy &#x3D; PROMOTION_STRATEGY_MAP.get(promotionKey);</span><br><span class="line">        return promotionStrategy &#x3D;&#x3D; null ? NO_PROMOTION : promotionStrategy;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>测试代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">public static void main(String[] args) &#123;</span><br><span class="line">    String promotionKey &#x3D; &quot;COUPON&quot;;</span><br><span class="line">    PromotionActivity promotionActivity &#x3D;  new PromotionActivity(PromotionActivityFactory.getPromotionStrategy(promotionKey));</span><br><span class="line">    promotionActivity.execute();</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>修改代码之后维护工作应该轻松了很多，每次上新活动，不会影响原来的代码逻辑。来看一下完整的类图：</p>
+<p><img src="https://user-gold-cdn.xitu.io/2020/2/25/1707b0d517cdd627?w=1246&h=490&f=png&s=43282" alt=""></p>
+<p>为了加深大家对策略模式的理解，结合实际生活场景再举一个例子。大家都用过移动支付进行付款，比较流行的支付方式有支付宝、微信、银联等。一个场景的支付场景就是在支付的时候提示会选择支付方式，如果用户没有进行选择，那么系统会使用默认的支付方式进行结算。</p>
+<p>创建抽象类Payment：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">public abstract class Payment &#123;</span><br><span class="line"></span><br><span class="line">    public abstract String getType();</span><br><span class="line"></span><br><span class="line">    public PayState pay(String id, double amount) &#123;</span><br><span class="line">        if(queryBalance(id) &lt; amount) &#123;</span><br><span class="line">            return new PayState(500,&quot;支付失败&quot;,&quot;余额不足&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">        return new PayState(200,&quot;支付成功&quot;,&quot;支付金额：&quot; + amount);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public abstract double queryBalance(String id);</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>分别创建具体的支付方式，支付宝 AliPay 类：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">public class AliPay extends Payment &#123;</span><br><span class="line">    @Override</span><br><span class="line">    public String getType() &#123;</span><br><span class="line">        return &quot;支付宝&quot;;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public double queryBalance(String id) &#123;</span><br><span class="line">        return 1000;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>微信支付 WechatPay 类：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">public class WechatPay extends Payment &#123;</span><br><span class="line">    @Override</span><br><span class="line">    public String getType() &#123;</span><br><span class="line">        return &quot;微信支付&quot;;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public double queryBalance(String id) &#123;</span><br><span class="line">        return 512;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>银联云闪付支付 UnionPay 类：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">public class UnionPay extends Payment &#123;</span><br><span class="line">    @Override</span><br><span class="line">    public String getType() &#123;</span><br><span class="line">        return &quot;云闪付&quot;;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public double queryBalance(String id) &#123;</span><br><span class="line">        return 380;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>创建支付状态的包装类 PayState:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">public class PayState &#123;</span><br><span class="line"></span><br><span class="line">    private int code;</span><br><span class="line">    private Object data;</span><br><span class="line">    private String msg;</span><br><span class="line"></span><br><span class="line">    public PayState(int code, Object data, String msg) &#123;</span><br><span class="line">        this.code &#x3D; code;</span><br><span class="line">        this.data &#x3D; data;</span><br><span class="line">        this.msg &#x3D; msg;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public String toString() &#123;</span><br><span class="line">        return &quot;PayState&#123;&quot; +</span><br><span class="line">                &quot;code&#x3D;&quot; + code +</span><br><span class="line">                &quot;, data&#x3D;&quot; + data +</span><br><span class="line">                &quot;, msg&#x3D;&#39;&quot; + msg + &#39;\&#39;&#39; +</span><br><span class="line">                &#39;&#125;&#39;;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>创建支付策略管理工厂类：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">public class PayStrategyFactory &#123;</span><br><span class="line"></span><br><span class="line">    public interface PayKey &#123;</span><br><span class="line">        String DEFAULTPAY &#x3D; &quot;ALIPAY&quot;;</span><br><span class="line">        String ALIPAY &#x3D; &quot;ALIPAY&quot;;</span><br><span class="line">        String WECHATPAY &#x3D; &quot;WECHATPAY&quot;;</span><br><span class="line">        String UNIONPAY &#x3D; &quot;UNIONPAY&quot;;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public static final Map&lt;String, Payment&gt; PAYMENT_MAP &#x3D; new HashMap&lt;&gt;();</span><br><span class="line"></span><br><span class="line">    static  &#123;</span><br><span class="line">        PAYMENT_MAP.put(PayKey.ALIPAY, new AliPay());</span><br><span class="line">        PAYMENT_MAP.put(PayKey.WECHATPAY, new WechatPay());</span><br><span class="line">        PAYMENT_MAP.put(PayKey.UNIONPAY, new UnionPay());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private static Payment getPayment(String payKey) &#123;</span><br><span class="line">        if(!PAYMENT_MAP.containsKey(payKey))&#123;</span><br><span class="line">            return PAYMENT_MAP.get(PayKey.DEFAULTPAY);</span><br><span class="line">        &#125;</span><br><span class="line">        return PAYMENT_MAP.get(payKey);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>创建订单 Order 类：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">public class Order &#123;</span><br><span class="line"></span><br><span class="line">    private String id;</span><br><span class="line">    private String orderId;</span><br><span class="line">    private double amount;</span><br><span class="line"></span><br><span class="line">    public Order(String id, String orderId, double amount) &#123;</span><br><span class="line">        this.id &#x3D; id;</span><br><span class="line">        this.orderId &#x3D; orderId;</span><br><span class="line">        this.amount &#x3D; amount;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public PayState pay()&#123;</span><br><span class="line">        return pay(PayStrategyFactory.PayKey.DEFAULTPAY);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public PayState pay(String payKey)&#123;</span><br><span class="line">        Payment payment &#x3D; PayStrategyFactory.PAYMENT_MAP.get(payKey);</span><br><span class="line">        System.out.println(&quot;欢迎使用&quot; + payment.getType());</span><br><span class="line">        System.out.println(&quot;本次交易金额为：&quot; + amount + &quot;，开始扣款...&quot;);</span><br><span class="line">        return payment.pay(id,amount);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>测试代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">public static void main(String[] args) &#123;</span><br><span class="line"></span><br><span class="line">    Order order &#x3D; new Order(&quot;1&quot;, &quot;20200225000001&quot;, 120.98);</span><br><span class="line"></span><br><span class="line">    System.out.println(order.pay(PayStrategyFactory.PayKey.ALIPAY));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>运行结果：</p>
+<p><img src="https://user-gold-cdn.xitu.io/2020/2/25/1707b50d93119f88?w=742&h=214&f=png&s=22506" alt=""></p>
+<p>最后来看一下类图结构：</p>
+<p><img src="https://user-gold-cdn.xitu.io/2020/2/25/1707b54365747dac?w=1066&h=769&f=png&s=67982" alt=""></p>
+<h1 id="二、源码中的策略模式"><a href="#二、源码中的策略模式" class="headerlink" title="二、源码中的策略模式"></a>二、源码中的策略模式</h1><h2 id="2-1-Compartor接口"><a href="#2-1-Compartor接口" class="headerlink" title="2.1 Compartor接口"></a>2.1 Compartor接口</h2><p>Compartor接口中的compare()方法就是一个策略模式的抽象实现。</p>
+<p>int compare(T o1, T o2);</p>
+<p>Comparator 接口下面有非常多的实现类，我们经常会把 Comparator 作为参数传入作为排序策略，例如 Arrays 类的 parallelSort 方法等：</p>
+<p><img src="https://user-gold-cdn.xitu.io/2020/2/25/1707b643e817639c?w=1645&h=496&f=png&s=70716" alt=""></p>
+<p>还有 TreeMap 的构造方法:</p>
+<p><img src="https://user-gold-cdn.xitu.io/2020/2/25/1707b6689c6d7218?w=1162&h=259&f=png&s=36243" alt=""></p>
+<h2 id="2-2-Spring中的策略模式"><a href="#2-2-Spring中的策略模式" class="headerlink" title="2.2 Spring中的策略模式"></a>2.2 Spring中的策略模式</h2><h2 id="2-2-1-Resouce类"><a href="#2-2-1-Resouce类" class="headerlink" title="2.2.1 Resouce类"></a>2.2.1 Resouce类</h2><p>我们来看Resource类的源码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line">package org.springframework.core.io;</span><br><span class="line"></span><br><span class="line">import java.io.File;</span><br><span class="line">import java.io.IOException;</span><br><span class="line">import java.net.URI;</span><br><span class="line">import java.net.URL;</span><br><span class="line">import java.nio.channels.Channels;</span><br><span class="line">import java.nio.channels.ReadableByteChannel;</span><br><span class="line">import org.springframework.lang.Nullable;</span><br><span class="line"></span><br><span class="line">public interface Resource extends InputStreamSource &#123;</span><br><span class="line">    boolean exists();</span><br><span class="line"></span><br><span class="line">    default boolean isReadable() &#123;</span><br><span class="line">        return this.exists();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    default boolean isOpen() &#123;</span><br><span class="line">        return false;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    default boolean isFile() &#123;</span><br><span class="line">        return false;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    URL getURL() throws IOException;</span><br><span class="line"></span><br><span class="line">    URI getURI() throws IOException;</span><br><span class="line"></span><br><span class="line">    File getFile() throws IOException;</span><br><span class="line"></span><br><span class="line">    default ReadableByteChannel readableChannel() throws IOException &#123;</span><br><span class="line">        return Channels.newChannel(this.getInputStream());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    long contentLength() throws IOException;</span><br><span class="line"></span><br><span class="line">    long lastModified() throws IOException;</span><br><span class="line"></span><br><span class="line">    Resource createRelative(String var1) throws IOException;</span><br><span class="line"></span><br><span class="line">    @Nullable</span><br><span class="line">    String getFilename();</span><br><span class="line"></span><br><span class="line">    String getDescription();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们虽然没有直接使用 Resource 类，但是我们经常使用它的子类，例如：</p>
+<p><img src="https://user-gold-cdn.xitu.io/2020/2/25/1707b7cc055b952d?w=1885&h=568&f=png&s=186061" alt=""></p>
+<p>Spring 的初始化也采用了策略模式，不同的类型的类采用不<br>同的初始化策略。首先有一个 <strong>InstantiationStrategy</strong> 接口，我们来看一下源码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">public interface InstantiationStrategy &#123;</span><br><span class="line">    Object instantiate(RootBeanDefinition var1, @Nullable String var2, BeanFactory var3) throws BeansException;</span><br><span class="line"></span><br><span class="line">    Object instantiate(RootBeanDefinition var1, @Nullable String var2, BeanFactory var3, Constructor&lt;?&gt; var4, Object... var5) throws BeansException;</span><br><span class="line"></span><br><span class="line">    Object instantiate(RootBeanDefinition var1, @Nullable String var2, BeanFactory var3, @Nullable Object var4, Method var5, Object... var6) throws BeansException;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>顶层的策略抽象非常简单，但是它下面有两种策略 <strong>SimpleInstantiationStrategy</strong> 和<strong>CglibSubclassingInstantiationStrategy</strong>，我们看一下类图：</p>
+<p><img src="https://user-gold-cdn.xitu.io/2020/2/25/1707b81615f908ef?w=1057&h=724&f=png&s=80916" alt=""><br>打开类图我们还发现 CglibSubclassingInstantiationStrategy 策略类还继承了<br>SimpleInstantiationStrategy类，说明在实际应用中多种策略之间还可以继承使用。</p>
+<h1 id="三、策略模式的优缺点"><a href="#三、策略模式的优缺点" class="headerlink" title="三、策略模式的优缺点"></a>三、策略模式的优缺点</h1><p>优点：</p>
+<ul>
+<li>策略模式符合开闭原则；</li>
+</ul>
+<ul>
+<li>避免使用多重条件转移语句，如 if…else…语句、switch 语句；</li>
+</ul>
+<ul>
+<li>使用策略模式可以提高算法的保密性和安全性。</li>
+</ul>
+<p>缺点：</p>
+<ul>
+<li>客户端必须知道所有的策略，并且自行决定使用哪一个策略类；</li>
+</ul>
+<ul>
+<li>代码中会产生非常多策略类，增加维护难度。</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://xkjava.github.io/2020/02/25/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E5%B1%9E%E4%BA%8E%E6%B8%B8%E6%88%8F%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E7%9A%84%E7%AD%96%E7%95%A5%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" data-id="ck71nyx940007w7rag4u96pze" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2020/02/25/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E5%B9%B2%E8%BF%87%E4%B8%AD%E4%BB%8B%E5%B9%B2%E8%BF%87%E5%BF%AB%E9%80%92%E7%9A%84%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">架构师内功心法，干过中介干过快递的代理模式详解</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2020/02/25/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E5%B1%9E%E4%BA%8E%E6%B8%B8%E6%88%8F%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E7%9A%84%E7%AD%96%E7%95%A5%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/">架构师内功心法，属于游戏设计模式的策略模式详解</a>
+          </li>
+        
+          <li>
+            <a href="/2020/02/25/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E5%B9%B2%E8%BF%87%E4%B8%AD%E4%BB%8B%E5%B9%B2%E8%BF%87%E5%BF%AB%E9%80%92%E7%9A%84%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/">架构师内功心法，干过中介干过快递的代理模式详解</a>
+          </li>
+        
+          <li>
+            <a href="/2020/02/22/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E5%8F%AA%E6%98%AF%E5%8D%95%E7%BA%AF%E5%90%AC%E8%AF%B4%E8%BF%87%E7%9A%84%E5%8E%9F%E5%9E%8B%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/">架构师内功心法，只是单纯听说过的原型模式详解</a>
+          </li>
+        
+          <li>
+            <a href="/2020/02/21/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E7%BB%8F%E5%85%B8%E9%AB%98%E9%A2%91%E9%9D%A2%E8%AF%95%E7%9A%84%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/">架构师内功心法，经典高频面试的单例模式详解</a>
+          </li>
+        
+          <li>
+            <a href="/2020/02/21/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E7%BB%8F%E5%85%B8%E6%A1%86%E6%9E%B6%E9%83%BD%E5%9C%A8%E7%94%A8%E7%9A%84%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/">架构师内功心法，经典框架都在用的工厂模式详解</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2020 Kevin Shaw<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+  </div>
+</body>
+</html>
