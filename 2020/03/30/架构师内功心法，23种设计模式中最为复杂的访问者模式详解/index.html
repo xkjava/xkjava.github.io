@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>架构师内功心法，23种设计模式中最为复杂的访问者模式详解 | 来一杯咖啡</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="访问者模式（Visitor Pattern）是一种将数据结构和数据操作分离的设计模式。是指封装一些作用于某种数据结构中的各种元素的操作，它可以在不改变数据结构的前提下定义作用于这些元素的新的操作。 访问者模式被称为最复杂的设计模式，并且使用频率不高，设计模式的作者也评价为：大多情况下，你不需要使用访问者模式，但是一旦需要使用它时，那就真的需要使用了。访问者模式的基本思想是，针对系统中拥有固定类型数">
+<meta property="og:type" content="article">
+<meta property="og:title" content="架构师内功心法，23种设计模式中最为复杂的访问者模式详解">
+<meta property="og:url" content="https://xkjava.github.io/2020/03/30/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C23%E7%A7%8D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B8%AD%E6%9C%80%E4%B8%BA%E5%A4%8D%E6%9D%82%E7%9A%84%E8%AE%BF%E9%97%AE%E8%80%85%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/index.html">
+<meta property="og:site_name" content="来一杯咖啡">
+<meta property="og:description" content="访问者模式（Visitor Pattern）是一种将数据结构和数据操作分离的设计模式。是指封装一些作用于某种数据结构中的各种元素的操作，它可以在不改变数据结构的前提下定义作用于这些元素的新的操作。 访问者模式被称为最复杂的设计模式，并且使用频率不高，设计模式的作者也评价为：大多情况下，你不需要使用访问者模式，但是一旦需要使用它时，那就真的需要使用了。访问者模式的基本思想是，针对系统中拥有固定类型数">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2020/3/29/17124e40cf3045f9?w=600&h=327&f=png&s=121106">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2020/3/29/17124e533c17755f?w=480&h=359&f=png&s=308415">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2020/3/29/171256fdfa21be22?w=721&h=556&f=png&s=46852">
+<meta property="article:published_time" content="2020-03-30T03:37:03.000Z">
+<meta property="article:modified_time" content="2020-03-30T03:38:48.847Z">
+<meta property="article:author" content="Kevin Shaw">
+<meta property="article:tag" content="Java">
+<meta property="article:tag" content="Spring">
+<meta property="article:tag" content="Netty">
+<meta property="article:tag" content="Kafka...">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://user-gold-cdn.xitu.io/2020/3/29/17124e40cf3045f9?w=600&h=327&f=png&s=121106">
+  
+    <link rel="alternate" href="/atom.xml" title="来一杯咖啡" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">来一杯咖啡</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">互联网技术无边界，学习与交流</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://xkjava.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-架构师内功心法，23种设计模式中最为复杂的访问者模式详解" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/03/30/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C23%E7%A7%8D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B8%AD%E6%9C%80%E4%B8%BA%E5%A4%8D%E6%9D%82%E7%9A%84%E8%AE%BF%E9%97%AE%E8%80%85%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" class="article-date">
+  <time datetime="2020-03-30T03:37:03.000Z" itemprop="datePublished">2020-03-30</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      架构师内功心法，23种设计模式中最为复杂的访问者模式详解
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>访问者模式（Visitor Pattern）是一种将数据结构和数据操作分离的设计模式。是指封装一些作用于某种数据结构中的各种元素的操作，它可以在不改变数据结构的前提下定义作用于这些元素的新的操作。</p>
+<p>访问者模式被称为最复杂的设计模式，并且使用频率不高，设计模式的作者也评价为：大多情况下，你不需要使用访问者模式，但是一旦需要使用它时，那就真的需要使用了。访问者模式的基本思想是，针对系统中拥有固定类型数的对象结构（元素），在其内提供一个accept()方法用来接受访问者对象的访问。不同的访问者对同一元素的访问内容不同，使得相同的元素集合可以产生不同的数据结果。accept()方法可以接收不同的访问者对象，然后在内部将自己（元素）转发到接收到的访问者对象的visit()方法内。访问者内部对应类型的visit()方法就会得到回调执行，对元素进行操作。也就是通过两次动态分发（第一次是对访问者的分发accept()方法，第二次是对元素的分发visit()方法），才最终将一个具体的元素传递到一个具体的访问者。如此一来，就解耦了数据结构与操作，且数据操作不会改变元素状态。</p>
+<h1 id="一、访问者模式的应用场景"><a href="#一、访问者模式的应用场景" class="headerlink" title="一、访问者模式的应用场景"></a>一、访问者模式的应用场景</h1><p>访问者模式在生活场景中也是非常当多的，例如每年年底的KPI考核，KPI考核标准是相对稳定的，但是参与KPI考核的员工可能每年都会发生变化，那么员工就是访问者。我们平时去食堂或者餐厅吃饭，餐厅的菜单和就餐方式是相对稳定的，但是去餐厅就餐的人员是每天都在发生变化的，因此就餐人员就是访问者。</p>
+<p><img src="https://user-gold-cdn.xitu.io/2020/3/29/17124e40cf3045f9?w=600&h=327&f=png&s=121106" alt=""><br><img src="https://user-gold-cdn.xitu.io/2020/3/29/17124e533c17755f?w=480&h=359&f=png&s=308415" alt=""></p>
+<p>访问者模式的核心是，解耦数据结构与数据操作，使得对元素的操作具备优秀的扩展性。可以通过扩展不同的数据操作类型（访问者）实现对相同元素的不同的操作。简而言之就是对集合中的不同类型数据（类型数量稳定）进行多种操作，则使用访问者模式。</p>
+<p>访问者模式的应用场景适用于以下几个场景：</p>
+<ul>
+<li>数据结构稳定，作用于数据结构的操作经常变化的场景；</li>
+<li>需要数据结构与数据操作呢分离的场景；</li>
+<li>需要对不同数据类型（元素）进行操作，而不使用分支判断具体类型的场景。</li>
+</ul>
+<p>访问者模式主要包含五种角色：</p>
+<ul>
+<li>抽象访问者（Visitor)：接口或抽象类，该类地冠以了对每一个具体元素（Element）的访问行为visit()方法，其参数就是具体的元素（Element）对象。理论上来说，Visitor的方法个数与元素（Element）个数是相等的。如果元素（Element）个数经常变动，会导致Visitor的方法也要进行变动，此时，该情形并不适用访问者模式；</li>
+<li>具体访问者（ConcreteVisitor）：实现对具体元素的操作；</li>
+<li>抽象元素（Element）：接囗或抽象类，定义了一个接受访问者访问的方法accept()表示所有元素类型都支持被访问者访问；</li>
+<li>具体元素（ConcreteElement）：具体元素类型，提供接受访问者的具体实现。通常的实现都为：visitor.visit(this)；</li>
+<li>结构对象（ObjectStructure）：内部维护了元素集合，并提供方法接受访问者对该集合所有元素进行操作。</li>
+</ul>
+<h2 id="1-1-利用访问者模式实现公司KPI考核"><a href="#1-1-利用访问者模式实现公司KPI考核" class="headerlink" title="1.1 利用访问者模式实现公司KPI考核"></a>1.1 利用访问者模式实现公司KPI考核</h2><p>每到年底，公司的管理层就要开始评定员工一年的工作绩效了，管理层有CEO和CTO，那么CEO关注的是工程师的KPI和经理的KPI以及新产品的数量，而CTO关心的是工程师的代码量、经理的新产品数量。</p>
+<p>由于CEO和CTO对于不同员工的关注点是不一样的，这就需要对不同的员工类型进行不同的处理。此时访问者模式就派上用场了。下面来看下具体的代码实现，首先创建员工Employee类：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">public abstract class Employee &#123;</span><br><span class="line"></span><br><span class="line">    private String name;</span><br><span class="line"></span><br><span class="line">    private int kpi;</span><br><span class="line"></span><br><span class="line">    public Employee(String name) &#123;</span><br><span class="line">        this.name &#x3D; name;</span><br><span class="line">        this.kpi &#x3D; new Random().nextInt(10);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;**</span><br><span class="line">     * 接收访问者的访问</span><br><span class="line">     * @param visitor</span><br><span class="line">     *&#x2F;</span><br><span class="line">    public abstract void accept(IVisitor visitor);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Employee类的accept()方法表示接受访问者的访问，由具体的子类实现。<strong>访问者是一个接口，传入不同的实现类，可以访问不同的数据。</strong> 分别创建工程师Engineer类和经理Manager类：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">public class Engineer extends Employee &#123;</span><br><span class="line">    public Engineer(String name) &#123;</span><br><span class="line">        super(name);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public void accept(IVisitor visitor) &#123;</span><br><span class="line">        visitor.visit(this);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public int getCodeLines() &#123;</span><br><span class="line">        return new Random().nextInt(10 * 10000);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">public class Manager extends Employee &#123;</span><br><span class="line">    public Manager(String name) &#123;</span><br><span class="line">        super(name);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public void accept(IVisitor visitor) &#123;</span><br><span class="line">        visitor.visit(this);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public int getPrducts() &#123;</span><br><span class="line">        return new Random().nextInt(10);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>工程师考核的是代码数量，经理考核的是产品数量，二者的职责不一样。也正是因为有这样的差异性，才使得访问模式能够在这个场景下发挥作用。将这些员工添加到一个业务报表类中，公司高层可以通过该报表类的showReport()方法查看所有员工的绩效，创建BusinessReport类：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">public class BusinessReport &#123;</span><br><span class="line"></span><br><span class="line">    private List&lt;Employee&gt; employeeList &#x3D; new LinkedList&lt;&gt;();</span><br><span class="line"></span><br><span class="line">    public BusinessReport() &#123;</span><br><span class="line">        employeeList.add(new Engineer(&quot;工程师1&quot;));</span><br><span class="line">        employeeList.add(new Engineer(&quot;工程师2&quot;));</span><br><span class="line">        employeeList.add(new Engineer(&quot;工程师3&quot;));</span><br><span class="line">        employeeList.add(new Engineer(&quot;工程师4&quot;));</span><br><span class="line"></span><br><span class="line">        employeeList.add(new Manager(&quot;产品经理1&quot;));</span><br><span class="line">        employeeList.add(new Manager(&quot;产品经理2&quot;));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;**</span><br><span class="line">     *</span><br><span class="line">     * @param visitor 公司高层，如CEO，CTO</span><br><span class="line">     *&#x2F;</span><br><span class="line">    public void showReport(IVisitor visitor) &#123;</span><br><span class="line">        for(Employee employee : employeeList) &#123;</span><br><span class="line">            employee.accept(visitor);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>定义访问者类型，创建接口IVisitor，访问者声明了两个visit()方法，分别针对工程师和经理，代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">public interface IVisitor &#123;</span><br><span class="line"></span><br><span class="line">    void visit(Engineer engineer);</span><br><span class="line"></span><br><span class="line">    void visit(Manager manager);</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>具体访问者CEOVisitor和CTOVisitor类：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">public class CEOVisitor implements IVisitor &#123;</span><br><span class="line">    @Override</span><br><span class="line">    public void visit(Engineer engineer) &#123;</span><br><span class="line">        System.out.println(&quot;工程师：&quot; + engineer.name + &quot;, KPI：&quot; + engineer.kpi);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public void visit(Manager manager) &#123;</span><br><span class="line">        System.out.println(&quot;经理：&quot; + manager.name + &quot;, KPI：&quot; + manager.kpi +</span><br><span class="line">                            &quot;, 新产品数量&quot; + manager.getPrducts() );</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">public class CTOVisitor implements IVisitor &#123;</span><br><span class="line">    @Override</span><br><span class="line">    public void visit(Engineer engineer) &#123;</span><br><span class="line">        System.out.println(&quot;工程师：&quot; + engineer.name + &quot;, 代码数量：&quot; + engineer.getCodeLines());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public void visit(Manager manager) &#123;</span><br><span class="line">        System.out.println(&quot;经理：&quot; + manager.name +</span><br><span class="line">                            &quot;, 新产品数量&quot; + manager.getPrducts() );</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>测试main方法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">public static void main(String[] args) &#123;</span><br><span class="line">    BusinessReport businessReport &#x3D; new BusinessReport();</span><br><span class="line">    businessReport.showReport(new CEOVisitor());</span><br><span class="line">    businessReport.showReport(new CTOVisitor());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>运行结果如下：</p>
+<p><img src="https://user-gold-cdn.xitu.io/2020/3/29/171256fdfa21be22?w=721&h=556&f=png&s=46852" alt=""><br>在上述的案例中，Employee扮演了Element角色，而Engineer和Manager都是ConcreteElement；CEOVisitor和CTOVisitor都是具体的Visitor对象；而BusinessReport就是ObjectStructure。</p>
+<p>访问者模式最大的优点就是增加访问者非常容，我们从代码中可以看到，如果要增加一访问者，只要新实现一个访问者接口的类，从而达到数据对象与数据操作相分离的效果。如果不实用访问者模式而又不想对不同的元素进行不同的操作，那么必定需要使用if-else和类型转换，这使得代码唯以升级维护。</p>
+<p>我们要根据具体情况来评估是否适合使用访问者模式，例如，我们的对象结构是否足够稳定是否需要经常定义新的操作，使用访问者模式是否能优化我们的代码而不是使我们的代码变得更复杂。</p>
+<h2 id="1-2-从静态分派到动态分派"><a href="#1-2-从静态分派到动态分派" class="headerlink" title="1.2 从静态分派到动态分派"></a>1.2 从静态分派到动态分派</h2><p><strong>变量被声明时的类型叫做变量的静态类型（Static Type），有些人把静态类型叫做明显类型（Apparent Type）；而变量所引用的对象的真是类型又叫做变量的实际类型（Actual Type）。</strong> 比如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">List list &#x3D; null;</span><br><span class="line">list &#x3D; new ArrayList();</span><br></pre></td></tr></table></figure>
+
+<p>上面的代码声明了一个list，它的静态类型（也叫明显类型）是List，而它的实际类型是ArrayList。根据对象的类型而对方法进行的选择，就是分派（Dispatch）。分派又分为两种，即动态分派和静态分派。</p>
+<h2 id="1-2-1-静态分派"><a href="#1-2-1-静态分派" class="headerlink" title="1.2.1 静态分派"></a>1.2.1 静态分派</h2><p>静态分派（Static Dispatch）就是按照变量的静态类型进行分派，从而确定方法的执行版本，静态分派在编译时期就可以确定方法的版本。而静态分配最经典的就是方法重载，请看下面的这段代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">public class StaticDispatch &#123;</span><br><span class="line"></span><br><span class="line">    public void test(String string) &#123;</span><br><span class="line">        System.out.println(&quot;string&quot;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void test(Integer integer) &#123;</span><br><span class="line">        System.out.println(&quot;integer&quot;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        String string &#x3D; &quot;1&quot;;</span><br><span class="line">        Integer integer &#x3D; 1;</span><br><span class="line">        StaticDispatch staticDispatch &#x3D; new StaticDispatch();</span><br><span class="line">        staticDispatch.test(string);</span><br><span class="line">        staticDispatch.test(integer);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在静态分派判断的时候，我们根据多个判断依据（即参数类型和个数）判断出了方法的版本，那么这个就是多分派的概念，因为有一个以上的考量标准。所以<strong>Java语言是静态多分派语言。</strong></p>
+<h2 id="1-2-2-动态分派"><a href="#1-2-2-动态分派" class="headerlink" title="1.2.2 动态分派"></a>1.2.2 动态分派</h2><p>动态分派，与静态相反，它不是在编译期间确定方法的版本，而是在运行时确定的。Java是动态单分派语言。</p>
+<h2 id="1-2-3-访问者模式中的伪动态双分派"><a href="#1-2-3-访问者模式中的伪动态双分派" class="headerlink" title="1.2.3 访问者模式中的伪动态双分派"></a>1.2.3 访问者模式中的伪动态双分派</h2><p>通过前面分析，我们知道Java是静态多分派、动态单分派的语言。Java底层不支持动态的双分派。但是通过使用设计模式，也可以在Java语言里实现伪动态双分派。在访问者模式中使用的就是伪动态双分派。所谓动态双分派就是在运行时依据两个实际类型去判断一个方法的运行行为，而访问者模式实现的手段是进行了两次动态单分派来达到这个效果。<br>还是回到前面的公司KPI考核业务场景当中，BusinessReport类中的showReport()方法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"> &#x2F;**</span><br><span class="line"> *</span><br><span class="line"> * @param visitor 公司高层，如CEO，CTO</span><br><span class="line"> *&#x2F;</span><br><span class="line">public void showReport(IVisitor visitor) &#123;</span><br><span class="line">    for(Employee employee : employeeList) &#123;</span><br><span class="line">        employee.accept(visitor);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里就是依据Employee和IVisitor两个实际类型决定了showReport()方法的执行结果从而决定了accept()方法的动作。</p>
+<p>分析accept()方法的调用过程<br>1、当调用accept()方法时，根据Employee的实际类型决定是调用Engineer还是Manager的accept()方法。</p>
+<p>2、这时accept()方法的版本已经确定，假如是Engineer，它的accept()方去是调用下面这行代码。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">public void accept(IVisitor visitor) &#123;</span><br><span class="line">    visitor.visit(this);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>此时的this是Engineer类型，所以对应的IVisitor接口的visit(Engineer enginner)方法，此时需要再根据访问者的实际类型确定visit()方法的版本，这样一来，就完成了动态分派的过程。</p>
+<p>以上的过程就是通过两次动态双分派，第一次对accept()方法进行动态分派，第二次访问者的visit()方法进行动态分派，从而到达了根据两个实际类型确定一个方法的行为结果。</p>
+<h1 id="二、访问者模式在源码中的体现"><a href="#二、访问者模式在源码中的体现" class="headerlink" title="二、访问者模式在源码中的体现"></a>二、访问者模式在源码中的体现</h1><h2 id="2-1-NIO中的FileVisitor接口"><a href="#2-1-NIO中的FileVisitor接口" class="headerlink" title="2.1 NIO中的FileVisitor接口"></a>2.1 NIO中的FileVisitor接口</h2><p>JDK中的NIO模块下的FileVisitor接口，它提供递归遍历文件树的支持。来看下源码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br></pre></td><td class="code"><pre><span class="line">public interface FileVisitor&lt;T&gt; &#123;</span><br><span class="line"></span><br><span class="line">    &#x2F;**</span><br><span class="line">     * Invoked for a directory before entries in the directory are visited.</span><br><span class="line">     *</span><br><span class="line">     * &lt;p&gt; If this method returns &#123;@link FileVisitResult#CONTINUE CONTINUE&#125;,</span><br><span class="line">     * then entries in the directory are visited. If this method returns &#123;@link</span><br><span class="line">     * FileVisitResult#SKIP_SUBTREE SKIP_SUBTREE&#125; or &#123;@link</span><br><span class="line">     * FileVisitResult#SKIP_SIBLINGS SKIP_SIBLINGS&#125; then entries in the</span><br><span class="line">     * directory (and any descendants) will not be visited.</span><br><span class="line">     *</span><br><span class="line">     * @param   dir</span><br><span class="line">     *          a reference to the directory</span><br><span class="line">     * @param   attrs</span><br><span class="line">     *          the directory&#39;s basic attributes</span><br><span class="line">     *</span><br><span class="line">     * @return  the visit result</span><br><span class="line">     *</span><br><span class="line">     * @throws  IOException</span><br><span class="line">     *          if an I&#x2F;O error occurs</span><br><span class="line">     *&#x2F;</span><br><span class="line">    FileVisitResult preVisitDirectory(T dir, BasicFileAttributes attrs)</span><br><span class="line">        throws IOException;</span><br><span class="line"></span><br><span class="line">    &#x2F;**</span><br><span class="line">     * Invoked for a file in a directory.</span><br><span class="line">     *</span><br><span class="line">     * @param   file</span><br><span class="line">     *          a reference to the file</span><br><span class="line">     * @param   attrs</span><br><span class="line">     *          the file&#39;s basic attributes</span><br><span class="line">     *</span><br><span class="line">     * @return  the visit result</span><br><span class="line">     *</span><br><span class="line">     * @throws  IOException</span><br><span class="line">     *          if an I&#x2F;O error occurs</span><br><span class="line">     *&#x2F;</span><br><span class="line">    FileVisitResult visitFile(T file, BasicFileAttributes attrs)</span><br><span class="line">        throws IOException;</span><br><span class="line"></span><br><span class="line">    &#x2F;**</span><br><span class="line">     * Invoked for a file that could not be visited. This method is invoked</span><br><span class="line">     * if the file&#39;s attributes could not be read, the file is a directory</span><br><span class="line">     * that could not be opened, and other reasons.</span><br><span class="line">     *</span><br><span class="line">     * @param   file</span><br><span class="line">     *          a reference to the file</span><br><span class="line">     * @param   exc</span><br><span class="line">     *          the I&#x2F;O exception that prevented the file from being visited</span><br><span class="line">     *</span><br><span class="line">     * @return  the visit result</span><br><span class="line">     *</span><br><span class="line">     * @throws  IOException</span><br><span class="line">     *          if an I&#x2F;O error occurs</span><br><span class="line">     *&#x2F;</span><br><span class="line">    FileVisitResult visitFileFailed(T file, IOException exc)</span><br><span class="line">        throws IOException;</span><br><span class="line"></span><br><span class="line">    &#x2F;**</span><br><span class="line">     * Invoked for a directory after entries in the directory, and all of their</span><br><span class="line">     * descendants, have been visited. This method is also invoked when iteration</span><br><span class="line">     * of the directory completes prematurely (by a &#123;@link #visitFile visitFile&#125;</span><br><span class="line">     * method returning &#123;@link FileVisitResult#SKIP_SIBLINGS SKIP_SIBLINGS&#125;,</span><br><span class="line">     * or an I&#x2F;O error when iterating over the directory).</span><br><span class="line">     *</span><br><span class="line">     * @param   dir</span><br><span class="line">     *          a reference to the directory</span><br><span class="line">     * @param   exc</span><br><span class="line">     *          &#123;@code null&#125; if the iteration of the directory completes without</span><br><span class="line">     *          an error; otherwise the I&#x2F;O exception that caused the iteration</span><br><span class="line">     *          of the directory to complete prematurely</span><br><span class="line">     *</span><br><span class="line">     * @return  the visit result</span><br><span class="line">     *</span><br><span class="line">     * @throws  IOException</span><br><span class="line">     *          if an I&#x2F;O error occurs</span><br><span class="line">     *&#x2F;</span><br><span class="line">    FileVisitResult postVisitDirectory(T dir, IOException exc)</span><br><span class="line">        throws IOException;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这个接口上面定义的方法表示了遍历文件的关键过程，允许在文件被访问、目录被访问、目录已被访问、放生错误过程中进行控制整个流程。调用接口中的方法，会返回访问结果FileVisitResult对象值，用于决定当前操作完成后接下来该如何处理。FileVisitResult的标准返回值存放到枚举类型中：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">public enum FileVisitResult &#123;</span><br><span class="line">    &#x2F;**</span><br><span class="line">     * Continue. When returned from a &#123;@link FileVisitor#preVisitDirectory</span><br><span class="line">     * preVisitDirectory&#125; method then the entries in the directory should also</span><br><span class="line">     * be visited.</span><br><span class="line">     *&#x2F;</span><br><span class="line">     &#x2F;&#x2F;当前的遍历过程将会继续</span><br><span class="line">    CONTINUE,</span><br><span class="line">    &#x2F;**</span><br><span class="line">     * Terminate.</span><br><span class="line">     *&#x2F;</span><br><span class="line">     &#x2F;&#x2F;表示当前的遍历过程将会停止</span><br><span class="line">    TERMINATE,</span><br><span class="line">    &#x2F;**</span><br><span class="line">     * Continue without visiting the entries in this directory. This result</span><br><span class="line">     * is only meaningful when returned from the &#123;@link</span><br><span class="line">     * FileVisitor#preVisitDirectory preVisitDirectory&#125; method; otherwise</span><br><span class="line">     * this result type is the same as returning &#123;@link #CONTINUE&#125;.</span><br><span class="line">     *&#x2F;</span><br><span class="line">     &#x2F;&#x2F;当前的遍历过程将会继续，但是要忽略当前目录下的所有节点</span><br><span class="line">    SKIP_SUBTREE,</span><br><span class="line">    &#x2F;**</span><br><span class="line">     * Continue without visiting the &lt;em&gt;siblings&lt;&#x2F;em&gt; of this file or directory.</span><br><span class="line">     * If returned from the &#123;@link FileVisitor#preVisitDirectory</span><br><span class="line">     * preVisitDirectory&#125; method then the entries in the directory are also</span><br><span class="line">     * skipped and the &#123;@link FileVisitor#postVisitDirectory postVisitDirectory&#125;</span><br><span class="line">     * method is not invoked.</span><br><span class="line">     *&#x2F;</span><br><span class="line">     &#x2F;&#x2F;当前的遍历过程将会继续，但是要忽略当前文件&#x2F;目录的兄弟节点</span><br><span class="line">    SKIP_SIBLINGS;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-2-Spring中的BeanDefinitionVisitor类"><a href="#2-2-Spring中的BeanDefinitionVisitor类" class="headerlink" title="2.2 Spring中的BeanDefinitionVisitor类"></a>2.2 Spring中的BeanDefinitionVisitor类</h2><p>在Spring的Ioc中有个BeanDefinitionVisitor类，它有一个visitBeanDefinition()方法，看下源码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">public void visitBeanDefinition(BeanDefinition beanDefinition) &#123;</span><br><span class="line">	visitParentName(beanDefinition);</span><br><span class="line">	visitBeanClassName(beanDefinition);</span><br><span class="line">	visitFactoryBeanName(beanDefinition);</span><br><span class="line">	visitFactoryMethodName(beanDefinition);</span><br><span class="line">	visitScope(beanDefinition);</span><br><span class="line">	if (beanDefinition.hasPropertyValues()) &#123;</span><br><span class="line">		visitPropertyValues(beanDefinition.getPropertyValues());</span><br><span class="line">	&#125;</span><br><span class="line">	if (beanDefinition.hasConstructorArgumentValues()) &#123;</span><br><span class="line">		ConstructorArgumentValues cas &#x3D; beanDefinition.getConstructorArgumentValues();</span><br><span class="line">		visitIndexedArgumentValues(cas.getIndexedArgumentValues());</span><br><span class="line">		visitGenericArgumentValues(cas.getGenericArgumentValues());</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在其方法中分别访问了其它的数据，比如父类的名字、自己的类名、在Ioc容器中的名称等各种信息。</p>
+<h1 id="三、访问者模式的优缺点"><a href="#三、访问者模式的优缺点" class="headerlink" title="三、访问者模式的优缺点"></a>三、访问者模式的优缺点</h1><p>优点</p>
+<ul>
+<li>解耦了数据结构与数据操作，使得操作集合可以独立变化；</li>
+<li>扩展性好：可以通过扩展访问者角色，实现对数据集的不同操作；</li>
+<li>元素具体类型并非单一，访问者均可操作；</li>
+<li>各角色职责分离，符合单一职责原则。</li>
+</ul>
+<p>缺点</p>
+<ul>
+<li>无法增加元素类型：若系统数据结构对象另于变化，经常有新的数据对象增加进来，则访问者类必须增加对应元素类型的操作，违背了开闭原则。</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://xkjava.github.io/2020/03/30/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C23%E7%A7%8D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B8%AD%E6%9C%80%E4%B8%BA%E5%A4%8D%E6%9D%82%E7%9A%84%E8%AE%BF%E9%97%AE%E8%80%85%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" data-id="ck8dxblz2000ksfra9qo9hdhn" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2020/03/27/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E8%A2%AB%E8%AA%89%E4%B8%BA%E6%91%A9%E6%96%AF%E5%AF%86%E7%A0%81%E7%9A%84%E8%A7%A3%E9%87%8A%E5%99%A8%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">架构师内功心法，被誉为摩斯密码的解释器模式详解</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2020/03/30/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C23%E7%A7%8D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B8%AD%E6%9C%80%E4%B8%BA%E5%A4%8D%E6%9D%82%E7%9A%84%E8%AE%BF%E9%97%AE%E8%80%85%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/">架构师内功心法，23种设计模式中最为复杂的访问者模式详解</a>
+          </li>
+        
+          <li>
+            <a href="/2020/03/27/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E8%A2%AB%E8%AA%89%E4%B8%BA%E6%91%A9%E6%96%AF%E5%AF%86%E7%A0%81%E7%9A%84%E8%A7%A3%E9%87%8A%E5%99%A8%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/">架构师内功心法，被誉为摩斯密码的解释器模式详解</a>
+          </li>
+        
+          <li>
+            <a href="/2020/03/25/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E4%B8%8D%E9%9C%80%E8%A6%81%E4%B8%AD%E9%97%B4%E5%95%86%E8%B5%9A%E5%B7%AE%E4%BB%B7%E7%9A%84%E4%B8%AD%E4%BB%8B%E8%80%85%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/">架构师内功心法，不需要中间商赚差价的中介者模式详解</a>
+          </li>
+        
+          <li>
+            <a href="/2020/03/22/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E5%8F%82%E4%B8%8E%E5%AF%8C%E6%96%87%E6%9C%AC%E7%BC%96%E8%BE%91%E5%99%A8%E5%BC%80%E5%8F%91%E7%9A%84%E5%A4%87%E5%BF%98%E5%BD%95%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/">架构师内功心法，参与富文本编辑器开发的备忘录模式详解</a>
+          </li>
+        
+          <li>
+            <a href="/2020/03/21/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E5%8F%82%E4%B8%8E%E7%94%B5%E5%95%86%E8%AE%A2%E5%8D%95%E4%B8%9A%E5%8A%A1%E5%BC%80%E5%8F%91%E7%9A%84%E7%8A%B6%E6%80%81%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/">架构师内功心法，参与电商订单业务开发的状态模式详解</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2020 Kevin Shaw<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+  </div>
+</body>
+</html>

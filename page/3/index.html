@@ -74,6 +74,142 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-如何优雅的学习JVM，综合篇（五）" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/02/13/%E5%A6%82%E4%BD%95%E4%BC%98%E9%9B%85%E7%9A%84%E5%AD%A6%E4%B9%A0JVM%EF%BC%8C%E7%BB%BC%E5%90%88%E7%AF%87%EF%BC%88%E4%BA%94%EF%BC%89/" class="article-date">
+  <time datetime="2020-02-13T13:30:03.000Z" itemprop="datePublished">2020-02-13</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/02/13/%E5%A6%82%E4%BD%95%E4%BC%98%E9%9B%85%E7%9A%84%E5%AD%A6%E4%B9%A0JVM%EF%BC%8C%E7%BB%BC%E5%90%88%E7%AF%87%EF%BC%88%E4%BA%94%EF%BC%89/">如何优雅的学习JVM，综合篇（五）</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="一、重新认识JVM"><a href="#一、重新认识JVM" class="headerlink" title="一、重新认识JVM"></a>一、重新认识JVM</h1><p>在之前的我们画过一张图，是从class文件到类装载器，再到运行时数据区的过程。今天把这张图进行升级，画一张完整的JVM大体的物理结构图。</p>
+<p><img src="https://user-gold-cdn.xitu.io/2020/2/13/1703d58ce61dfd9e?w=1041&h=697&f=png&s=62727" alt=""></p>
+<h1 id="二、-GC优化"><a href="#二、-GC优化" class="headerlink" title="二、 GC优化"></a>二、 GC优化</h1><p>内存被使用了之后，难免会有不够用或者达到设定值的时候，就需要对内存空间进行垃圾回收。</p>
+<h2 id="2-1-垃圾收集发生的时间"><a href="#2-1-垃圾收集发生的时间" class="headerlink" title="2.1 垃圾收集发生的时间"></a>2.1 垃圾收集发生的时间</h2><p>GC由JVM自动完成的，根据JVM系统环境而定的，所以时机是不确定的。当然，我们也可以进行手动垃圾回收，比如调用System.gc()方法通知JVM进行一次垃圾回收，但是具体什么时刻运行也无法控制。也就是System.gc()只是通知要回收，什么时候回收由JVM自行决定。但是不建议手动进行垃圾回收，因为消耗的资源比较大。</p>
+<p><strong>一般以下几种情况会进行垃圾回收</strong></p>
+<ul>
+<li>当Eden区或者S区不够用</li>
+<li>老年代空间不够用</li>
+<li>方法区看空间不够用</li>
+<li>System.gc()</li>
+</ul>
+<h2 id="2-2-项目环境准备"><a href="#2-2-项目环境准备" class="headerlink" title="2.2 项目环境准备"></a>2.2 项目环境准备</h2><p>此次案例我们使用SpringBoot来创建项目，然后配置对应的参数。</p>
+<h2 id="2-3-GC日志文件"><a href="#2-3-GC日志文件" class="headerlink" title="2.3 GC日志文件"></a>2.3 GC日志文件</h2><p><img src="https://user-gold-cdn.xitu.io/2020/2/13/1703d8a38b0e96c9?w=1174&h=633&f=png&s=59828" alt=""></p>
+<p>要分析日志的信息，首先得拿到GC日志文件才行，所以得配置一下启动参数</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-XX:+PrintGCDetails -XX:+PrintGCTimeStamps -XX:+PrintGCDateStamps -Xloggc:gc.log</span><br></pre></td></tr></table></figure>
+
+<p>然后启动项目</p>
+<p>可以看到默认使用的是<strong>ParallelGC</strong></p>
+<p><img src="https://user-gold-cdn.xitu.io/2020/2/13/1703d9807b8b571c?w=1594&h=193&f=png&s=98461" alt=""></p>
+<p>1、ParallelGC日志</p>
+<ul>
+<li>吞吐量优先，日志分析</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">2020-02-13T16:01:45.974+0800: 3.592: [GC (Allocation Failure) [PSYoungGen: 65536K【Young区回收前】-&gt;8294K【Young区回收后】(76288K【Young区总大小】)] 65536K【整个堆回收前】-&gt;8310K【整个堆回收后】(251392K【整个堆总大小】), 0.0253276 secs] [Times: user&#x3D;0.00 sys&#x3D;0.00, real&#x3D;0.03 secs]</span><br></pre></td></tr></table></figure>
+
+<p><strong>如果回收的差值有出入，则说明这部分空间是Old区释放出来的</strong></p>
+<p><img src="https://user-gold-cdn.xitu.io/2020/2/13/1703da02d79da864?w=1609&h=520&f=png&s=258949" alt=""></p>
+<p>2、CMS GC日志</p>
+<ul>
+<li>停顿时间优先</li>
+</ul>
+<p><code>参数设置：-XX:+UseConcMarkSweepGC -Xloggc:cms-gc.log</code></p>
+<p><img src="https://user-gold-cdn.xitu.io/2020/2/13/1703da8b88f3d7ed?w=1627&h=868&f=png&s=466196" alt=""></p>
+<p>3、G1 GC日志</p>
+<ul>
+<li>停顿时间优先</li>
+</ul>
+<p><code>参数设置：-XX:+UseG1GC -Xloggc:g1-gc.log</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">-XX:+UseG1GC  # 使用了G1垃圾收集器</span><br><span class="line"></span><br><span class="line">#什么时候发生的GC，相对的时间刻，GC发生的区域young，总共花费的时间，0.00444s</span><br><span class="line"></span><br><span class="line">2020-02-13T16:31:01.099+0800: 2.230: [GC pause (G1 Evacuation Pause) (young), 0.0044422 secs]</span><br><span class="line"></span><br><span class="line">#多少个垃圾回收线程，并行的时间</span><br><span class="line"></span><br><span class="line">[Parallel Time: 3.4 ms, GC Workers: 4]</span><br><span class="line"></span><br><span class="line">#GC线程开始相对于上面的0.2230的时间刻</span><br><span class="line">[GC Worker Start (ms): Min: 2230.2, Avg: 2230.2, Max: 2230.3, Diff: 0.1]</span><br><span class="line"></span><br><span class="line">#每个工作线程扫描根的时间</span><br><span class="line"></span><br><span class="line">[Ext Root Scanning (ms): Min: 0.5, Avg: 0.7, Max: 1.0, Diff: 0.5, Sum: 2.9]</span><br><span class="line"></span><br><span class="line">#每个线程更新记忆集所花费的时间</span><br><span class="line"></span><br><span class="line">[Update RS (ms): Min: 0.0, Avg: 0.0, Max: 0.0, Diff: 0.0, Sum: 0.0]</span><br></pre></td></tr></table></figure>
+
+<p><strong>理解G1日志格式：</strong> <a href="https://blogs.oracle.com/poonam/understanding-g1-gc-logs" target="_blank" rel="noopener">https://blogs.oracle.com/poonam/understanding-g1-gc-logs</a></p>
+<p><img src="https://user-gold-cdn.xitu.io/2020/2/13/1703db30649ae319?w=1603&h=865&f=png&s=321487" alt=""></p>
+<h2 id="2-4-GC日志文件分析工具"><a href="#2-4-GC日志文件分析工具" class="headerlink" title="2.4 GC日志文件分析工具"></a>2.4 GC日志文件分析工具</h2><p>1、gceasy</p>
+<p><strong>官网：</strong> <a href="https://gceasy.io/" target="_blank" rel="noopener">https://gceasy.io/</a></p>
+<p><img src="https://user-gold-cdn.xitu.io/2020/2/13/1703db93c64d20e3?w=1759&h=751&f=png&s=197662" alt=""></p>
+<p>可以比较不同的垃圾收集器的<strong>吞吐量</strong>和<strong>停顿时间</strong>，比如打开cms-gc.log和g1-gc.log</p>
+<p><img src="https://user-gold-cdn.xitu.io/2020/2/13/1703dc210eea9809?w=1840&h=739&f=png&s=121378" alt=""></p>
+<p><img src="https://user-gold-cdn.xitu.io/2020/2/13/1703dc2f9be32a4a?w=1750&h=508&f=png&s=64580" alt=""></p>
+<p>2、GCViewer</p>
+<p><img src="https://user-gold-cdn.xitu.io/2020/2/13/1703dd0c62e0f1fe?w=1924&h=1036&f=png&s=133027" alt=""></p>
+<h2 id="2-5-G1调优与最佳指南"><a href="#2-5-G1调优与最佳指南" class="headerlink" title="2.5 G1调优与最佳指南"></a>2.5 G1调优与最佳指南</h2><p>是否选用G1垃圾收集器的判断依据，<strong>官网：</strong> <a href="https://docs.oracle.com/javase/8/docs/technotes/guides/vm/G1.html#use_cases" target="_blank" rel="noopener">https://docs.oracle.com/javase/8/docs/technotes/guides/vm/G1.html#use_cases</a></p>
+<ul>
+<li>50%以上的堆被存活对象占用</li>
+<li>对象分配和晋升的速度变化非常大</li>
+<li>垃圾回收时间比较长</li>
+</ul>
+<p><strong>思考：使用G1 GC增加堆使用率</strong><br><a href="https://blogs.oracle.com/poonam/increased-heap-usage-with-g1-gc" target="_blank" rel="noopener">https://blogs.oracle.com/poonam/increased-heap-usage-with-g1-gc</a></p>
+<p>1、使用G1GC垃圾收集器: -XX:+UseG1GC</p>
+<p>修改配置参数，获取到gc日志，使用GCViewer分析吞吐量和响应时间</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Throughput    Min Pause    Max Pause   Avg Pause    GC count</span><br><span class="line">99.16%         0.00016s     0.0137s    0.00559s     12</span><br></pre></td></tr></table></figure>
+<p>2、调整内存大小再获取gc日志分析</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">-XX:MetaspaceSize&#x3D;100M</span><br><span class="line">-Xms300M</span><br><span class="line">-Xmx300M</span><br></pre></td></tr></table></figure>
+<p>比如设置堆内存的大小，获取到gc日志，使用GCViewer分析吞吐量和响应时间</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Throughput    Min Pause    Max Pause   Avg Pause    GC count</span><br><span class="line">98.89%        0.00021s     0.01531s    0.00538s      12</span><br></pre></td></tr></table></figure>
+
+<p>3、调整最大停顿时间</p>
+<p><code>-XX:MaxGCPauseMillis=20  设置最大GC停顿时间指标</code></p>
+<p>比如设置最大停顿时间，获取到gc日志，使用GCViewer分析吞吐量和响应时间</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">Throughput    Min Pause    Max Pause   Avg Pause    GC count</span><br><span class="line">98.96%        0.00015s     0.01737s    0.00574s     12</span><br></pre></td></tr></table></figure>
+<p>4、启动并发GC时堆内存占用百分比</p>
+<p><code>-XX:InitiatingHeapOccupancyPercent=45</code></p>
+<p>G1用它来触发并发GC周期,基于整个堆的使用率,而不只是某一代内存的<br>使用比例。值为 0 则表示“一直执行GC循环)’. 默认值为 45 (例如, 全部的 45% 或者使用了45%).</p>
+<p>比如设置该百分比参数，获取到gc日志，使用GCViewer分析吞吐量和响应时间</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Throughput    Min Pause    Max Pause   Avg Pause    GC count</span><br><span class="line">  98.11%      0.00406s     0.00532s    0.00469s     12</span><br></pre></td></tr></table></figure>
+<p><strong>最佳指南</strong></p>
+<p><strong>官网建议：</strong> <a href="https://docs.oracle.com/javase/8/docs/technotes/guides/vm/gctuning/g1_gc_tuning.html#recommendations" target="_blank" rel="noopener">https://docs.oracle.com/javase/8/docs/technotes/guides/vm/gctuning/g1_gc_tuning.html#recommendations</a></p>
+<p>1、<strong>不要手动设置新生代和老年代的大小，只要设置整个堆的大小</strong></p>
+<p>G1收集器在运行过程中，会自己调整新生代和老年代大小，其实是通过adapt代的大小调整对象晋升的速度和年龄，从而到达为收集器设置的暂停时间目标，如果是手动设置了大小就意味着放弃了G1的自动调优</p>
+<p>2、<strong>不断调优暂停时间目标</strong></p>
+<p>一般情况下这个时间值设置到100ms或者200ms都是可以的（不同情况会不一样），但是如果设置成50ms就太不合理了。暂停时间设置的太短，就会出现G1 GC跟不上垃圾生产的速度，最终退化成Full GC。所以对这个参数的调优是一个持续的过程，逐步调整到最佳状态。暂停时间只是一个目标，并不是总能得到满足。</p>
+<p>3、<strong>使用-XX:ConcGCThreads=n来增加标记线程的数量</strong></p>
+<p>IHOP如果阀值设置过高，可能会遇到转移失败的风险，比如对象进行转移时空间不足。如果阀值设置过低，就会使标记周期运行过于频繁，并且有可能混合收集期回收不到空间。IHOP值如果设置合理，但是在并发周期时间过长时，可以尝试增加并发线程数，调高ConcGCThreads。</p>
+<p>4、<strong>MixedGC调优</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">-XX:InitiatingHeapOccupancyPercent</span><br><span class="line">-XX:G1MixedGCLiveThresholdPercent</span><br><span class="line">-XX:G1MixedGCCountTarger</span><br><span class="line">-XX:G1OldCSetRegionThresholdPercent</span><br></pre></td></tr></table></figure>
+
+<p>5、适当增加堆内存大小</p>
+<h1 id="三、高并发场景案例分析"><a href="#三、高并发场景案例分析" class="headerlink" title="三、高并发场景案例分析"></a>三、高并发场景案例分析</h1><p><img src="https://user-gold-cdn.xitu.io/2020/2/13/1703e8f4a591c5ad?w=1299&h=904&f=png&s=75088" alt=""></p>
+<h1 id="四、JVM性能优化指南"><a href="#四、JVM性能优化指南" class="headerlink" title="四、JVM性能优化指南"></a>四、JVM性能优化指南</h1><p><img src="https://user-gold-cdn.xitu.io/2020/2/13/1703ea8f325397ab?w=1041&h=838&f=png&s=48953" alt=""></p>
+<h1 id="五、常见问题的思考与解决"><a href="#五、常见问题的思考与解决" class="headerlink" title="五、常见问题的思考与解决"></a>五、常见问题的思考与解决</h1><h2 id="5-1-内存泄漏与内存溢出的区别"><a href="#5-1-内存泄漏与内存溢出的区别" class="headerlink" title="5.1 内存泄漏与内存溢出的区别"></a>5.1 内存泄漏与内存溢出的区别</h2><p>内存泄漏：对象无法得到及时的回收，持续占用内存空间，从而造成内存空间的浪费。</p>
+<p>内存溢出：内存泄漏到一定的程度就会导致内存溢出，但是内存溢出也有可能是大对象导致的。</p>
+<h2 id="5-2-young-gc会有stw吗？"><a href="#5-2-young-gc会有stw吗？" class="headerlink" title="5.2 young gc会有stw吗？"></a>5.2 young gc会有stw吗？</h2><p>不管什么 GC，都会有 stop-the-world，只是发生时间的长短。</p>
+<h2 id="5-3-major-gc和full-gc的区别"><a href="#5-3-major-gc和full-gc的区别" class="headerlink" title="5.3 major gc和full gc的区别"></a>5.3 major gc和full gc的区别</h2><p>major gc指的是老年代的gc，而full gc等于young+old+metaspace的gc。</p>
+<h2 id="5-4-G1与CMS的区别是什么"><a href="#5-4-G1与CMS的区别是什么" class="headerlink" title="5.4 G1与CMS的区别是什么"></a>5.4 G1与CMS的区别是什么</h2><p>CMS 用于老年代的回收，而 G1 用于新生代和老年代的回收。<br>G1 使用了 Region 方式对堆内存进行了划分，且基于标记整理算法实现，整体减少了垃圾碎片的产生。</p>
+<h2 id="5-5-什么是直接内存"><a href="#5-5-什么是直接内存" class="headerlink" title="5.5 什么是直接内存"></a>5.5 什么是直接内存</h2><p>直接内存是在java堆外的、直接向系统申请的内存空间。通常访问直接内存的速度会优于Java堆。因此出于性能的考<br>虑，读写频繁的场合可能会考虑使用直接内存。</p>
+<h2 id="5-6不可达的对象一定要被回收吗？"><a href="#5-6不可达的对象一定要被回收吗？" class="headerlink" title="5.6不可达的对象一定要被回收吗？"></a>5.6不可达的对象一定要被回收吗？</h2><p>即使在可达性分析法中不可达的对象，也并非是“非死不可”的，这时候它们暂时处于“缓刑阶段”，要真正宣告一个对象死亡，至少要经历两次标记过程；可达性分析法中不可达的对象被第一次标记并且进行一次筛选，筛选的条件是此对象是否有必要执行 finalize 方法。当对象没有覆盖 finalize 方法，或 finalize方法已经被虚拟机调用过时，虚拟机将这两种情况视为没有必要执行。被判定为需要执行的对象将会被放在一个队列中进行第二次标记，除非这个对象与引用链上的任何一个对象建立关联，否则就会被真的回收。</p>
+<h2 id="5-7-方法区中的无用类回收"><a href="#5-7-方法区中的无用类回收" class="headerlink" title="5.7 方法区中的无用类回收"></a>5.7 方法区中的无用类回收</h2><p>方法区主要回收的是无用的类，那么如何判断一个类是无用的类的呢？判定一个常量是否是“废弃常量”比较简单，而要判定一个类是否是“无用的类”的条件则相对苛刻许多。类需要同时满足下面 3 个条件才能算是 “无用的类” ：</p>
+<p>该类所有的实例都已经被回收，也就是 Java 堆中不存在该类的任何实例。</p>
+<p>加载该类的 ClassLoader 已经被回收。</p>
+<p>该类对应的 java.lang.Class对象没有在任何地方被引用，无法在任何地方通过反射访问该类的方法。虚拟机可以对满足上述 3 个条件的无用类进行回收，这里说的仅仅是“可以”，而并不是和对象一样不使用了就会必然被回收。</p>
+<h2 id="5-8-不同的引用"><a href="#5-8-不同的引用" class="headerlink" title="5.8 不同的引用"></a>5.8 不同的引用</h2><p>JDK1.2以后，Java对引用进行了扩充：强引用、软引用、弱引用和虚引用</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://xkjava.github.io/2020/02/13/%E5%A6%82%E4%BD%95%E4%BC%98%E9%9B%85%E7%9A%84%E5%AD%A6%E4%B9%A0JVM%EF%BC%8C%E7%BB%BC%E5%90%88%E7%AF%87%EF%BC%88%E4%BA%94%EF%BC%89/" data-id="ck8dxblyn0007sfra5ftkat8a" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-如何优雅的学习JVM，实战篇（四）" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2020/02/12/%E5%A6%82%E4%BD%95%E4%BC%98%E9%9B%85%E7%9A%84%E5%AD%A6%E4%B9%A0JVM%EF%BC%8C%E5%AE%9E%E6%88%98%E7%AF%87%EF%BC%88%E5%9B%9B%EF%BC%89/" class="article-date">
@@ -296,7 +432,7 @@ Root以及原因</code></p>
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://xkjava.github.io/2020/02/12/%E5%A6%82%E4%BD%95%E4%BC%98%E9%9B%85%E7%9A%84%E5%AD%A6%E4%B9%A0JVM%EF%BC%8C%E5%AE%9E%E6%88%98%E7%AF%87%EF%BC%88%E5%9B%9B%EF%BC%89/" data-id="ck89t1e0b0005y7ra43tlgeko" class="article-share-link">Share</a>
+      <a data-url="https://xkjava.github.io/2020/02/12/%E5%A6%82%E4%BD%95%E4%BC%98%E9%9B%85%E7%9A%84%E5%AD%A6%E4%B9%A0JVM%EF%BC%8C%E5%AE%9E%E6%88%98%E7%AF%87%EF%BC%88%E5%9B%9B%EF%BC%89/" data-id="ck8dxblyl0005sfra5h1g31a7" class="article-share-link">Share</a>
       
       
     </footer>
@@ -445,7 +581,7 @@ Root以及原因</code></p>
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://xkjava.github.io/2020/02/10/%E5%A6%82%E4%BD%95%E4%BC%98%E9%9B%85%E7%9A%84%E5%AD%A6%E4%B9%A0JVM%EF%BC%8C%E5%8D%87%E5%8D%8E%E7%AF%87%EF%BC%88%E4%B8%89%EF%BC%89/" data-id="ck89t1e0a0004y7ra6crb7sdl" class="article-share-link">Share</a>
+      <a data-url="https://xkjava.github.io/2020/02/10/%E5%A6%82%E4%BD%95%E4%BC%98%E9%9B%85%E7%9A%84%E5%AD%A6%E4%B9%A0JVM%EF%BC%8C%E5%8D%87%E5%8D%8E%E7%AF%87%EF%BC%88%E4%B8%89%EF%BC%89/" data-id="ck8dxblyg0004sfradi6vezcx" class="article-share-link">Share</a>
       
       
     </footer>
@@ -590,7 +726,7 @@ Root以及原因</code></p>
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://xkjava.github.io/2020/02/08/%E5%A6%82%E4%BD%95%E4%BC%98%E9%9B%85%E7%9A%84%E5%AD%A6%E4%B9%A0JVM%EF%BC%8C%E8%BF%9B%E8%A1%8C%E7%AF%87%EF%BC%88%E4%BA%8C%EF%BC%89/" data-id="ck89t1e0e0008y7racza67up2" class="article-share-link">Share</a>
+      <a data-url="https://xkjava.github.io/2020/02/08/%E5%A6%82%E4%BD%95%E4%BC%98%E9%9B%85%E7%9A%84%E5%AD%A6%E4%B9%A0JVM%EF%BC%8C%E8%BF%9B%E8%A1%8C%E7%AF%87%EF%BC%88%E4%BA%8C%EF%BC%89/" data-id="ck8dxblyn0008sfrah3so89wb" class="article-share-link">Share</a>
       
       
     </footer>
@@ -765,7 +901,7 @@ Root以及原因</code></p>
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://xkjava.github.io/2020/02/05/%E5%A6%82%E4%BD%95%E4%BC%98%E9%9B%85%E7%9A%84%E5%AD%A6%E4%B9%A0JVM%EF%BC%8C%E6%8F%AD%E5%BC%80%E7%AF%87%EF%BC%88%E4%B8%80%EF%BC%89/" data-id="ck89t1e0c0006y7ra3lqi2k7g" class="article-share-link">Share</a>
+      <a data-url="https://xkjava.github.io/2020/02/05/%E5%A6%82%E4%BD%95%E4%BC%98%E9%9B%85%E7%9A%84%E5%AD%A6%E4%B9%A0JVM%EF%BC%8C%E6%8F%AD%E5%BC%80%E7%AF%87%EF%BC%88%E4%B8%80%EF%BC%89/" data-id="ck8dxblym0006sfraejtbcl6f" class="article-share-link">Share</a>
       
       
     </footer>
@@ -814,7 +950,7 @@ Root以及原因</code></p>
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://xkjava.github.io/2020/01/29/hello-world/" data-id="ck89t1cl50000y7racktkej5u" class="article-share-link">Share</a>
+      <a data-url="https://xkjava.github.io/2020/01/29/hello-world/" data-id="ck8dxblxq0000sfra6lzc18oo" class="article-share-link">Share</a>
       
       
     </footer>
@@ -860,6 +996,10 @@ Root以及原因</code></p>
       <ul>
         
           <li>
+            <a href="/2020/03/30/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C23%E7%A7%8D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B8%AD%E6%9C%80%E4%B8%BA%E5%A4%8D%E6%9D%82%E7%9A%84%E8%AE%BF%E9%97%AE%E8%80%85%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/">架构师内功心法，23种设计模式中最为复杂的访问者模式详解</a>
+          </li>
+        
+          <li>
             <a href="/2020/03/27/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E8%A2%AB%E8%AA%89%E4%B8%BA%E6%91%A9%E6%96%AF%E5%AF%86%E7%A0%81%E7%9A%84%E8%A7%A3%E9%87%8A%E5%99%A8%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/">架构师内功心法，被誉为摩斯密码的解释器模式详解</a>
           </li>
         
@@ -873,10 +1013,6 @@ Root以及原因</code></p>
         
           <li>
             <a href="/2020/03/21/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E5%8F%82%E4%B8%8E%E7%94%B5%E5%95%86%E8%AE%A2%E5%8D%95%E4%B8%9A%E5%8A%A1%E5%BC%80%E5%8F%91%E7%9A%84%E7%8A%B6%E6%80%81%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/">架构师内功心法，参与电商订单业务开发的状态模式详解</a>
-          </li>
-        
-          <li>
-            <a href="/2020/03/21/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E7%86%9F%E6%82%89%E7%94%B5%E8%84%91%E4%B8%AD%E7%9A%84%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%9A%84%E5%91%BD%E4%BB%A4%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/">架构师内功心法，熟悉电脑中的操作系统的命令模式详解</a>
           </li>
         
       </ul>
