@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>23种设计模式的学习，我们需要掌握的是“道”，而不只是“术” | 来一杯咖啡</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="设计模式是一门艺术，因为它们来源于生活，不要为了套用设计模式而去使用设计模式。我们在编写程序的时候用好设计模式可以防范于未然，它们可以很好地提供一种解决问题的方案。从古至今，我们在遇到问题的时候，都会去寻求帮助，咨询懂的人，或者去图书馆查阅资料，或者在电脑前面搜索，等等方法。在学习23种设计模式之前我们必然需要学习软件架构的设计原则，下面用一句话来概括这七大设计原则。 一、一句话总结设计原则 二、">
+<meta property="og:type" content="article">
+<meta property="og:title" content="23种设计模式的学习，我们需要掌握的是“道”，而不只是“术”">
+<meta property="og:url" content="https://xkjava.github.io/2020/05/05/23%E7%A7%8D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E7%9A%84%E5%AD%A6%E4%B9%A0%EF%BC%8C%E6%88%91%E4%BB%AC%E9%9C%80%E8%A6%81%E6%8E%8C%E6%8F%A1%E7%9A%84%E6%98%AF%E2%80%9C%E9%81%93%E2%80%9D%EF%BC%8C%E8%80%8C%E4%B8%8D%E5%8F%AA%E6%98%AF%E2%80%9C%E6%9C%AF%E2%80%9D/index.html">
+<meta property="og:site_name" content="来一杯咖啡">
+<meta property="og:description" content="设计模式是一门艺术，因为它们来源于生活，不要为了套用设计模式而去使用设计模式。我们在编写程序的时候用好设计模式可以防范于未然，它们可以很好地提供一种解决问题的方案。从古至今，我们在遇到问题的时候，都会去寻求帮助，咨询懂的人，或者去图书馆查阅资料，或者在电脑前面搜索，等等方法。在学习23种设计模式之前我们必然需要学习软件架构的设计原则，下面用一句话来概括这七大设计原则。 一、一句话总结设计原则 二、">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2020/5/5/171e2f3498f43bac?w=1445&h=699&f=png&s=715467">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2020/5/5/171e3a5306ebdc3b?w=819&h=888&f=jpeg&s=147445">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2020/5/5/171e37790660d323?w=1396&h=700&f=png&s=207945">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2020/5/5/171e3785f71efd67?w=1366&h=766&f=png&s=226762">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2020/5/5/171e37902da27f32?w=1705&h=727&f=png&s=319249">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2020/5/5/171e3a1f10dc35df?w=1731&h=792&f=jpeg&s=168839">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2020/5/5/171e39ecef3d60f4?w=1701&h=756&f=png&s=707659">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2020/5/5/171e39b611a2ebb8?w=1674&h=858&f=jpeg&s=317182">
+<meta property="article:published_time" content="2020-05-05T07:45:53.000Z">
+<meta property="article:modified_time" content="2020-05-05T07:47:43.846Z">
+<meta property="article:author" content="Kevin Shaw">
+<meta property="article:tag" content="Java">
+<meta property="article:tag" content="Spring">
+<meta property="article:tag" content="Netty">
+<meta property="article:tag" content="Kafka...">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://user-gold-cdn.xitu.io/2020/5/5/171e2f3498f43bac?w=1445&h=699&f=png&s=715467">
+  
+    <link rel="alternate" href="/atom.xml" title="来一杯咖啡" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">来一杯咖啡</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">互联网技术无边界，学习与交流</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://xkjava.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="对于gof-23种设计模式的学习，我们需要掌握的是“道”，而不只是“术”" class="article article-type-对于gof" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/05/05/23%E7%A7%8D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E7%9A%84%E5%AD%A6%E4%B9%A0%EF%BC%8C%E6%88%91%E4%BB%AC%E9%9C%80%E8%A6%81%E6%8E%8C%E6%8F%A1%E7%9A%84%E6%98%AF%E2%80%9C%E9%81%93%E2%80%9D%EF%BC%8C%E8%80%8C%E4%B8%8D%E5%8F%AA%E6%98%AF%E2%80%9C%E6%9C%AF%E2%80%9D/" class="article-date">
+  <time datetime="2020-05-05T07:45:53.000Z" itemprop="datePublished">2020-05-05</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      23种设计模式的学习，我们需要掌握的是“道”，而不只是“术”
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>设计模式是一门艺术，因为它们来源于生活，不要为了套用设计模式而去使用设计模式。我们在编写程序的时候用好设计模式可以防范于未然，它们可以很好地提供一种解决问题的方案。从古至今，我们在遇到问题的时候，都会去寻求帮助，咨询懂的人，或者去图书馆查阅资料，或者在电脑前面搜索，等等方法。在学习23种设计模式之前我们必然需要学习软件架构的设计原则，下面用一句话来概括这七大设计原则。</p>
+<h1 id="一、一句话总结设计原则"><a href="#一、一句话总结设计原则" class="headerlink" title="一、一句话总结设计原则"></a>一、一句话总结设计原则</h1><p><img src="https://user-gold-cdn.xitu.io/2020/5/5/171e2f3498f43bac?w=1445&h=699&f=png&s=715467" alt=""></p>
+<h1 id="二、设计模式简介"><a href="#二、设计模式简介" class="headerlink" title="二、设计模式简介"></a>二、设计模式简介</h1><p>建筑师克里斯托佛·亚历山大在1977/79年编制了一本汇集设计模式的书，但是这种设计模式的思想在建筑设计领域里的影响远没有后来在软件开发领域里传播的广泛。</p>
+<p>肯特·贝克和沃德·坎宁安在1987年，利用克里斯托佛·亚历山大在建筑设计领域里的思想开发了设计模式并把此思想应用在Smalltalk中的图形用户接口（GUI）的生成中。一年后埃里希·伽玛在他的苏黎世大学博士毕业论文中开始尝试把这种思想改写为适用于软件开发。与此同时James Coplien 在1989年至1991年也在利用相同的思想致力于C++的开发，而后于1991年发表了他的著作Advanced C++ Programming Styles and Idioms。同年Erich Gamma 得到了博士学位，然后去了美国，在那与Richard Helm, Ralph Johnson ,John Vlissides 合作出版了《设计模式：可复用面向对象软件的基础》（Design Patterns - Elements of Reusable Object-Oriented Software） 一书，在此书中共收录了 23 种设计模式。</p>
+<p>这四位作者在软件开发领域里以“四人帮”（英语，Gang of Four，简称GoF）而闻名，并且他们在此书中的协作导致了软件设计模式的突破。有时，GoF也会用于代指《设计模式》这本书。</p>
+<p>设计模式是前人经验的总结，提供给后人去借鉴使用的，前人种树后人乘凉。它不但可以解决复杂的业务问题，也可以帮助我们提高代码的可读性、扩展性，降低维护成本。下面对GoF23种设计模式进行归纳和总结。</p>
+<h2 id="2-1-创建型"><a href="#2-1-创建型" class="headerlink" title="2.1 创建型"></a>2.1 创建型</h2><p>创建型全部是关于如何创建实例的。这组范例可以被划分为两组：类创建范例及对象创建范例。类创建实例在实例化过程中有效的使用类之间的继承关系，对象创建范例则使用代理来完成其任务。</p>
+<ul>
+<li>抽象工厂 (Abstract Factory)</li>
+<li>建造者 (Builder Pattern)</li>
+<li>工厂方法 (Factory Method pattern)</li>
+<li>原型 (Prototype pattern)</li>
+<li>单例模式 (Singleton pattern)</li>
+</ul>
+<h2 id="2-2-结构型"><a href="#2-2-结构型" class="headerlink" title="2.2 结构型"></a>2.2 结构型</h2><p>这组都是关于类及对象复合关系的。</p>
+<ul>
+<li>适配器(Adapter pattern)</li>
+<li>桥接(Bridge pattern)</li>
+<li>组合(Composite pattern)</li>
+<li>装饰器(Decorator pattern)</li>
+<li>门面(Facade pattern)</li>
+<li>享元(Flyweight pattern)</li>
+<li>代理(Proxy pattern)</li>
+</ul>
+<h2 id="2-3-行为型"><a href="#2-3-行为型" class="headerlink" title="2.3 行为型"></a>2.3 行为型</h2><p>这组都是关于对象之间如何通讯的。</p>
+<ul>
+<li>职责链(Chain-of-responsibility pattern)</li>
+<li>命令(Command pattern)</li>
+<li>翻译器(Interpreter pattern)</li>
+<li>迭代器(Iterator pattern)</li>
+<li>中介者(Mediator pattern)</li>
+<li>备忘录(Memento pattern)</li>
+<li>观察者(Observer pattern)</li>
+<li>状态(State pattern)</li>
+<li>策略(Strategy pattern)</li>
+<li>模板方法(Template method pattern)</li>
+<li>访问者(Visitor)</li>
+</ul>
+<p><img src="https://user-gold-cdn.xitu.io/2020/5/5/171e3a5306ebdc3b?w=819&h=888&f=jpeg&s=147445" alt=""></p>
+<h2 id="2-4-创建型使用频率"><a href="#2-4-创建型使用频率" class="headerlink" title="2.4 创建型使用频率"></a>2.4 创建型使用频率</h2><p><img src="https://user-gold-cdn.xitu.io/2020/5/5/171e37790660d323?w=1396&h=700&f=png&s=207945" alt=""></p>
+<h2 id="2-5-结构型使用频率"><a href="#2-5-结构型使用频率" class="headerlink" title="2.5 结构型使用频率"></a>2.5 结构型使用频率</h2><p><img src="https://user-gold-cdn.xitu.io/2020/5/5/171e3785f71efd67?w=1366&h=766&f=png&s=226762" alt=""></p>
+<h2 id="2-6-行为型使用频率"><a href="#2-6-行为型使用频率" class="headerlink" title="2.6 行为型使用频率"></a>2.6 行为型使用频率</h2><p><img src="https://user-gold-cdn.xitu.io/2020/5/5/171e37902da27f32?w=1705&h=727&f=png&s=319249" alt=""></p>
+<h1 id="三、一句话总结设计模式"><a href="#三、一句话总结设计模式" class="headerlink" title="三、一句话总结设计模式"></a>三、一句话总结设计模式</h1><p><img src="https://user-gold-cdn.xitu.io/2020/5/5/171e3a1f10dc35df?w=1731&h=792&f=jpeg&s=168839" alt=""><br><img src="https://user-gold-cdn.xitu.io/2020/5/5/171e39ecef3d60f4?w=1701&h=756&f=png&s=707659" alt=""><br><img src="https://user-gold-cdn.xitu.io/2020/5/5/171e39b611a2ebb8?w=1674&h=858&f=jpeg&s=317182" alt=""></p>
+<h1 id="四、设计模式之间的关系和对比"><a href="#四、设计模式之间的关系和对比" class="headerlink" title="四、设计模式之间的关系和对比"></a>四、设计模式之间的关系和对比</h1><h2 id="4-1-单例模式和工厂模式"><a href="#4-1-单例模式和工厂模式" class="headerlink" title="4.1 单例模式和工厂模式"></a>4.1 单例模式和工厂模式</h2><p>在实际业务中，通常把工厂类设计为单例模式。</p>
+<h2 id="4-2-策略模式和工厂模式"><a href="#4-2-策略模式和工厂模式" class="headerlink" title="4.2 策略模式和工厂模式"></a>4.2 策略模式和工厂模式</h2><p>1、工厂模式包含工厂方法模式和抽象工厂模式，它是创建型模式，而策略模式是行为型模式；</p>
+<p>2、工厂模式的目的是封装好创建逻辑，策略模式接收工厂创建好的对象，从而实现不同的行为。</p>
+<h2 id="4-3-策略模式和委派模式"><a href="#4-3-策略模式和委派模式" class="headerlink" title="4.3 策略模式和委派模式"></a>4.3 策略模式和委派模式</h2><p>1、策略模式是委派模式内部的一种实现形式，策略模式关注的结构是否能够相互替代。</p>
+<p>2、委派模式更关注分发和调度的过程。</p>
+<h2 id="4-4-模板方法模式和工厂方法模式"><a href="#4-4-模板方法模式和工厂方法模式" class="headerlink" title="4.4 模板方法模式和工厂方法模式"></a>4.4 模板方法模式和工厂方法模式</h2><p>工厂方法是模板方法的一种特殊实现。</p>
+<h2 id="4-5-模板方法模式和策略模式"><a href="#4-5-模板方法模式和策略模式" class="headerlink" title="4.5 模板方法模式和策略模式"></a>4.5 模板方法模式和策略模式</h2><p>1、模板方法模式和策略模式都有封装的算法；</p>
+<p>2、策略模式是使不同的算法可以相互替换，且不影响客户端应用层的使用；</p>
+<p>3、模板方法是针对定义一个算法的流程，将一些有细微差异的部分交给子类实现；</p>
+<p>4、模板方法模式不能改变算法流程，策略模式可以改变算法流程且可以替换。策略模式通常用来代理if…else等分支条件语句。</p>
+<h2 id="4-6-装饰者模式和静态代理模式"><a href="#4-6-装饰者模式和静态代理模式" class="headerlink" title="4.6 装饰者模式和静态代理模式"></a>4.6 装饰者模式和静态代理模式</h2><p>1、装饰者模式在于给对象动态添加方法，而代理更加关注控制对象的访问；</p>
+<p>2、代理模式通常会在代理类中创建被代理对象的实例，而装饰者模式通常把装饰者作为构造行数。</p>
+<h2 id="4-7-装饰者模式和适配器模式"><a href="#4-7-装饰者模式和适配器模式" class="headerlink" title="4.7 装饰者模式和适配器模式"></a>4.7 装饰者模式和适配器模式</h2><p>1、装饰者模式和适配器模式都属于包装器模式；</p>
+<p>2、装饰者模式可以实现被装饰者与相同的接口或者继承被装饰者作为它的子类，而适配器和被适配着可以实现不同的接口。</p>
+<h2 id="4-8-适配器模式和静态代理模式"><a href="#4-8-适配器模式和静态代理模式" class="headerlink" title="4.8 适配器模式和静态代理模式"></a>4.8 适配器模式和静态代理模式</h2><p>适配器模式可以结合静态代理来实现，保存被适配对象的引用，但不是唯一的实现方式；</p>
+<h2 id="4-9-适配器模式和策略模式"><a href="#4-9-适配器模式和策略模式" class="headerlink" title="4.9 适配器模式和策略模式"></a>4.9 适配器模式和策略模式</h2><p>在适配业务复杂的情况下，利用策略模式优化动态适配逻辑。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://xkjava.github.io/2020/05/05/23%E7%A7%8D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E7%9A%84%E5%AD%A6%E4%B9%A0%EF%BC%8C%E6%88%91%E4%BB%AC%E9%9C%80%E8%A6%81%E6%8E%8C%E6%8F%A1%E7%9A%84%E6%98%AF%E2%80%9C%E9%81%93%E2%80%9D%EF%BC%8C%E8%80%8C%E4%B8%8D%E5%8F%AA%E6%98%AF%E2%80%9C%E6%9C%AF%E2%80%9D/" data-id="ck9tm3e4w0000hyraegbf4tte" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2020/04/05/%E6%B7%B1%E5%BA%A6%E9%98%85%E8%AF%BBSpring5-x%E6%BA%90%E7%A0%81%E5%90%8E%EF%BC%8C%E4%BD%BF%E7%94%A8Java%E5%AE%9E%E7%8E%B0%E8%BF%B7%E4%BD%A0%E7%89%88Spring%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%80%9D%E8%B7%AF%E5%AE%9E%E8%B7%B5/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">深度阅读Spring5.x源码后，使用Java实现迷你版Spring的基本思路实践</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2020/05/05/23%E7%A7%8D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E7%9A%84%E5%AD%A6%E4%B9%A0%EF%BC%8C%E6%88%91%E4%BB%AC%E9%9C%80%E8%A6%81%E6%8E%8C%E6%8F%A1%E7%9A%84%E6%98%AF%E2%80%9C%E9%81%93%E2%80%9D%EF%BC%8C%E8%80%8C%E4%B8%8D%E5%8F%AA%E6%98%AF%E2%80%9C%E6%9C%AF%E2%80%9D/">23种设计模式的学习，我们需要掌握的是“道”，而不只是“术”</a>
+          </li>
+        
+          <li>
+            <a href="/2020/04/05/%E6%B7%B1%E5%BA%A6%E9%98%85%E8%AF%BBSpring5-x%E6%BA%90%E7%A0%81%E5%90%8E%EF%BC%8C%E4%BD%BF%E7%94%A8Java%E5%AE%9E%E7%8E%B0%E8%BF%B7%E4%BD%A0%E7%89%88Spring%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%80%9D%E8%B7%AF%E5%AE%9E%E8%B7%B5/">深度阅读Spring5.x源码后，使用Java实现迷你版Spring的基本思路实践</a>
+          </li>
+        
+          <li>
+            <a href="/2020/03/30/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C23%E7%A7%8D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B8%AD%E6%9C%80%E4%B8%BA%E5%A4%8D%E6%9D%82%E7%9A%84%E8%AE%BF%E9%97%AE%E8%80%85%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/">架构师内功心法，23种设计模式中最为复杂的访问者模式详解</a>
+          </li>
+        
+          <li>
+            <a href="/2020/03/27/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E8%A2%AB%E8%AA%89%E4%B8%BA%E6%91%A9%E6%96%AF%E5%AF%86%E7%A0%81%E7%9A%84%E8%A7%A3%E9%87%8A%E5%99%A8%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/">架构师内功心法，被誉为摩斯密码的解释器模式详解</a>
+          </li>
+        
+          <li>
+            <a href="/2020/03/25/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E4%B8%8D%E9%9C%80%E8%A6%81%E4%B8%AD%E9%97%B4%E5%95%86%E8%B5%9A%E5%B7%AE%E4%BB%B7%E7%9A%84%E4%B8%AD%E4%BB%8B%E8%80%85%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/">架构师内功心法，不需要中间商赚差价的中介者模式详解</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2020 Kevin Shaw<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+  </div>
+</body>
+</html>

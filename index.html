@@ -74,6 +74,101 @@
       <div class="outer">
         <section id="main">
   
+    <article id="对于gof-23种设计模式的学习，我们需要掌握的是“道”，而不只是“术”" class="article article-type-对于gof" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/05/05/23%E7%A7%8D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E7%9A%84%E5%AD%A6%E4%B9%A0%EF%BC%8C%E6%88%91%E4%BB%AC%E9%9C%80%E8%A6%81%E6%8E%8C%E6%8F%A1%E7%9A%84%E6%98%AF%E2%80%9C%E9%81%93%E2%80%9D%EF%BC%8C%E8%80%8C%E4%B8%8D%E5%8F%AA%E6%98%AF%E2%80%9C%E6%9C%AF%E2%80%9D/" class="article-date">
+  <time datetime="2020-05-05T07:45:53.000Z" itemprop="datePublished">2020-05-05</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/05/05/23%E7%A7%8D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E7%9A%84%E5%AD%A6%E4%B9%A0%EF%BC%8C%E6%88%91%E4%BB%AC%E9%9C%80%E8%A6%81%E6%8E%8C%E6%8F%A1%E7%9A%84%E6%98%AF%E2%80%9C%E9%81%93%E2%80%9D%EF%BC%8C%E8%80%8C%E4%B8%8D%E5%8F%AA%E6%98%AF%E2%80%9C%E6%9C%AF%E2%80%9D/">23种设计模式的学习，我们需要掌握的是“道”，而不只是“术”</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>设计模式是一门艺术，因为它们来源于生活，不要为了套用设计模式而去使用设计模式。我们在编写程序的时候用好设计模式可以防范于未然，它们可以很好地提供一种解决问题的方案。从古至今，我们在遇到问题的时候，都会去寻求帮助，咨询懂的人，或者去图书馆查阅资料，或者在电脑前面搜索，等等方法。在学习23种设计模式之前我们必然需要学习软件架构的设计原则，下面用一句话来概括这七大设计原则。</p>
+<h1 id="一、一句话总结设计原则"><a href="#一、一句话总结设计原则" class="headerlink" title="一、一句话总结设计原则"></a>一、一句话总结设计原则</h1><p><img src="https://user-gold-cdn.xitu.io/2020/5/5/171e2f3498f43bac?w=1445&h=699&f=png&s=715467" alt=""></p>
+<h1 id="二、设计模式简介"><a href="#二、设计模式简介" class="headerlink" title="二、设计模式简介"></a>二、设计模式简介</h1><p>建筑师克里斯托佛·亚历山大在1977/79年编制了一本汇集设计模式的书，但是这种设计模式的思想在建筑设计领域里的影响远没有后来在软件开发领域里传播的广泛。</p>
+<p>肯特·贝克和沃德·坎宁安在1987年，利用克里斯托佛·亚历山大在建筑设计领域里的思想开发了设计模式并把此思想应用在Smalltalk中的图形用户接口（GUI）的生成中。一年后埃里希·伽玛在他的苏黎世大学博士毕业论文中开始尝试把这种思想改写为适用于软件开发。与此同时James Coplien 在1989年至1991年也在利用相同的思想致力于C++的开发，而后于1991年发表了他的著作Advanced C++ Programming Styles and Idioms。同年Erich Gamma 得到了博士学位，然后去了美国，在那与Richard Helm, Ralph Johnson ,John Vlissides 合作出版了《设计模式：可复用面向对象软件的基础》（Design Patterns - Elements of Reusable Object-Oriented Software） 一书，在此书中共收录了 23 种设计模式。</p>
+<p>这四位作者在软件开发领域里以“四人帮”（英语，Gang of Four，简称GoF）而闻名，并且他们在此书中的协作导致了软件设计模式的突破。有时，GoF也会用于代指《设计模式》这本书。</p>
+<p>设计模式是前人经验的总结，提供给后人去借鉴使用的，前人种树后人乘凉。它不但可以解决复杂的业务问题，也可以帮助我们提高代码的可读性、扩展性，降低维护成本。下面对GoF23种设计模式进行归纳和总结。</p>
+<h2 id="2-1-创建型"><a href="#2-1-创建型" class="headerlink" title="2.1 创建型"></a>2.1 创建型</h2><p>创建型全部是关于如何创建实例的。这组范例可以被划分为两组：类创建范例及对象创建范例。类创建实例在实例化过程中有效的使用类之间的继承关系，对象创建范例则使用代理来完成其任务。</p>
+<ul>
+<li>抽象工厂 (Abstract Factory)</li>
+<li>建造者 (Builder Pattern)</li>
+<li>工厂方法 (Factory Method pattern)</li>
+<li>原型 (Prototype pattern)</li>
+<li>单例模式 (Singleton pattern)</li>
+</ul>
+<h2 id="2-2-结构型"><a href="#2-2-结构型" class="headerlink" title="2.2 结构型"></a>2.2 结构型</h2><p>这组都是关于类及对象复合关系的。</p>
+<ul>
+<li>适配器(Adapter pattern)</li>
+<li>桥接(Bridge pattern)</li>
+<li>组合(Composite pattern)</li>
+<li>装饰器(Decorator pattern)</li>
+<li>门面(Facade pattern)</li>
+<li>享元(Flyweight pattern)</li>
+<li>代理(Proxy pattern)</li>
+</ul>
+<h2 id="2-3-行为型"><a href="#2-3-行为型" class="headerlink" title="2.3 行为型"></a>2.3 行为型</h2><p>这组都是关于对象之间如何通讯的。</p>
+<ul>
+<li>职责链(Chain-of-responsibility pattern)</li>
+<li>命令(Command pattern)</li>
+<li>翻译器(Interpreter pattern)</li>
+<li>迭代器(Iterator pattern)</li>
+<li>中介者(Mediator pattern)</li>
+<li>备忘录(Memento pattern)</li>
+<li>观察者(Observer pattern)</li>
+<li>状态(State pattern)</li>
+<li>策略(Strategy pattern)</li>
+<li>模板方法(Template method pattern)</li>
+<li>访问者(Visitor)</li>
+</ul>
+<p><img src="https://user-gold-cdn.xitu.io/2020/5/5/171e3a5306ebdc3b?w=819&h=888&f=jpeg&s=147445" alt=""></p>
+<h2 id="2-4-创建型使用频率"><a href="#2-4-创建型使用频率" class="headerlink" title="2.4 创建型使用频率"></a>2.4 创建型使用频率</h2><p><img src="https://user-gold-cdn.xitu.io/2020/5/5/171e37790660d323?w=1396&h=700&f=png&s=207945" alt=""></p>
+<h2 id="2-5-结构型使用频率"><a href="#2-5-结构型使用频率" class="headerlink" title="2.5 结构型使用频率"></a>2.5 结构型使用频率</h2><p><img src="https://user-gold-cdn.xitu.io/2020/5/5/171e3785f71efd67?w=1366&h=766&f=png&s=226762" alt=""></p>
+<h2 id="2-6-行为型使用频率"><a href="#2-6-行为型使用频率" class="headerlink" title="2.6 行为型使用频率"></a>2.6 行为型使用频率</h2><p><img src="https://user-gold-cdn.xitu.io/2020/5/5/171e37902da27f32?w=1705&h=727&f=png&s=319249" alt=""></p>
+<h1 id="三、一句话总结设计模式"><a href="#三、一句话总结设计模式" class="headerlink" title="三、一句话总结设计模式"></a>三、一句话总结设计模式</h1><p><img src="https://user-gold-cdn.xitu.io/2020/5/5/171e3a1f10dc35df?w=1731&h=792&f=jpeg&s=168839" alt=""><br><img src="https://user-gold-cdn.xitu.io/2020/5/5/171e39ecef3d60f4?w=1701&h=756&f=png&s=707659" alt=""><br><img src="https://user-gold-cdn.xitu.io/2020/5/5/171e39b611a2ebb8?w=1674&h=858&f=jpeg&s=317182" alt=""></p>
+<h1 id="四、设计模式之间的关系和对比"><a href="#四、设计模式之间的关系和对比" class="headerlink" title="四、设计模式之间的关系和对比"></a>四、设计模式之间的关系和对比</h1><h2 id="4-1-单例模式和工厂模式"><a href="#4-1-单例模式和工厂模式" class="headerlink" title="4.1 单例模式和工厂模式"></a>4.1 单例模式和工厂模式</h2><p>在实际业务中，通常把工厂类设计为单例模式。</p>
+<h2 id="4-2-策略模式和工厂模式"><a href="#4-2-策略模式和工厂模式" class="headerlink" title="4.2 策略模式和工厂模式"></a>4.2 策略模式和工厂模式</h2><p>1、工厂模式包含工厂方法模式和抽象工厂模式，它是创建型模式，而策略模式是行为型模式；</p>
+<p>2、工厂模式的目的是封装好创建逻辑，策略模式接收工厂创建好的对象，从而实现不同的行为。</p>
+<h2 id="4-3-策略模式和委派模式"><a href="#4-3-策略模式和委派模式" class="headerlink" title="4.3 策略模式和委派模式"></a>4.3 策略模式和委派模式</h2><p>1、策略模式是委派模式内部的一种实现形式，策略模式关注的结构是否能够相互替代。</p>
+<p>2、委派模式更关注分发和调度的过程。</p>
+<h2 id="4-4-模板方法模式和工厂方法模式"><a href="#4-4-模板方法模式和工厂方法模式" class="headerlink" title="4.4 模板方法模式和工厂方法模式"></a>4.4 模板方法模式和工厂方法模式</h2><p>工厂方法是模板方法的一种特殊实现。</p>
+<h2 id="4-5-模板方法模式和策略模式"><a href="#4-5-模板方法模式和策略模式" class="headerlink" title="4.5 模板方法模式和策略模式"></a>4.5 模板方法模式和策略模式</h2><p>1、模板方法模式和策略模式都有封装的算法；</p>
+<p>2、策略模式是使不同的算法可以相互替换，且不影响客户端应用层的使用；</p>
+<p>3、模板方法是针对定义一个算法的流程，将一些有细微差异的部分交给子类实现；</p>
+<p>4、模板方法模式不能改变算法流程，策略模式可以改变算法流程且可以替换。策略模式通常用来代理if…else等分支条件语句。</p>
+<h2 id="4-6-装饰者模式和静态代理模式"><a href="#4-6-装饰者模式和静态代理模式" class="headerlink" title="4.6 装饰者模式和静态代理模式"></a>4.6 装饰者模式和静态代理模式</h2><p>1、装饰者模式在于给对象动态添加方法，而代理更加关注控制对象的访问；</p>
+<p>2、代理模式通常会在代理类中创建被代理对象的实例，而装饰者模式通常把装饰者作为构造行数。</p>
+<h2 id="4-7-装饰者模式和适配器模式"><a href="#4-7-装饰者模式和适配器模式" class="headerlink" title="4.7 装饰者模式和适配器模式"></a>4.7 装饰者模式和适配器模式</h2><p>1、装饰者模式和适配器模式都属于包装器模式；</p>
+<p>2、装饰者模式可以实现被装饰者与相同的接口或者继承被装饰者作为它的子类，而适配器和被适配着可以实现不同的接口。</p>
+<h2 id="4-8-适配器模式和静态代理模式"><a href="#4-8-适配器模式和静态代理模式" class="headerlink" title="4.8 适配器模式和静态代理模式"></a>4.8 适配器模式和静态代理模式</h2><p>适配器模式可以结合静态代理来实现，保存被适配对象的引用，但不是唯一的实现方式；</p>
+<h2 id="4-9-适配器模式和策略模式"><a href="#4-9-适配器模式和策略模式" class="headerlink" title="4.9 适配器模式和策略模式"></a>4.9 适配器模式和策略模式</h2><p>在适配业务复杂的情况下，利用策略模式优化动态适配逻辑。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://xkjava.github.io/2020/05/05/23%E7%A7%8D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E7%9A%84%E5%AD%A6%E4%B9%A0%EF%BC%8C%E6%88%91%E4%BB%AC%E9%9C%80%E8%A6%81%E6%8E%8C%E6%8F%A1%E7%9A%84%E6%98%AF%E2%80%9C%E9%81%93%E2%80%9D%EF%BC%8C%E8%80%8C%E4%B8%8D%E5%8F%AA%E6%98%AF%E2%80%9C%E6%9C%AF%E2%80%9D/" data-id="ck9tm3e4w0000hyraegbf4tte" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-深度阅读Spring5-x源码后，使用Java实现迷你版Spring的基本思路实践" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2020/04/05/%E6%B7%B1%E5%BA%A6%E9%98%85%E8%AF%BBSpring5-x%E6%BA%90%E7%A0%81%E5%90%8E%EF%BC%8C%E4%BD%BF%E7%94%A8Java%E5%AE%9E%E7%8E%B0%E8%BF%B7%E4%BD%A0%E7%89%88Spring%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%80%9D%E8%B7%AF%E5%AE%9E%E8%B7%B5/" class="article-date">
@@ -133,7 +228,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://xkjava.github.io/2020/04/05/%E6%B7%B1%E5%BA%A6%E9%98%85%E8%AF%BBSpring5-x%E6%BA%90%E7%A0%81%E5%90%8E%EF%BC%8C%E4%BD%BF%E7%94%A8Java%E5%AE%9E%E7%8E%B0%E8%BF%B7%E4%BD%A0%E7%89%88Spring%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%80%9D%E8%B7%AF%E5%AE%9E%E8%B7%B5/" data-id="ck8n15kdy000jbcracfftfdba" class="article-share-link">Share</a>
+      <a data-url="https://xkjava.github.io/2020/04/05/%E6%B7%B1%E5%BA%A6%E9%98%85%E8%AF%BBSpring5-x%E6%BA%90%E7%A0%81%E5%90%8E%EF%BC%8C%E4%BD%BF%E7%94%A8Java%E5%AE%9E%E7%8E%B0%E8%BF%B7%E4%BD%A0%E7%89%88Spring%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%80%9D%E8%B7%AF%E5%AE%9E%E8%B7%B5/" data-id="ck9tm3e6d000khyra3hgdbekq" class="article-share-link">Share</a>
       
       
     </footer>
@@ -256,7 +351,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://xkjava.github.io/2020/03/30/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C23%E7%A7%8D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B8%AD%E6%9C%80%E4%B8%BA%E5%A4%8D%E6%9D%82%E7%9A%84%E8%AE%BF%E9%97%AE%E8%80%85%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" data-id="ck8n15kee000lbcraei88bvma" class="article-share-link">Share</a>
+      <a data-url="https://xkjava.github.io/2020/03/30/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C23%E7%A7%8D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B8%AD%E6%9C%80%E4%B8%BA%E5%A4%8D%E6%9D%82%E7%9A%84%E8%AE%BF%E9%97%AE%E8%80%85%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" data-id="ck9tm3e6q000mhyra67wu97q1" class="article-share-link">Share</a>
       
       
     </footer>
@@ -355,7 +450,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://xkjava.github.io/2020/03/27/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E8%A2%AB%E8%AA%89%E4%B8%BA%E6%91%A9%E6%96%AF%E5%AF%86%E7%A0%81%E7%9A%84%E8%A7%A3%E9%87%8A%E5%99%A8%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" data-id="ck8n15kdw000hbcra7i1l0vv7" class="article-share-link">Share</a>
+      <a data-url="https://xkjava.github.io/2020/03/27/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E8%A2%AB%E8%AA%89%E4%B8%BA%E6%91%A9%E6%96%AF%E5%AF%86%E7%A0%81%E7%9A%84%E8%A7%A3%E9%87%8A%E5%99%A8%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" data-id="ck9tm3e6c000ihyraf9vi5u9c" class="article-share-link">Share</a>
       
       
     </footer>
@@ -442,7 +537,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://xkjava.github.io/2020/03/25/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E4%B8%8D%E9%9C%80%E8%A6%81%E4%B8%AD%E9%97%B4%E5%95%86%E8%B5%9A%E5%B7%AE%E4%BB%B7%E7%9A%84%E4%B8%AD%E4%BB%8B%E8%80%85%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" data-id="ck8n15kcp0001bcra99d66d8r" class="article-share-link">Share</a>
+      <a data-url="https://xkjava.github.io/2020/03/25/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E4%B8%8D%E9%9C%80%E8%A6%81%E4%B8%AD%E9%97%B4%E5%95%86%E8%B5%9A%E5%B7%AE%E4%BB%B7%E7%9A%84%E4%B8%AD%E4%BB%8B%E8%80%85%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" data-id="ck9tm3e5e0002hyra0ntx76j2" class="article-share-link">Share</a>
       
       
     </footer>
@@ -516,7 +611,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://xkjava.github.io/2020/03/22/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E5%8F%82%E4%B8%8E%E5%AF%8C%E6%96%87%E6%9C%AC%E7%BC%96%E8%BE%91%E5%99%A8%E5%BC%80%E5%8F%91%E7%9A%84%E5%A4%87%E5%BF%98%E5%BD%95%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" data-id="ck8n15kdo000bbcra58bgczhj" class="article-share-link">Share</a>
+      <a data-url="https://xkjava.github.io/2020/03/22/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E5%8F%82%E4%B8%8E%E5%AF%8C%E6%96%87%E6%9C%AC%E7%BC%96%E8%BE%91%E5%99%A8%E5%BC%80%E5%8F%91%E7%9A%84%E5%A4%87%E5%BF%98%E5%BD%95%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" data-id="ck9tm3e66000chyra01ol09tz" class="article-share-link">Share</a>
       
       
     </footer>
@@ -618,7 +713,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://xkjava.github.io/2020/03/21/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E5%8F%82%E4%B8%8E%E7%94%B5%E5%95%86%E8%AE%A2%E5%8D%95%E4%B8%9A%E5%8A%A1%E5%BC%80%E5%8F%91%E7%9A%84%E7%8A%B6%E6%80%81%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" data-id="ck8n15kef000mbcra3otaav8x" class="article-share-link">Share</a>
+      <a data-url="https://xkjava.github.io/2020/03/21/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E5%8F%82%E4%B8%8E%E7%94%B5%E5%95%86%E8%AE%A2%E5%8D%95%E4%B8%9A%E5%8A%A1%E5%BC%80%E5%8F%91%E7%9A%84%E7%8A%B6%E6%80%81%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" data-id="ck9tm3e6r000nhyra2wof6vht" class="article-share-link">Share</a>
       
       
     </footer>
@@ -728,7 +823,7 @@ controller.executes();</code></pre><p>}</p>
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://xkjava.github.io/2020/03/21/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E7%86%9F%E6%82%89%E7%94%B5%E8%84%91%E4%B8%AD%E7%9A%84%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%9A%84%E5%91%BD%E4%BB%A4%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" data-id="ck8n15kcu0003bcragleycnlb" class="article-share-link">Share</a>
+      <a data-url="https://xkjava.github.io/2020/03/21/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E7%86%9F%E6%82%89%E7%94%B5%E8%84%91%E4%B8%AD%E7%9A%84%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%9A%84%E5%91%BD%E4%BB%A4%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" data-id="ck9tm3e5h0004hyra4fxsdcsv" class="article-share-link">Share</a>
       
       
     </footer>
@@ -814,7 +909,7 @@ controller.executes();</code></pre><p>}</p>
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://xkjava.github.io/2020/03/19/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E9%9D%9E%E5%B8%B8%E7%86%9F%E7%9F%A5%E4%BD%86%E5%B9%B6%E4%B8%8D%E7%9F%A5%E5%85%B6%E6%89%80%E4%BB%A5%E7%84%B6%E7%9A%84%E8%BF%AD%E4%BB%A3%E5%99%A8%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" data-id="ck8n15kdx000ibcrac57scr7d" class="article-share-link">Share</a>
+      <a data-url="https://xkjava.github.io/2020/03/19/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E9%9D%9E%E5%B8%B8%E7%86%9F%E7%9F%A5%E4%BD%86%E5%B9%B6%E4%B8%8D%E7%9F%A5%E5%85%B6%E6%89%80%E4%BB%A5%E7%84%B6%E7%9A%84%E8%BF%AD%E4%BB%A3%E5%99%A8%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" data-id="ck9tm3e6c000jhyra1xerdj8b" class="article-share-link">Share</a>
       
       
     </footer>
@@ -924,128 +1019,7 @@ controller.executes();</code></pre><p>}</p>
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://xkjava.github.io/2020/03/16/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E5%BF%85%E9%A1%BB%E5%AE%8C%E5%85%A8%E6%8E%8C%E6%8F%A1%E5%90%83%E9%80%8F%E7%9A%84%E8%B8%A2%E7%9A%AE%E7%90%83%E6%96%B9%E5%BC%8F%E7%9A%84%E8%B4%A3%E4%BB%BB%E9%93%BE%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" data-id="ck8n15kds000ebcradfhn9hio" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-架构师内功心法，连接两个空间维度的桥接模式详解" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2020/03/11/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E8%BF%9E%E6%8E%A5%E4%B8%A4%E4%B8%AA%E7%A9%BA%E9%97%B4%E7%BB%B4%E5%BA%A6%E7%9A%84%E6%A1%A5%E6%8E%A5%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" class="article-date">
-  <time datetime="2020-03-11T08:34:28.000Z" itemprop="datePublished">2020-03-11</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/03/11/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E8%BF%9E%E6%8E%A5%E4%B8%A4%E4%B8%AA%E7%A9%BA%E9%97%B4%E7%BB%B4%E5%BA%A6%E7%9A%84%E6%A1%A5%E6%8E%A5%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/">架构师内功心法，连接两个空间维度的桥接模式详解</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>在现实生活中的桥接模式也随处可见，比如连接两个空间维度的桥，连接虚拟网络与真实网络的连接。<br><img src="https://user-gold-cdn.xitu.io/2020/3/10/170c3a13928e4288?w=2048&h=1109&f=png&s=4316483" alt=""><br><img src="https://user-gold-cdn.xitu.io/2020/3/10/170c3a26ff97ad41?w=597&h=531&f=png&s=220773" alt=""></p>
-<p>桥接模式（Bridge Pattern）也成为桥梁模式、接口模式或柄体（Handle And Body）模式，是将抽象部分与它的具体实现部分分离，使得它们都可以独立地变化。</p>
-<h1 id="一、桥接模式的应用场景"><a href="#一、桥接模式的应用场景" class="headerlink" title="一、桥接模式的应用场景"></a>一、桥接模式的应用场景</h1><p>桥接模式主要目的是通过组合的方式建立两个类之间的联系，而不是继承。但又类似于多重继承方案，但是多重继承方案又违背了类的单一职责原则，其复用性比较差，桥接模式是比多重继承更好的替代方案。桥接模式的核心在于解耦抽象和实现。</p>
-<h2 id="1-1-桥接模式的角色"><a href="#1-1-桥接模式的角色" class="headerlink" title="1.1 桥接模式的角色"></a>1.1 桥接模式的角色</h2><p>接下来我们看下桥接模式通用的UML图：</p>
-<p><img src="https://user-gold-cdn.xitu.io/2020/3/11/170c81e67c26f096?w=1195&h=589&f=png&s=38934" alt=""></p>
-<p>从UML图中可以看出桥接模式主要包含四种角色：</p>
-<ul>
-<li>抽象（Abstraciton）：该类持有一个对实现角色的引用，抽象角色中的方法需要实现角色来实现。抽象角色一般就是抽象类（构造函数规定子类要传入一个实现对象）；</li>
-<li>修正抽象（RefinedAbstraction）：抽象的具体实现，对抽象类方法进行扩展和完善。</li>
-<li>实现（Implementor）：确定实现维度的基本操作，提供给抽象类使用。该类一般为抽象类或接口。</li>
-<li>具体实现（ConcreteImplementor）：实现类（Implementor）的具体实现。</li>
-</ul>
-<p>下面来看具体实现的代码：</p>
-<p>首先创建抽象 Abstraction 类：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">public abstract class Abstraction &#123;</span><br><span class="line"></span><br><span class="line">    protected IImplementor iImplementor;</span><br><span class="line"></span><br><span class="line">    public Abstraction(IImplementor iImplementor) &#123;</span><br><span class="line">        this.iImplementor &#x3D; iImplementor;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    void operation()&#123;</span><br><span class="line">        this.iImplementor.operationImpl();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>创建修正抽象 RefinedAbstraction 类：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">public class RefinedAbstraction extends Abstraction &#123;</span><br><span class="line"></span><br><span class="line">    public RefinedAbstraction(IImplementor iImplementor) &#123;</span><br><span class="line">        super(iImplementor);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    void operation()&#123;</span><br><span class="line">        super.operation();</span><br><span class="line">        System.out.println(&quot;refined operation&quot;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>创建角色实现 IImplementor 接口：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">public interface IImplementor &#123;</span><br><span class="line"></span><br><span class="line">    void operationImpl();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>创建具体实现ConcreteImplementorA、ConcreteImplementorB 类：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">public class ConcreteImplementorA implements IImplementor &#123;</span><br><span class="line">    @Override</span><br><span class="line">    public void operationImpl() &#123;</span><br><span class="line">        System.out.println(&quot;concreteImplementor A&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">public class ConcreteImplementorB implements IImplementor &#123;</span><br><span class="line">    @Override</span><br><span class="line">    public void operationImpl() &#123;</span><br><span class="line">        System.out.println(&quot;concreteImplementor B&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>测试main方法：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">   public static void main(String[] args) &#123;</span><br><span class="line">    </span><br><span class="line">    IImplementor iImplementorA &#x3D; new ConcreteImplementorA();</span><br><span class="line">    IImplementor iImplementorB &#x3D; new ConcreteImplementorB();</span><br><span class="line"></span><br><span class="line">    Abstraction absA &#x3D; new RefinedAbstraction(iImplementorA);</span><br><span class="line">    Abstraction absB &#x3D; new RefinedAbstraction(iImplementorB);</span><br><span class="line"></span><br><span class="line">    absA.operation();</span><br><span class="line">    absB.operation();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>桥接模式有以下几个应用场景：</p>
-<ul>
-<li>在抽象和具体实现之间需要增加更多灵活性的场景；</li>
-<li>一个类存在两个（或多个）独立变化的维度，而这两个（或多个）维度都需要独立进行扩展；</li>
-<li>不希望使用继承，或因为多层继承导致系统类的个数剧增。</li>
-</ul>
-<h2 id="1-2-桥接模式的业务实现案例"><a href="#1-2-桥接模式的业务实现案例" class="headerlink" title="1.2 桥接模式的业务实现案例"></a>1.2 桥接模式的业务实现案例</h2><p>我们在平时办公的时候经常需要通过发送邮件消息、钉钉消息或者系统内消息和同事进行沟通。尤其是在使用一些流程审批的时候，我们需要记录这些过程以备查。可以根据消息的类型来进行划分，可以分为邮件消息，钉钉消息和系统内消息。但是，如果根据消息的紧急程度来划分的话，可以分为普通消息、紧急消息和特急消息。显然，整个消息系统可以划分为两个大维度。</p>
-<p>如果使用继承的话情况就复杂了，而且不利于扩展。邮件信息可以是普通的，也可以是紧急的；钉钉消息可以是普通的，也可以是紧急的。下面使用桥接模式解决这类问题：</p>
-<p>首先创建一个IMessage接口担任桥接的角色：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;**</span><br><span class="line"> * 实现消息发送的统一接口</span><br><span class="line"> *&#x2F;</span><br><span class="line">public interface IMessage &#123;</span><br><span class="line"></span><br><span class="line">    &#x2F;**</span><br><span class="line">     * 发送消息</span><br><span class="line">     * @param message</span><br><span class="line">     *                  内容</span><br><span class="line">     * @param user</span><br><span class="line">     *                  接收人</span><br><span class="line">     *&#x2F;</span><br><span class="line">   public void send(String message, String user);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>创建邮件消息类实现IMessage接口：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;**</span><br><span class="line"> * 邮件信息实现类</span><br><span class="line"> *&#x2F;</span><br><span class="line">public class EmailMessage implements IMessage &#123;</span><br><span class="line">    @Override</span><br><span class="line">    public void send(String message, String user) &#123;</span><br><span class="line">        System.out.println(String.format(&quot;使用邮件的方式发送消息 %s 给 %s&quot;, message, user));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>创建钉钉消息类也实现IMessage接口：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;**</span><br><span class="line"> * 钉钉信息实现类</span><br><span class="line"> *&#x2F;</span><br><span class="line">public class DingMessage implements IMessage &#123;</span><br><span class="line">    @Override</span><br><span class="line">    public void send(String message, String user) &#123;</span><br><span class="line">        System.out.println(String.format(&quot;使用钉钉的方式发送消息 %s 给 %s&quot;, message, user));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>然后在创建抽象角色 AbstractMessage 类，</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;**</span><br><span class="line"> * 抽象消息类</span><br><span class="line"> *&#x2F;</span><br><span class="line">public abstract class AbstractMessage &#123;</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F;实现对象</span><br><span class="line">    IMessage message;</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F;构造方法传入实现部分的对象</span><br><span class="line">    public AbstractMessage(IMessage message) &#123;</span><br><span class="line">        this.message &#x3D; message;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;**</span><br><span class="line">     * 发送消息，委派给实现对象的方法</span><br><span class="line">     * @param message</span><br><span class="line">     * @param user</span><br><span class="line">     *&#x2F;</span><br><span class="line">    public void sendMessage(String message, String user) &#123;</span><br><span class="line">        this.message.send(message, user);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>创建具体的普通消息实现 NormalMessage 类：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;**</span><br><span class="line"> * 普通消息类</span><br><span class="line"> *&#x2F;</span><br><span class="line">public class NormalMessage extends AbstractMessage &#123;</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F;构造方法传入实现的对象</span><br><span class="line">    public NormalMessage(IMessage message) &#123;</span><br><span class="line">        super(message);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;**</span><br><span class="line">     * 发送消息，直接调用父类的方法即可</span><br><span class="line">     * @param message</span><br><span class="line">     * @param user</span><br><span class="line">     *&#x2F;</span><br><span class="line">    public void sendMessage(String message, String user) &#123;</span><br><span class="line">        super.sendMessage(message, user);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>创建具体的紧急消息实现 UrgencyMessage 类：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;**</span><br><span class="line"> * 紧急消息类</span><br><span class="line"> *&#x2F;</span><br><span class="line">public class UngencyMessage extends AbstractMessage &#123;</span><br><span class="line">    public UngencyMessage(IMessage message) &#123;</span><br><span class="line">        super(message);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;**</span><br><span class="line">     * 发送消息，直接调用父类的方法即可</span><br><span class="line">     * @param message</span><br><span class="line">     * @param user</span><br><span class="line">     *&#x2F;</span><br><span class="line">    public void sendMessage(String message, String user) &#123;</span><br><span class="line">        super.sendMessage(message, user);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;**</span><br><span class="line">     * 扩展自己的功能，监控消息的状态</span><br><span class="line">     * @param messageId</span><br><span class="line">     * @return</span><br><span class="line">     *&#x2F;</span><br><span class="line">    public Object watch(String messageId) &#123;</span><br><span class="line">        return null;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>测试main方法：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">public static void main(String[] args) &#123;</span><br><span class="line"></span><br><span class="line">    IMessage message &#x3D; new EmailMessage();</span><br><span class="line">    AbstractMessage abstractMessage &#x3D; new NormalMessage(message);</span><br><span class="line">    abstractMessage.sendMessage(&quot;周末加班申请&quot;, &quot;张三&quot;);</span><br><span class="line"></span><br><span class="line">    message &#x3D; new DingMessage();</span><br><span class="line">    abstractMessage &#x3D; new UngencyMessage(message);</span><br><span class="line">    abstractMessage.sendMessage(&quot;请假申请&quot;, &quot;李四&quot;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>运行结果：</p>
-<p><img src="https://user-gold-cdn.xitu.io/2020/3/11/170c8820997f852a?w=709&h=268&f=png&s=23465" alt=""><br>在上面的案例中，我们采用了桥接模式解耦了“消息类型”和“消息紧急程度”这两个独立变化的维度。如果需要扩展这两个维度的内容，按照上述代码的方式进行扩展就好了。</p>
-<h1 id="二、桥接模式的源码体现"><a href="#二、桥接模式的源码体现" class="headerlink" title="二、桥接模式的源码体现"></a>二、桥接模式的源码体现</h1><p><strong>JDBC中的Driver类</strong></p>
-<p>我们都非常熟悉JDBC的API，其中有个Driver类就是桥接类。在使用的时候通过<strong>Class.forName()</strong> 方法可以动态的加载各个数据库厂商实现的Driver类。具体代码我们以mysql客户端为例：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">private Vector&lt;Connection&gt; pool;</span><br><span class="line">private String url &#x3D; &quot;jdbc:mysql:&#x2F;&#x2F;localhost:3306&#x2F;testDB&quot;;</span><br><span class="line">private String username &#x3D; &quot;root&quot;;</span><br><span class="line">private String password &#x3D; &quot;123456&quot;;</span><br><span class="line">private String driverClassName &#x3D; &quot;com.mysql.jdbc.Driver&quot;;</span><br><span class="line">private int poolSize &#x3D; 100;</span><br><span class="line">public ConnectionPool() &#123;</span><br><span class="line">    pool &#x3D; new Vector&lt;Connection&gt;(poolSize);</span><br><span class="line">    try&#123;</span><br><span class="line">        Class.forName(driverClassName);</span><br><span class="line">        for (int i &#x3D; 0; i &lt; poolSize; i++) &#123;</span><br><span class="line">            Connection conn &#x3D; DriverManager.getConnection(url,username,password);</span><br><span class="line">            pool.add(conn);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;catch (Exception e)&#123;</span><br><span class="line">        e.printStackTrace();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>首先来看一下Driver接口的定义：</p>
-<p><img src="https://user-gold-cdn.xitu.io/2020/3/11/170c88f198fbf8ff?w=652&h=289&f=png&s=22414" alt=""></p>
-<p>Driver在JDBC中并没有做任何实现，具体的功能实现由各厂商完成，我们以Mysql为例：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">public class Driver extends NonRegisteringDriver implements java.sql.Driver &#123; </span><br><span class="line">    public Driver() throws SQLExeption &#123;&#125;</span><br><span class="line">    static &#123; </span><br><span class="line">        try &#123; </span><br><span class="line">            DriverManager.registerDriver(new Driver()) ； </span><br><span class="line">        &#125; catch (SQLE xception var1) &#123; </span><br><span class="line">            throw new RuntimeExcept ion(&quot;Can&#39;t register driver!&quot;); </span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>当我们执行Class.forName(“com.mysql.jdbc.Driver”)方法的时候，就会执行上面类的静态块中的代码。而静态块只是调用了DriverManager的registerDriver()方法，然后将Driver对象注册到DriverManager中。接下来看一下DriverManager中相关的源代码：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;**</span><br><span class="line">     * Registers the given driver with the &#123;@code DriverManager&#125;.</span><br><span class="line">     * A newly-loaded driver class should call</span><br><span class="line">     * the method &#123;@code registerDriver&#125; to make itself</span><br><span class="line">     * known to the &#123;@code DriverManager&#125;. If the driver is currently</span><br><span class="line">     * registered, no action is taken.</span><br><span class="line">     *</span><br><span class="line">     * @param driver the new JDBC Driver that is to be registered with the</span><br><span class="line">     *               &#123;@code DriverManager&#125;</span><br><span class="line">     * @exception SQLException if a database access error occurs</span><br><span class="line">     * @exception NullPointerException if &#123;@code driver&#125; is null</span><br><span class="line">     *&#x2F;</span><br><span class="line">    public static synchronized void registerDriver(java.sql.Driver driver)</span><br><span class="line">        throws SQLException &#123;</span><br><span class="line"></span><br><span class="line">        registerDriver(driver, null);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;**</span><br><span class="line">     * Registers the given driver with the &#123;@code DriverManager&#125;.</span><br><span class="line">     * A newly-loaded driver class should call</span><br><span class="line">     * the method &#123;@code registerDriver&#125; to make itself</span><br><span class="line">     * known to the &#123;@code DriverManager&#125;. If the driver is currently</span><br><span class="line">     * registered, no action is taken.</span><br><span class="line">     *</span><br><span class="line">     * @param driver the new JDBC Driver that is to be registered with the</span><br><span class="line">     *               &#123;@code DriverManager&#125;</span><br><span class="line">     * @param da     the &#123;@code DriverAction&#125; implementation to be used when</span><br><span class="line">     *               &#123;@code DriverManager#deregisterDriver&#125; is called</span><br><span class="line">     * @exception SQLException if a database access error occurs</span><br><span class="line">     * @exception NullPointerException if &#123;@code driver&#125; is null</span><br><span class="line">     * @since 1.8</span><br><span class="line">     *&#x2F;</span><br><span class="line">    public static synchronized void registerDriver(java.sql.Driver driver,</span><br><span class="line">            DriverAction da)</span><br><span class="line">        throws SQLException &#123;</span><br><span class="line"></span><br><span class="line">        &#x2F;* Register the driver if it has not already been added to our list *&#x2F;</span><br><span class="line">        if(driver !&#x3D; null) &#123;</span><br><span class="line">            registeredDrivers.addIfAbsent(new DriverInfo(driver, da));</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            &#x2F;&#x2F; This is for compatibility with the original DriverManager</span><br><span class="line">            throw new NullPointerException();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        println(&quot;registerDriver: &quot; + driver);</span><br><span class="line"></span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-<p>在注册之前，将传递过来的Driver对象封装成一个<strong>DriverInfo</strong>对象。接下来调用DriverManager中的<strong>getConnection()</strong> 方法获得连接对象，看下源代码：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;**</span><br><span class="line">     * Attempts to establish a connection to the given database URL.</span><br><span class="line">     * The &lt;code&gt;DriverManager&lt;&#x2F;code&gt; attempts to select an appropriate driver from</span><br><span class="line">     * the set of registered JDBC drivers.</span><br><span class="line">     *&lt;p&gt;</span><br><span class="line">     * &lt;B&gt;Note:&lt;&#x2F;B&gt; If a property is specified as part of the &#123;@code url&#125; and</span><br><span class="line">     * is also specified in the &#123;@code Properties&#125; object, it is</span><br><span class="line">     * implementation-defined as to which value will take precedence.</span><br><span class="line">     * For maximum portability, an application should only specify a</span><br><span class="line">     * property once.</span><br><span class="line">     *</span><br><span class="line">     * @param url a database url of the form</span><br><span class="line">     * &lt;code&gt; jdbc:&lt;em&gt;subprotocol&lt;&#x2F;em&gt;:&lt;em&gt;subname&lt;&#x2F;em&gt;&lt;&#x2F;code&gt;</span><br><span class="line">     * @param info a list of arbitrary string tag&#x2F;value pairs as</span><br><span class="line">     * connection arguments; normally at least a &quot;user&quot; and</span><br><span class="line">     * &quot;password&quot; property should be included</span><br><span class="line">     * @return a Connection to the URL</span><br><span class="line">     * @exception SQLException if a database access error occurs or the url is</span><br><span class="line">     * &#123;@code null&#125;</span><br><span class="line">     * @throws SQLTimeoutException  when the driver has determined that the</span><br><span class="line">     * timeout value specified by the &#123;@code setLoginTimeout&#125; method</span><br><span class="line">     * has been exceeded and has at least tried to cancel the</span><br><span class="line">     * current database connection attempt</span><br><span class="line">     *&#x2F;</span><br><span class="line">    @CallerSensitive</span><br><span class="line">    public static Connection getConnection(String url,</span><br><span class="line">        java.util.Properties info) throws SQLException &#123;</span><br><span class="line"></span><br><span class="line">        return (getConnection(url, info, Reflection.getCallerClass()));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;**</span><br><span class="line">     * Attempts to establish a connection to the given database URL.</span><br><span class="line">     * The &lt;code&gt;DriverManager&lt;&#x2F;code&gt; attempts to select an appropriate driver from</span><br><span class="line">     * the set of registered JDBC drivers.</span><br><span class="line">     *&lt;p&gt;</span><br><span class="line">     * &lt;B&gt;Note:&lt;&#x2F;B&gt; If the &#123;@code user&#125; or &#123;@code password&#125; property are</span><br><span class="line">     * also specified as part of the &#123;@code url&#125;, it is</span><br><span class="line">     * implementation-defined as to which value will take precedence.</span><br><span class="line">     * For maximum portability, an application should only specify a</span><br><span class="line">     * property once.</span><br><span class="line">     *</span><br><span class="line">     * @param url a database url of the form</span><br><span class="line">     * &lt;code&gt;jdbc:&lt;em&gt;subprotocol&lt;&#x2F;em&gt;:&lt;em&gt;subname&lt;&#x2F;em&gt;&lt;&#x2F;code&gt;</span><br><span class="line">     * @param user the database user on whose behalf the connection is being</span><br><span class="line">     *   made</span><br><span class="line">     * @param password the user&#39;s password</span><br><span class="line">     * @return a connection to the URL</span><br><span class="line">     * @exception SQLException if a database access error occurs or the url is</span><br><span class="line">     * &#123;@code null&#125;</span><br><span class="line">     * @throws SQLTimeoutException  when the driver has determined that the</span><br><span class="line">     * timeout value specified by the &#123;@code setLoginTimeout&#125; method</span><br><span class="line">     * has been exceeded and has at least tried to cancel the</span><br><span class="line">     * current database connection attempt</span><br><span class="line">     *&#x2F;</span><br><span class="line">    @CallerSensitive</span><br><span class="line">    public static Connection getConnection(String url,</span><br><span class="line">        String user, String password) throws SQLException &#123;</span><br><span class="line">        java.util.Properties info &#x3D; new java.util.Properties();</span><br><span class="line"></span><br><span class="line">        if (user !&#x3D; null) &#123;</span><br><span class="line">            info.put(&quot;user&quot;, user);</span><br><span class="line">        &#125;</span><br><span class="line">        if (password !&#x3D; null) &#123;</span><br><span class="line">            info.put(&quot;password&quot;, password);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        return (getConnection(url, info, Reflection.getCallerClass()));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;**</span><br><span class="line">     * Attempts to establish a connection to the given database URL.</span><br><span class="line">     * The &lt;code&gt;DriverManager&lt;&#x2F;code&gt; attempts to select an appropriate driver from</span><br><span class="line">     * the set of registered JDBC drivers.</span><br><span class="line">     *</span><br><span class="line">     * @param url a database url of the form</span><br><span class="line">     *  &lt;code&gt; jdbc:&lt;em&gt;subprotocol&lt;&#x2F;em&gt;:&lt;em&gt;subname&lt;&#x2F;em&gt;&lt;&#x2F;code&gt;</span><br><span class="line">     * @return a connection to the URL</span><br><span class="line">     * @exception SQLException if a database access error occurs or the url is</span><br><span class="line">     * &#123;@code null&#125;</span><br><span class="line">     * @throws SQLTimeoutException  when the driver has determined that the</span><br><span class="line">     * timeout value specified by the &#123;@code setLoginTimeout&#125; method</span><br><span class="line">     * has been exceeded and has at least tried to cancel the</span><br><span class="line">     * current database connection attempt</span><br><span class="line">     *&#x2F;</span><br><span class="line">    @CallerSensitive</span><br><span class="line">    public static Connection getConnection(String url)</span><br><span class="line">        throws SQLException &#123;</span><br><span class="line"></span><br><span class="line">        java.util.Properties info &#x3D; new java.util.Properties();</span><br><span class="line">        return (getConnection(url, info, Reflection.getCallerClass()));</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">private static Connection getConnection(</span><br><span class="line">        String url, java.util.Properties info, Class&lt;?&gt; caller) throws SQLException &#123;</span><br><span class="line">        &#x2F;*</span><br><span class="line">         * When callerCl is null, we should check the application&#39;s</span><br><span class="line">         * (which is invoking this class indirectly)</span><br><span class="line">         * classloader, so that the JDBC driver class outside rt.jar</span><br><span class="line">         * can be loaded from here.</span><br><span class="line">         *&#x2F;</span><br><span class="line">        ClassLoader callerCL &#x3D; caller !&#x3D; null ? caller.getClassLoader() : null;</span><br><span class="line">        synchronized(DriverManager.class) &#123;</span><br><span class="line">            &#x2F;&#x2F; synchronize loading of the correct classloader.</span><br><span class="line">            if (callerCL &#x3D;&#x3D; null) &#123;</span><br><span class="line">                callerCL &#x3D; Thread.currentThread().getContextClassLoader();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        if(url &#x3D;&#x3D; null) &#123;</span><br><span class="line">            throw new SQLException(&quot;The url cannot be null&quot;, &quot;08001&quot;);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        println(&quot;DriverManager.getConnection(\&quot;&quot; + url + &quot;\&quot;)&quot;);</span><br><span class="line"></span><br><span class="line">        &#x2F;&#x2F; Walk through the loaded registeredDrivers attempting to make a connection.</span><br><span class="line">        &#x2F;&#x2F; Remember the first exception that gets raised so we can reraise it.</span><br><span class="line">        SQLException reason &#x3D; null;</span><br><span class="line"></span><br><span class="line">        for(DriverInfo aDriver : registeredDrivers) &#123;</span><br><span class="line">            &#x2F;&#x2F; If the caller does not have permission to load the driver then</span><br><span class="line">            &#x2F;&#x2F; skip it.</span><br><span class="line">            if(isDriverAllowed(aDriver.driver, callerCL)) &#123;</span><br><span class="line">                try &#123;</span><br><span class="line">                    println(&quot;    trying &quot; + aDriver.driver.getClass().getName());</span><br><span class="line">                    Connection con &#x3D; aDriver.driver.connect(url, info);</span><br><span class="line">                    if (con !&#x3D; null) &#123;</span><br><span class="line">                        &#x2F;&#x2F; Success!</span><br><span class="line">                        println(&quot;getConnection returning &quot; + aDriver.driver.getClass().getName());</span><br><span class="line">                        return (con);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125; catch (SQLException ex) &#123;</span><br><span class="line">                    if (reason &#x3D;&#x3D; null) &#123;</span><br><span class="line">                        reason &#x3D; ex;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">            &#125; else &#123;</span><br><span class="line">                println(&quot;    skipping: &quot; + aDriver.getClass().getName());</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        &#x2F;&#x2F; if we got here nobody could connect.</span><br><span class="line">        if (reason !&#x3D; null)    &#123;</span><br><span class="line">            println(&quot;getConnection failed: &quot; + reason);</span><br><span class="line">            throw reason;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        println(&quot;getConnection: no suitable driver found for &quot;+ url);</span><br><span class="line">        throw new SQLException(&quot;No suitable driver found for &quot;+ url, &quot;08001&quot;);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-<p>在getConnection()中又会调用各自厂商实现的Driver的Connect()方法获得连接对象。这样巧妙的避开了使用继承，为不同的数据库提供了相同的接口。</p>
-<h1 id="三、桥接模式的优缺点"><a href="#三、桥接模式的优缺点" class="headerlink" title="三、桥接模式的优缺点"></a>三、桥接模式的优缺点</h1><p>桥接模式很好的遵循了里氏替换原则和依赖倒置原则，最终实现了开闭原则，对修改关闭，对扩展开发。优缺点总结如下：</p>
-<p>优点：</p>
-<ul>
-<li>分离抽象部分及其具体实现部分；</li>
-<li>提高系统的扩展性；</li>
-<li>符合开闭原则；</li>
-<li>符合合成复原则。</li>
-</ul>
-<p>缺点：</p>
-<ul>
-<li>增加系统的设计和理解难度；</li>
-<li>需要正确识别系统中两个独立变化的维度。</li>
-</ul>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://xkjava.github.io/2020/03/11/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E8%BF%9E%E6%8E%A5%E4%B8%A4%E4%B8%AA%E7%A9%BA%E9%97%B4%E7%BB%B4%E5%BA%A6%E7%9A%84%E6%A1%A5%E6%8E%A5%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" data-id="ck8n15kei000pbcragcom06ou" class="article-share-link">Share</a>
+      <a data-url="https://xkjava.github.io/2020/03/16/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E5%BF%85%E9%A1%BB%E5%AE%8C%E5%85%A8%E6%8E%8C%E6%8F%A1%E5%90%83%E9%80%8F%E7%9A%84%E8%B8%A2%E7%9A%AE%E7%90%83%E6%96%B9%E5%BC%8F%E7%9A%84%E8%B4%A3%E4%BB%BB%E9%93%BE%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" data-id="ck9tm3e69000fhyrabafm6f2v" class="article-share-link">Share</a>
       
       
     </footer>
@@ -1078,7 +1052,7 @@ controller.executes();</code></pre><p>}</p>
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li></ul>
     </div>
   </div>
 
@@ -1089,6 +1063,10 @@ controller.executes();</code></pre><p>}</p>
     <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2020/05/05/23%E7%A7%8D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E7%9A%84%E5%AD%A6%E4%B9%A0%EF%BC%8C%E6%88%91%E4%BB%AC%E9%9C%80%E8%A6%81%E6%8E%8C%E6%8F%A1%E7%9A%84%E6%98%AF%E2%80%9C%E9%81%93%E2%80%9D%EF%BC%8C%E8%80%8C%E4%B8%8D%E5%8F%AA%E6%98%AF%E2%80%9C%E6%9C%AF%E2%80%9D/">23种设计模式的学习，我们需要掌握的是“道”，而不只是“术”</a>
+          </li>
         
           <li>
             <a href="/2020/04/05/%E6%B7%B1%E5%BA%A6%E9%98%85%E8%AF%BBSpring5-x%E6%BA%90%E7%A0%81%E5%90%8E%EF%BC%8C%E4%BD%BF%E7%94%A8Java%E5%AE%9E%E7%8E%B0%E8%BF%B7%E4%BD%A0%E7%89%88Spring%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%80%9D%E8%B7%AF%E5%AE%9E%E8%B7%B5/">深度阅读Spring5.x源码后，使用Java实现迷你版Spring的基本思路实践</a>
@@ -1104,10 +1082,6 @@ controller.executes();</code></pre><p>}</p>
         
           <li>
             <a href="/2020/03/25/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E4%B8%8D%E9%9C%80%E8%A6%81%E4%B8%AD%E9%97%B4%E5%95%86%E8%B5%9A%E5%B7%AE%E4%BB%B7%E7%9A%84%E4%B8%AD%E4%BB%8B%E8%80%85%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/">架构师内功心法，不需要中间商赚差价的中介者模式详解</a>
-          </li>
-        
-          <li>
-            <a href="/2020/03/22/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E5%8F%82%E4%B8%8E%E5%AF%8C%E6%96%87%E6%9C%AC%E7%BC%96%E8%BE%91%E5%99%A8%E5%BC%80%E5%8F%91%E7%9A%84%E5%A4%87%E5%BF%98%E5%BD%95%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/">架构师内功心法，参与富文本编辑器开发的备忘录模式详解</a>
           </li>
         
       </ul>
