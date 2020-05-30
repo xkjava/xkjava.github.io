@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>JAVA并发编程递进篇，探索线程安全性volatile关键字如何保证可见性 | 来一杯咖啡</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="一开始就直接上代码，直接来看一段木有使用volatile关键字的线程调用代码吧： 1234567891011121314151617181920212223public class VolatileDemo &amp;#123;    public static boolean stop &#x3D; false;    public static void main(String[] args) thr">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JAVA并发编程递进篇，探索线程安全性volatile关键字如何保证可见性">
+<meta property="og:url" content="https://xkjava.github.io/2020/05/30/JAVA%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E9%80%92%E8%BF%9B%E7%AF%87%EF%BC%8C%E6%8E%A2%E7%B4%A2%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8%E6%80%A7volatile%E5%85%B3%E9%94%AE%E5%AD%97%E5%A6%82%E4%BD%95%E4%BF%9D%E8%AF%81%E5%8F%AF%E8%A7%81%E6%80%A7/index.html">
+<meta property="og:site_name" content="来一杯咖啡">
+<meta property="og:description" content="一开始就直接上代码，直接来看一段木有使用volatile关键字的线程调用代码吧： 1234567891011121314151617181920212223public class VolatileDemo &amp;#123;    public static boolean stop &#x3D; false;    public static void main(String[] args) thr">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2020/5/26/172514091156910a?w=1453&h=523&f=png&s=83759">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2020/5/27/1725562186444afd?w=480&h=385&f=png&s=17195">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2020/5/30/172644f7dcdc9647?w=443&h=372&f=png&s=19534">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2020/5/30/172645273b4233b8?w=322&h=284&f=png&s=11075">
+<meta property="article:published_time" content="2020-05-30T08:56:53.000Z">
+<meta property="article:modified_time" content="2020-05-30T08:57:41.846Z">
+<meta property="article:author" content="Kevin Shaw">
+<meta property="article:tag" content="Java">
+<meta property="article:tag" content="Spring">
+<meta property="article:tag" content="Netty">
+<meta property="article:tag" content="Kafka...">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://user-gold-cdn.xitu.io/2020/5/26/172514091156910a?w=1453&h=523&f=png&s=83759">
+  
+    <link rel="alternate" href="/atom.xml" title="来一杯咖啡" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">来一杯咖啡</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">互联网技术无边界，学习与交流</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://xkjava.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-JAVA并发编程递进篇，探索线程安全性volatile关键字如何保证可见性" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/05/30/JAVA%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E9%80%92%E8%BF%9B%E7%AF%87%EF%BC%8C%E6%8E%A2%E7%B4%A2%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8%E6%80%A7volatile%E5%85%B3%E9%94%AE%E5%AD%97%E5%A6%82%E4%BD%95%E4%BF%9D%E8%AF%81%E5%8F%AF%E8%A7%81%E6%80%A7/" class="article-date">
+  <time datetime="2020-05-30T08:56:53.000Z" itemprop="datePublished">2020-05-30</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      JAVA并发编程递进篇，探索线程安全性volatile关键字如何保证可见性
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>一开始就直接上代码，直接来看一段木有使用<strong>volatile</strong>关键字的线程调用代码吧：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">public class VolatileDemo &#123;</span><br><span class="line">    public static boolean stop &#x3D; false;</span><br><span class="line">    public static void main(String[] args) throws InterruptedException &#123;</span><br><span class="line">        Thread t &#x3D; new Thread(()-&gt;&#123;</span><br><span class="line">            int i &#x3D; 0;</span><br><span class="line">            while(!stop) &#123;</span><br><span class="line">                i++;</span><br><span class="line">                &#x2F;&#x2F;System.out.println(&quot;result:&quot; + i);</span><br><span class="line">                &#x2F;*</span><br><span class="line">                try &#123;</span><br><span class="line">                    Thread.sleep(0);</span><br><span class="line">                &#125; catch (InterruptedException e) &#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                &#125;</span><br><span class="line">                *&#x2F;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;,&quot;myThread&quot;);</span><br><span class="line">        t.start();</span><br><span class="line">        Thread.sleep(1000);</span><br><span class="line">        stop&#x3D;true;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>很显然运行<strong>main</strong>()方法后，循环并没有结束，程序一直处于运行状态。</p>
+<p>如果我们要使得循环结束该怎么做呢？</p>
+<h1 id="一、Volatile关键字的使用递进"><a href="#一、Volatile关键字的使用递进" class="headerlink" title="一、Volatile关键字的使用递进"></a>一、Volatile关键字的使用递进</h1><h2 id="1-1-System-out-println"><a href="#1-1-System-out-println" class="headerlink" title="1.1 System.out.println"></a>1.1 System.out.println</h2><p>使用print打印i的值，发现循环就被终止了。这是为什么呢？我们不妨来看下<strong>println</strong>()方法的源码吧。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">public void println(String x) &#123;</span><br><span class="line">        synchronized (this) &#123;</span><br><span class="line">            print(x);</span><br><span class="line">            newLine();</span><br><span class="line">        &#125;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+<p>底层方法使用<strong>synchronized</strong>关键字，这个同步会防止循环期间对变量stop的值缓存。</p>
+<p>从IO角度来说<strong>，print本质上是一个IO的操作</strong>，我们知道磁盘IO的效率一定要比CPU的计算效率慢得多，所以IO可以使得CPU有时间去做内存刷新的事情，从而导致这个现象。比如我们可以在里面定义一个new File()。同样会达到效果。</p>
+<h2 id="1-2-Thread-sleep-0"><a href="#1-2-Thread-sleep-0" class="headerlink" title="1.2 Thread.sleep(0)"></a>1.2 Thread.sleep(0)</h2><p>增加Thread.sleep(0)也能生效，是和cpu、以及jvm、操作系统等因素有关系。</p>
+<p>官方文档上是说，Thread.sleep没有任何同步语义，编译器不需要在调用Thread.sleep之前把缓存在寄存器中的写刷新到给共享内存、也不需要在Thread.sleep之后重新加载缓存在寄存器中的值。</p>
+<p><img src="https://user-gold-cdn.xitu.io/2020/5/26/172514091156910a?w=1453&h=523&f=png&s=83759" alt=""></p>
+<p>编译器可以自由选择读取stop的值一次或者多次，这个是由编译器自己来决定的。<br>Thread.sleep(0)导致线程切换，线程切换会导致缓存失效从而读取到了新的值。</p>
+<h2 id="1-3-Volatile关键字"><a href="#1-3-Volatile关键字" class="headerlink" title="1.3 Volatile关键字"></a>1.3 Volatile关键字</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">public volatile static boolean stop &#x3D; false;</span><br></pre></td></tr></table></figure>
+<p>我们在stop变量加上<strong>volatile</strong>关键字进行修饰，可以查看汇编指令，使用HSDIS工具进行查看。</p>
+<ul>
+<li>在IDEA中加入VM options：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-server -Xcomp -XX:+UnlockDiagnosticVMOptions -XX:+PrintAssembly -XX:CompileCommand&#x3D;compileonly,*VolatileDemo.*</span><br></pre></td></tr></table></figure>
+运行程序后，在输出的结果中，查找下 <strong>lock</strong> 指令，会发现，在修改带有<strong>volatile</strong> 修饰的成员变量时，会多一个 <strong>lock</strong> 指令。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">0x00000000034e49f3: lock add dword ptr [rsp],0h  ;*putstatic stop</span><br><span class="line">                                                ; - com.sy.sa.thread.VolatileDemo::&lt;clinit&gt;@1 (line 5)</span><br><span class="line">0x00000000034e4643: lock add dword ptr [rsp],0h  ;*putstatic stop</span><br><span class="line">                                                ; - com.sy.sa.thread.VolatileDemo::&lt;clinit&gt;@1 (line 5)</span><br></pre></td></tr></table></figure>
+<p>运行加了<strong>volatile</strong>关键字的代码，发现中多了<strong>lock</strong>汇编指令。那么lock指令是怎么保证可见性的呢？</p>
+<h2 id="1-3-1-什么是可见性？"><a href="#1-3-1-什么是可见性？" class="headerlink" title="1.3.1 什么是可见性？"></a>1.3.1 什么是可见性？</h2><p>在单线程的环境下，如果向一个变量先写入一个值，然后在没有写干涉的情况下读取这个变量的值，那这个时候读取到的这个变量的值应该是之前写入的那个值。这本来是一个很正常的事情。但是在多线程环境下，读和写发生在不同的线程中的时候，可能会出现：读线程不能及时的读取到其他线程写入的最新的值。这就是所谓的<strong>可见性</strong>。</p>
+<h2 id="1-3-2-硬件方面了解可见性本质"><a href="#1-3-2-硬件方面了解可见性本质" class="headerlink" title="1.3.2 硬件方面了解可见性本质"></a>1.3.2 硬件方面了解可见性本质</h2><p>硬件方面将从<strong>CPU、内存、磁盘I/O</strong> 三方面着手。</p>
+<h2 id="1-3-2-1-CPU的高速缓存"><a href="#1-3-2-1-CPU的高速缓存" class="headerlink" title="1.3.2.1 CPU的高速缓存"></a>1.3.2.1 CPU的高速缓存</h2><p>因为高速缓存的存在，会导致一个缓存一致性问题。<br><img src="https://user-gold-cdn.xitu.io/2020/5/27/1725562186444afd?w=480&h=385&f=png&s=17195" alt=""></p>
+<h2 id="1-3-2-2-总线锁和缓存锁"><a href="#1-3-2-2-总线锁和缓存锁" class="headerlink" title="1.3.2.2 总线锁和缓存锁"></a>1.3.2.2 总线锁和缓存锁</h2><p>总线锁，简单来说就是，在多cpu下，当其中一个处理器要对共享内存进行操作的时候，在总线上发出一个LOCK#信号，这个信号使得其他处理器无法通过总线来访问到共享内存中的数据，总线锁定把CPU和内存之间的通信锁住了，这使得锁定期间，其他处理器不能操作其他内存地址的数据，所以总线锁定的开销比较大，这种机制显然是不合适的 。</p>
+<p>如何优化呢？最好的方法就是控制锁的保护粒度，我们只需要保证对于被多个CPU缓存的同一份数据是一致的就行。在P6架构的CPU后，引入了缓存锁，如果当前数据已经被CPU缓存了，并且是要协会到主内存中的，就可以采用缓存锁来解决问题。</p>
+<p>所谓的缓存锁，就是指内存区域如果被缓存在处理器的缓存行中，并且在Lock期间被锁定，那么当它执行锁操作回写到内存时，不再总线上加锁，而是修改内部的内存地址，基于缓存一致性协议来保证操作的原子性。</p>
+<p>总线锁和缓存锁怎么选择，取决于很多因素，比如CPU是否支持、以及存在无法缓存的数据时（比较大或者快约多个缓存行的数据），必然还是会使用总线锁。</p>
+<h2 id="1-3-2-3-缓存一致性"><a href="#1-3-2-3-缓存一致性" class="headerlink" title="1.3.2.3 缓存一致性"></a>1.3.2.3 缓存一致性</h2><p>MSI ，MESI 、MOSI …<br>为了达到数据访问的一致，需要各个处理器在访问缓存时遵循一些协议，在读写时根据协议来操作，常见的协议有MSI，MESI，MOSI等。最常见的就是MESI协议。接下来给大家简单讲解一下MESIMESI表示缓存行的四种状态，分别是：</p>
+<ul>
+<li>M(Modify)： 表示共享数据只缓存在当前CPU缓存中，并且是被修改状态，也就是缓存的数据和主内存中的数据不一致；</li>
+<li>E(Exclusive)： 表示缓存的独占状态，数据只缓存在当前CPU缓存中，并且没有被修改；</li>
+<li>S(Shared)： 表示数据可能被多个CPU缓存，并且各个缓存中的数据和主内存数据一致；</li>
+<li>I(Invalid)： 表示缓存已经失效。</li>
+</ul>
+<h2 id="1-3-2-4-MESI带来的优化"><a href="#1-3-2-4-MESI带来的优化" class="headerlink" title="1.3.2.4 MESI带来的优化"></a>1.3.2.4 MESI带来的优化</h2><p>各CPU通过消息传递来更新各个缓存行的状态。在CPU中引入了Store Bufferes。<br><img src="https://user-gold-cdn.xitu.io/2020/5/30/172644f7dcdc9647?w=443&h=372&f=png&s=19534" alt=""><br>CPU0 只需要在写入共享数据时，直接把数据写入到 <strong>store bufferes</strong> 中，同时发送 <strong>invalidate</strong> 消息，然后继续去处理其他指令。<br>当收到其他所有CPU发送了<strong>invalidate acknowledge</strong>消息时，再将 <strong>store bufferes</strong> 中的数据数据存储至 <strong>cache line</strong>中。最后再从缓存行同步到主内存。</p>
+<p><img src="https://user-gold-cdn.xitu.io/2020/5/30/172645273b4233b8?w=322&h=284&f=png&s=11075" alt=""></p>
+<p><strong>指令重排序</strong></p>
+<p>来关注下面这段代码，假设分别有两个线程，分别执行executeToCPU0和executeToCPU1，分别由两个不同的CPU来执行。引入Store Bufferes之后，就可能出现 b==1返回true ，但是assert(a==1)返回false。很多肯定会表示不理解，这种情况怎么可能成立？那接下来我们去分析一下，写一段伪代码吧。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">executeToCPU0()&#123;</span><br><span class="line">  a&#x3D;1;</span><br><span class="line">  b&#x3D;1;</span><br><span class="line">&#125;</span><br><span class="line">executeToCPU1()&#123;</span><br><span class="line">  while(b&#x3D;&#x3D;1)&#123;</span><br><span class="line">    assert(a&#x3D;&#x3D;1);</span><br><span class="line"> &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<p><strong>通过内存屏障禁止了指令重排序</strong></p>
+<p>X86的memory barrier指令包括<strong>lfence(读屏障) sfence(写屏障) mfence(全屏障)</strong>。</p>
+<ul>
+<li>Store Memory Barrier(写屏障)：告诉处理器在写屏障之前的所有已经存储在存储缓存(store bufferes)中的数据同步到主内存，简单来说就是使得写屏障之前的指令的结果对屏障之后的读或者写是可见的</li>
+<li>Load Memory Barrier(读屏障)：处理器在读屏障之后的读操作，都在读屏障之后执行。配合写屏障，使得写屏障之前的内存更新对于读屏障之后的读操作是可见的</li>
+<li>Full Memory Barrier(全屏障)：确保屏障前的内存读写操作的结果提交到内存之后，再执行屏障后的读写操作</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">volatile int a&#x3D;0;</span><br><span class="line">executeToCpu0()&#123;</span><br><span class="line">  a&#x3D;1;</span><br><span class="line">  &#x2F;&#x2F;storeMemoryBarrier()写屏障，写入到内存</span><br><span class="line">  b&#x3D;1;</span><br><span class="line"> </span><br><span class="line"> &#x2F;&#x2F; CPU层面的重排序</span><br><span class="line">  &#x2F;&#x2F;b&#x3D;1;</span><br><span class="line">  &#x2F;&#x2F;a&#x3D;1;</span><br><span class="line">&#125;</span><br><span class="line">executeToCpu1()&#123;</span><br><span class="line">  while(b&#x3D;&#x3D;1)&#123;  &#x2F;&#x2F;true</span><br><span class="line">    loadMemoryBarrier(); &#x2F;&#x2F;读屏障</span><br><span class="line">    assert(a&#x3D;&#x3D;1) &#x2F;&#x2F;false</span><br><span class="line"> &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="1-3-3-软件方面了解可见性本质"><a href="#1-3-3-软件方面了解可见性本质" class="headerlink" title="1.3.3 软件方面了解可见性本质"></a>1.3.3 软件方面了解可见性本质</h2><h2 id="1-3-3-1-JMM（Java内存模型）"><a href="#1-3-3-1-JMM（Java内存模型）" class="headerlink" title="1.3.3.1 JMM（Java内存模型）"></a>1.3.3.1 JMM（Java内存模型）</h2><p>简单来说，JMM定义了共享内存中多线程程序读写操作的行为规范：在虚拟机中把共享变量存储到内存以及从内存中取出共享变量的底层实现细节。通过这些规则来规范对内存的读写操作从而保证指令的正确性，<strong>解决了CPU多级缓存、处理器优化、指令重排序导致的内存访问问题，保证了并发场景下的可见性</strong>。</p>
+<p>需要注意的是，JMM并没有主动限制执行引擎使用处理器的寄存器和高速缓存来提升指令执行速度，也没主动限制编译器对于指令的重排序，也就是说在JMM这个模型之上，仍然会存在缓存一致性问题和指令重排序问题。JMM是一个抽象模型，它是建立在不同的操作系统和硬件层面之上对问题进行了统一的抽象，然后再Java层面提供了一些高级指令，让用户选择在合适的时候去引入这些高级指令来解决可见性问题。</p>
+<h2 id="1-3-3-2-JMM解决可见性有序性"><a href="#1-3-3-2-JMM解决可见性有序性" class="headerlink" title="1.3.3.2 JMM解决可见性有序性"></a>1.3.3.2 JMM解决可见性有序性</h2><p>其实通过前面的内容分析我们发现，导致可见性问题有两个因素，一个是高速缓存导致的可见性问题，另一个是指令重排序。那JMM是如何解决可见性和有序性问题的呢？其实前面在分析硬件层面的内容时，已经提到过了，对于缓存一致性问题，有总线锁和缓存锁，缓存锁是基于MESI协议。而对于指令重排序，硬件层面提供了内存屏障指令。</p>
+<p>而JMM在这个基础上提供了<strong>volatile、final</strong>等关键字，使得开发者可以在合适的时候增加相应相应的关键字来<strong>禁止高速缓存</strong>和<strong>禁止指令重排序</strong>来解决可见性和有序性问题。</p>
+<h2 id="1-3-3-3-Volatile底层的原理"><a href="#1-3-3-3-Volatile底层的原理" class="headerlink" title="1.3.3.3 Volatile底层的原理"></a>1.3.3.3 Volatile底层的原理</h2><p>通过javap -v VolatileDemo.class 分析汇编指令。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">public static volatile boolean stop;</span><br><span class="line"> descriptor: Z</span><br><span class="line"> flags: ACC_PUBLIC, ACC_STATIC, ACC_VOLATILE</span><br><span class="line">int field_offset &#x3D; cache-&gt;f2_as_index();</span><br><span class="line">     if (cache-&gt;is_volatile()) &#123;</span><br><span class="line">      if (tos_type &#x3D;&#x3D; itos) &#123;</span><br><span class="line">       obj-&gt;release_int_field_put(field_offset, STACK_INT(-1));</span><br><span class="line">     &#125; else if (tos_type &#x3D;&#x3D; atos) &#123;</span><br><span class="line">       VERIFY_OOP(STACK_OBJECT(-1));</span><br><span class="line">       obj-&gt;release_obj_field_put(field_offset, STACK_OBJECT(-1));</span><br><span class="line">       OrderAccess::release_store(&amp;BYTE_MAP_BASE[(uintptr_t)obj &gt;&gt;</span><br><span class="line">CardTableModRefBS::card_shift], 0);</span><br><span class="line">     &#125; else if (tos_type &#x3D;&#x3D; btos) &#123;</span><br><span class="line">       obj-&gt;release_byte_field_put(field_offset, STACK_INT(-1));</span><br><span class="line">     &#125; else if (tos_type &#x3D;&#x3D; ltos) &#123;</span><br><span class="line">       obj-&gt;release_long_field_put(field_offset, STACK_LONG(-1));</span><br><span class="line">     &#125; else if (tos_type &#x3D;&#x3D; ctos) &#123;</span><br><span class="line">       obj-&gt;release_char_field_put(field_offset, STACK_INT(-1));</span><br><span class="line">     &#125; else if (tos_type &#x3D;&#x3D; stos) &#123;</span><br><span class="line">       obj-&gt;release_short_field_put(field_offset, STACK_INT(-1));</span><br><span class="line">     &#125; else if (tos_type &#x3D;&#x3D; ftos) &#123;</span><br><span class="line">       obj-&gt;release_float_field_put(field_offset, STACK_FLOAT(-1));</span><br><span class="line">     &#125; else &#123;</span><br><span class="line">       obj-&gt;release_double_field_put(field_offset, STACK_DOUBLE(-1));</span><br><span class="line">     &#125;</span><br><span class="line">      OrderAccess::storeload();</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="1-3-4-Happens-Before模型"><a href="#1-3-4-Happens-Before模型" class="headerlink" title="1.3.4 Happens-Before模型"></a>1.3.4 Happens-Before模型</h2><p>除了显示引用volatile关键字能够保证可见性以外，在Java中，还有很多的可见性保障的规则。</p>
+<p>从JDK1.5开始，引入了一个<strong>happens-before</strong>的概念来阐述多个线程操作共享变量的可见性问题。所以我们可以认为在JMM中，如果一个操作执行的结果需要对另一个操作可见，那么这两个操作必须要存在<strong>happens-before</strong>关系。这两个操作可以是同一个线程，也可以是不同的线程。</p>
+<h2 id="1-3-4-1-程序顺序规则"><a href="#1-3-4-1-程序顺序规则" class="headerlink" title="1.3.4.1 程序顺序规则"></a>1.3.4.1 程序顺序规则</h2><p>可以认为是<strong>as-if-serial</strong>语义。</p>
+<ul>
+<li>不能改变程序的执行结果(在单线程环境下，执行的结果不变)</li>
+<li>依赖问题， 如果两个指令存在依赖关系，是不允许重排序</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">int a&#x3D;0;</span><br><span class="line">int b&#x3D;0;</span><br><span class="line">void test()&#123;</span><br><span class="line">  int a&#x3D;1;   a</span><br><span class="line">  int b&#x3D;1;   b</span><br><span class="line">  &#x2F;&#x2F;int b&#x3D;1;</span><br><span class="line">  &#x2F;&#x2F;int a&#x3D;1;</span><br><span class="line">  int c&#x3D;a*b;  c</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>a happens -before b ; b happens before c</strong></p>
+<h2 id="1-3-4-2-传递性规则"><a href="#1-3-4-2-传递性规则" class="headerlink" title="1.3.4.2 传递性规则"></a>1.3.4.2 传递性规则</h2><p><strong>a happens-before b , b happens- before c, a happens-before c</strong></p>
+<h2 id="1-3-4-3-volatile变量规则"><a href="#1-3-4-3-volatile变量规则" class="headerlink" title="1.3.4.3 volatile变量规则"></a>1.3.4.3 volatile变量规则</h2><ul>
+<li>volatile 修饰的变量的写操作，一定happens-before后续对于volatile变量的读操作.</li>
+<li>内存屏障机制来防止指令重排.</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">public class VolatileExample&#123;</span><br><span class="line">  int a&#x3D;0;</span><br><span class="line">  volatile boolean flag&#x3D;false;</span><br><span class="line">  public void writer()&#123;</span><br><span class="line">    a&#x3D;1;             1</span><br><span class="line">    flag&#x3D;true; &#x2F;&#x2F;修改       2</span><br><span class="line"> &#125;</span><br><span class="line">  public void reader()&#123;</span><br><span class="line">    if(flag)&#123; &#x2F;&#x2F;true       3</span><br><span class="line">      int i&#x3D;a;  &#x2F;&#x2F;1      4</span><br><span class="line">   &#125;</span><br><span class="line"> &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<ul>
+<li>1 happens-before 2 是否成立？ 是 -&gt; ?</li>
+<li>3 happens-before 4 是否成立? 是</li>
+<li>2 happens -before 3 -&gt;volatile规则</li>
+<li>1 happens-before 4 ; i=1成立.</li>
+</ul>
+<h2 id="1-3-4-4-监视器锁规则"><a href="#1-3-4-4-监视器锁规则" class="headerlink" title="1.3.4.4 监视器锁规则"></a>1.3.4.4 监视器锁规则</h2><p>对一个锁的解锁，happens-before 于随后对这个锁的加锁</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">int x&#x3D;10;</span><br><span class="line">synchronized(this)&#123;</span><br><span class="line">  &#x2F;&#x2F;后续线程读取到的x的值一定12</span><br><span class="line">  if(x&lt;12)&#123;</span><br><span class="line">    x&#x3D;12;</span><br><span class="line"> &#125;</span><br><span class="line">&#125;</span><br><span class="line">x&#x3D;12;</span><br></pre></td></tr></table></figure>
+
+<h2 id="1-3-4-5-start规则"><a href="#1-3-4-5-start规则" class="headerlink" title="1.3.4.5 start规则"></a>1.3.4.5 start规则</h2><p>如果线程 A 执行操作 ThreadB.start(),那么线程 A 的 ThreadB.start()操作 happens-before 线程 B 中的任意操作</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">public class StartDemo&#123;</span><br><span class="line">  int x&#x3D;0;</span><br><span class="line">  Thread t1&#x3D;new Thread(()-&gt;&#123;</span><br><span class="line">    &#x2F;&#x2F;读取x的值 一定是20</span><br><span class="line">    if(x&#x3D;&#x3D;20)&#123;</span><br><span class="line">     </span><br><span class="line">   &#125;</span><br><span class="line"> &#125;);</span><br><span class="line">  x&#x3D;20;</span><br><span class="line">  t1.start();</span><br><span class="line"> </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="1-3-4-6-Join规则"><a href="#1-3-4-6-Join规则" class="headerlink" title="1.3.4.6 Join规则"></a>1.3.4.6 Join规则</h2><p>如果线程 A 执行操作 ThreadB.join()并成功返回，那么线程 B 中的任意操作 happens-before 于线程A 从 ThreadB.join()操作成功返回</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">public class Test&#123;</span><br><span class="line">  int x&#x3D;0;</span><br><span class="line">  Thread t1&#x3D;new Thread(()-&gt;&#123;</span><br><span class="line">    x&#x3D;200;</span><br><span class="line"> &#125;);</span><br><span class="line">  t1.start();</span><br><span class="line">  t1.join(); &#x2F;&#x2F;保证结果的可见性。</span><br><span class="line">  &#x2F;&#x2F;在此处读取到的x的值一定是200.</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://xkjava.github.io/2020/05/30/JAVA%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E9%80%92%E8%BF%9B%E7%AF%87%EF%BC%8C%E6%8E%A2%E7%B4%A2%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8%E6%80%A7volatile%E5%85%B3%E9%94%AE%E5%AD%97%E5%A6%82%E4%BD%95%E4%BF%9D%E8%AF%81%E5%8F%AF%E8%A7%81%E6%80%A7/" data-id="ckatekjzm00063vra0mnt3sxn" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2020/05/23/JAVA%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E5%85%A5%E9%97%A8%E7%AF%87%EF%BC%8C%E6%80%9D%E8%80%83%E5%90%8C%E6%AD%A5%E9%94%81Synchronized%E8%83%8C%E5%90%8E%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%93%B2%E5%AD%A6/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">JAVA并发编程入门篇，思考同步锁Synchronized背后的实现哲学</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2020/05/30/JAVA%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E9%80%92%E8%BF%9B%E7%AF%87%EF%BC%8C%E6%8E%A2%E7%B4%A2%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8%E6%80%A7volatile%E5%85%B3%E9%94%AE%E5%AD%97%E5%A6%82%E4%BD%95%E4%BF%9D%E8%AF%81%E5%8F%AF%E8%A7%81%E6%80%A7/">JAVA并发编程递进篇，探索线程安全性volatile关键字如何保证可见性</a>
+          </li>
+        
+          <li>
+            <a href="/2020/05/23/JAVA%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E5%85%A5%E9%97%A8%E7%AF%87%EF%BC%8C%E6%80%9D%E8%80%83%E5%90%8C%E6%AD%A5%E9%94%81Synchronized%E8%83%8C%E5%90%8E%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%93%B2%E5%AD%A6/">JAVA并发编程入门篇，思考同步锁Synchronized背后的实现哲学</a>
+          </li>
+        
+          <li>
+            <a href="/2020/05/18/JAVA%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E6%8F%AD%E5%BC%80%E7%AF%87%E7%AB%A0%EF%BC%8C%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E5%9F%BA%E6%9C%AC%E8%AE%A4%E8%AF%86%EF%BC%8C%E4%BA%86%E8%A7%A3%E5%A4%9A%E7%BA%BF%E7%A8%8B%E6%84%8F%E4%B9%89%E5%92%8C%E4%BD%BF%E7%94%A8/">JAVA并发编程揭开篇章，并发编程基本认识，了解多线程意义和使用</a>
+          </li>
+        
+          <li>
+            <a href="/2020/05/15/%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E9%98%85%E8%AF%BBmybatis%E6%A0%B8%E5%BF%83%E6%BA%90%E7%A0%81%EF%BC%8C%E6%8E%8C%E6%8F%A1%E5%BA%95%E5%B1%82%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86%E4%B8%8E%E8%AE%BE%E8%AE%A1%E6%80%9D%E6%83%B3/">手把手教你阅读mybatis核心源码，掌握底层工作原理与设计思想</a>
+          </li>
+        
+          <li>
+            <a href="/2020/05/14/%E9%9D%A2%E8%AF%95%E5%AE%98%E5%8F%A3%E4%B8%AD%E7%9A%84Mybatis%EF%BC%8C%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B%E3%80%81%E6%9E%B6%E6%9E%84%E5%88%86%E5%B1%82%E4%B8%8E%E6%A8%A1%E5%9D%97%E5%88%92%E5%88%86%E4%BB%A5%E5%8F%8A%E7%BC%93%E5%AD%98%E6%9C%BA%E5%88%B6/">面试官口中的Mybatis，工作流程、架构分层与模块划分以及缓存机制</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2020 Kevin Shaw<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+  </div>
+</body>
+</html>
