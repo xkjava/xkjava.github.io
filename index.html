@@ -74,6 +74,87 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-JAVA并发编程阶段总结篇，解决死锁问题以及ThreadLocal原理分析" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/06/20/JAVA%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E9%98%B6%E6%AE%B5%E6%80%BB%E7%BB%93%E7%AF%87%EF%BC%8C%E8%A7%A3%E5%86%B3%E6%AD%BB%E9%94%81%E9%97%AE%E9%A2%98%E4%BB%A5%E5%8F%8AThreadLocal%E5%8E%9F%E7%90%86%E5%88%86%E6%9E%90/" class="article-date">
+  <time datetime="2020-06-20T10:08:17.000Z" itemprop="datePublished">2020-06-20</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/06/20/JAVA%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E9%98%B6%E6%AE%B5%E6%80%BB%E7%BB%93%E7%AF%87%EF%BC%8C%E8%A7%A3%E5%86%B3%E6%AD%BB%E9%94%81%E9%97%AE%E9%A2%98%E4%BB%A5%E5%8F%8AThreadLocal%E5%8E%9F%E7%90%86%E5%88%86%E6%9E%90/">JAVA并发编程阶段总结篇，解决死锁问题以及ThreadLocal原理分析</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="一、线程的死锁问题"><a href="#一、线程的死锁问题" class="headerlink" title="一、线程的死锁问题"></a>一、线程的死锁问题</h1><p>首先来看下死锁的概念吧：一组相互竞争的线程因为相互等待，造成“永久”阻塞的现象，我们称之为死锁；那么有死锁必然就有活锁了，什么是活锁呢？即任务或者执行者都没有被阻塞，由于某些条件未被满足，一直处于重试-&gt;尝试执行-&gt;执行失败的过程被成为活锁。</p>
+<p><img src="https://user-gold-cdn.xitu.io/2020/6/14/172b0a706ee448b8?w=1273&h=744&f=png&s=163373" alt=""></p>
+<p><img src="https://user-gold-cdn.xitu.io/2020/6/14/172b0a72988b6f3f?w=756&h=406&f=png&s=17964" alt=""></p>
+<h2 id="1-1-死锁发生的条件"><a href="#1-1-死锁发生的条件" class="headerlink" title="1.1 死锁发生的条件"></a>1.1 死锁发生的条件</h2><p>只要满足以下<strong>四个条件</strong>，就必然会产生死锁：</p>
+<ul>
+<li><strong>线程互斥</strong>，共享资源只能被一个线程占用，要么线程A要么线程B（<strong>有一个坑位，谁抢到就是谁的</strong>）；</li>
+<li><strong>占有且等待</strong>，线程T已经获得资源A，在同时等待资源B的时候，不释放资源A（<strong>占着茅坑等送纸</strong>）；</li>
+<li><strong>不可抢占</strong>，其它线程不能强制抢占线程T占有的资源（<strong>有且仅有的坑位被占，不能马上赶走别人</strong>）；</li>
+<li><strong>循环等待</strong>，线程T1等待线程T2占有的资源，线程T2等待线程T2占有的资源（<strong>我惦记着你的，你惦记着我的</strong>）。</li>
+</ul>
+<h2 id="1-2-如何解决死锁问题"><a href="#1-2-如何解决死锁问题" class="headerlink" title="1.2 如何解决死锁问题"></a>1.2 如何解决死锁问题</h2><p>针对上面的发生死锁的四个条件，只需要破坏其中的一个条件，就不会发生死锁。</p>
+<ul>
+<li>互斥条件无法破坏，因为使用锁（lock或synchronized）就是互斥的；</li>
+<li>占有且等待，一次性申请所有的资源，就不存在等待了；</li>
+<li>不可抢占，占有资源的线程如果需要申请其它资源的时候，可以主动释放占有的资源；</li>
+<li>循环等待，可以有线性顺序的方式来申请资源。从序号小的开始，然后再接着申请序号大的资源。</li>
+</ul>
+<h2 id="1-3-Thread-join"><a href="#1-3-Thread-join" class="headerlink" title="1.3 Thread.join"></a>1.3 Thread.join</h2><p>它的作用就是让线程的执行结果对后续线程的访问可见。</p>
+<h1 id="二、-ThreadLocal原理分析"><a href="#二、-ThreadLocal原理分析" class="headerlink" title="二、 ThreadLocal原理分析"></a>二、 ThreadLocal原理分析</h1><p>ThreadLocal实际上是一种线程的隔离机制，就是为了保证在多线程环境下对于共享变量的访问的安全性。</p>
+<h2 id="2-1-set-方法"><a href="#2-1-set-方法" class="headerlink" title="2.1 set()方法"></a>2.1 set()方法</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"> &#x2F;**</span><br><span class="line"> * Sets the current thread&#39;s copy of this thread-local variable</span><br><span class="line"> * to the specified value.  Most subclasses will have no need to</span><br><span class="line"> * override this method, relying solely on the &#123;@link #initialValue&#125;</span><br><span class="line"> * method to set the values of thread-locals.</span><br><span class="line"> *</span><br><span class="line"> * @param value the value to be stored in the current thread&#39;s copy of</span><br><span class="line"> *        this thread-local.</span><br><span class="line"> *&#x2F;</span><br><span class="line">public void set(T value) &#123;</span><br><span class="line">    Thread t &#x3D; Thread.currentThread();</span><br><span class="line">    ThreadLocalMap map &#x3D; getMap(t);</span><br><span class="line">    if (map !&#x3D; null)</span><br><span class="line">        map.set(this, value);</span><br><span class="line">    else</span><br><span class="line">        createMap(t, value);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>当map不为空时，执行map.set(this, value)方法</strong>，代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">private void set(ThreadLocal&lt;?&gt; key, Object value) &#123;</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; We don&#39;t use a fast path as with get() because it is at</span><br><span class="line">    &#x2F;&#x2F; least as common to use set() to create new entries as</span><br><span class="line">    &#x2F;&#x2F; it is to replace existing ones, in which case, a fast</span><br><span class="line">    &#x2F;&#x2F; path would fail more often than not.</span><br><span class="line"></span><br><span class="line">    Entry[] tab &#x3D; table;</span><br><span class="line">    int len &#x3D; tab.length;</span><br><span class="line">    &#x2F;&#x2F;根据哈希码和数组长度求得元素的放置位置，即Entry数组的下标</span><br><span class="line">    int i &#x3D; key.threadLocalHashCode &amp; (len-1);</span><br><span class="line">    &#x2F;&#x2F;从i开始遍历到数组的最后一个Entry（进行线性探索）</span><br><span class="line">    for (Entry e &#x3D; tab[i];</span><br><span class="line">         e !&#x3D; null;</span><br><span class="line">         e &#x3D; tab[i &#x3D; nextIndex(i, len)]) &#123;</span><br><span class="line">        ThreadLocal&lt;?&gt; k &#x3D; e.get();</span><br><span class="line">        &#x2F;&#x2F;如果key相等，就覆盖value</span><br><span class="line">        if (k &#x3D;&#x3D; key) &#123;</span><br><span class="line">            e.value &#x3D; value;</span><br><span class="line">            return;</span><br><span class="line">        &#125;</span><br><span class="line">        &#x2F;&#x2F;如果key为空，用新的key，value，同时清理历史key&#x3D;null（弱引用）的旧数据</span><br><span class="line">        if (k &#x3D;&#x3D; null) &#123;</span><br><span class="line">            replaceStaleEntry(key, value, i);</span><br><span class="line">            return;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    tab[i] &#x3D; new Entry(key, value);</span><br><span class="line">    int sz &#x3D; ++size;</span><br><span class="line">    &#x2F;&#x2F;如果超过设置的閥值，则需要进行扩容</span><br><span class="line">    if (!cleanSomeSlots(i, sz) &amp;&amp; sz &gt;&#x3D; threshold)</span><br><span class="line">        rehash();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-2-线性探测"><a href="#2-2-线性探测" class="headerlink" title="2.2 线性探测"></a>2.2 线性探测</h2><p>在上面的源码中使用了<strong>线性探测</strong>的方式来解决<strong>hash冲突</strong>问题。</p>
+<p>那么什么是线性探测呢？</p>
+<p>线性探测是一种开放的寻址策略。hash表是直接通过key访问数据结构的，通过hash函数来把key映射到hash表中的一个位置的访问记录，从而加速查找的速度。存储记录的就叫hash表（也成为散列表）。</p>
+<p>由两种方式情况解决这个冲突问题：</p>
+<ul>
+<li><strong>写入</strong>：找到发生冲突的最近单元</li>
+<li><strong>查找</strong>：从发生冲突的位置开始，往后查找</li>
+</ul>
+<p>通俗的解释是这样子的：<strong>我们去蹲坑的时候发现坑位被占，就找后面的一个坑，如果后面的这个坑空着，那么就占用；如果后面的坑被占用，则一直往后面的坑位遍历，直到找到空闲的坑位为止，否则就一直憋着。</strong></p>
+<h2 id="2-3-repalceStaleEntry-方法"><a href="#2-3-repalceStaleEntry-方法" class="headerlink" title="2.3 repalceStaleEntry()方法"></a>2.3 repalceStaleEntry()方法</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><span class="line">private void replaceStaleEntry(ThreadLocal&lt;?&gt; key, Object value,</span><br><span class="line">                               int staleSlot) &#123;</span><br><span class="line">    Entry[] tab &#x3D; table;</span><br><span class="line">    int len &#x3D; tab.length;</span><br><span class="line">    Entry e;</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; Back up to check for prior stale entry in current run.</span><br><span class="line">    &#x2F;&#x2F; We clean out whole runs at a time to avoid continual</span><br><span class="line">    &#x2F;&#x2F; incremental rehashing due to garbage collector freeing</span><br><span class="line">    &#x2F;&#x2F; up refs in bunches (i.e., whenever the collector runs).</span><br><span class="line">    &#x2F;&#x2F;向前扫描，查找最前一个无效的slot</span><br><span class="line">    int slotToExpunge &#x3D; staleSlot;</span><br><span class="line">    for (int i &#x3D; prevIndex(staleSlot, len);</span><br><span class="line">         (e &#x3D; tab[i]) !&#x3D; null;</span><br><span class="line">         i &#x3D; prevIndex(i, len))</span><br><span class="line">        if (e.get() &#x3D;&#x3D; null)</span><br><span class="line">            &#x2F;&#x2F;通过循环遍历，可以定位到最前面的一个无效的slot</span><br><span class="line">            slotToExpunge &#x3D; i;</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; Find either the key or trailing null slot of run, whichever</span><br><span class="line">    &#x2F;&#x2F; occurs first</span><br><span class="line">    &#x2F;&#x2F;从i开始遍历到数组的最后一个Entry（进行线性探索）</span><br><span class="line">    for (int i &#x3D; nextIndex(staleSlot, len);</span><br><span class="line">         (e &#x3D; tab[i]) !&#x3D; null;</span><br><span class="line">         i &#x3D; nextIndex(i, len)) &#123;</span><br><span class="line">        ThreadLocal&lt;?&gt; k &#x3D; e.get();</span><br><span class="line"></span><br><span class="line">        &#x2F;&#x2F; If we find key, then we need to swap it</span><br><span class="line">        &#x2F;&#x2F; with the stale entry to maintain hash table order.</span><br><span class="line">        &#x2F;&#x2F; The newly stale slot, or any other stale slot</span><br><span class="line">        &#x2F;&#x2F; encountered above it, can then be sent to expungeStaleEntry</span><br><span class="line">        &#x2F;&#x2F; to remove or rehash all of the other entries in run.</span><br><span class="line">        &#x2F;&#x2F;找到匹配的key</span><br><span class="line">        if (k &#x3D;&#x3D; key) &#123;</span><br><span class="line">            &#x2F;&#x2F;更新对应的slot对应的value</span><br><span class="line">            e.value &#x3D; value;</span><br><span class="line">            &#x2F;&#x2F;与无效的slot进行替换</span><br><span class="line">            tab[i] &#x3D; tab[staleSlot];</span><br><span class="line">            tab[staleSlot] &#x3D; e;</span><br><span class="line"></span><br><span class="line">            &#x2F;&#x2F; Start expunge at preceding stale entry if it exists</span><br><span class="line">            &#x2F;&#x2F;&#x2F;&#x2F;如果最早的一个无效的slot和当前的staleSlot相等，则从i作为清理的起点</span><br><span class="line">            if (slotToExpunge &#x3D;&#x3D; staleSlot)</span><br><span class="line">                slotToExpunge &#x3D; i;</span><br><span class="line">            &#x2F;&#x2F;从slotToExpunge开始做一次连续的清理    </span><br><span class="line">            cleanSomeSlots(expungeStaleEntry(slotToExpunge), len);</span><br><span class="line">            return;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        &#x2F;&#x2F; If we didn&#39;t find stale entry on backward scan, the</span><br><span class="line">        &#x2F;&#x2F; first stale entry seen while scanning for key is the</span><br><span class="line">        &#x2F;&#x2F; first still present in the run.</span><br><span class="line">        &#x2F;&#x2F;如果当前的slot已经无效，并且向前扫描过程中没有无效slot，则更新slotToExpunge为当前位置</span><br><span class="line">        if (k &#x3D;&#x3D; null &amp;&amp; slotToExpunge &#x3D;&#x3D; staleSlot)</span><br><span class="line">            slotToExpunge &#x3D; i;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; If key not found, put new entry in stale slot</span><br><span class="line">    &#x2F;&#x2F;如果key对应的value在entry中不存在，则直接放一个新的entry</span><br><span class="line">    tab[staleSlot].value &#x3D; null;</span><br><span class="line">    tab[staleSlot] &#x3D; new Entry(key, value);</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; If there are any other stale entries in run, expunge them</span><br><span class="line">    &#x2F;&#x2F;如果有任何一个无效的slot，则做一次清理</span><br><span class="line">    if (slotToExpunge !&#x3D; staleSlot)</span><br><span class="line">        cleanSomeSlots(expungeStaleEntry(slotToExpunge), len);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-4-斐波那契额散列（Fibonacci散列算法）"><a href="#2-4-斐波那契额散列（Fibonacci散列算法）" class="headerlink" title="2.4 斐波那契额散列（Fibonacci散列算法）"></a>2.4 斐波那契额散列（Fibonacci散列算法）</h2><p>下面还是给一段ThreadLocal的源码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;HASH_INCREMENT是为了让哈希码能均匀的分布在2的N次方的数组里</span><br><span class="line">private static final int HASH_INCREMENT &#x3D; 0x61c88647;</span><br><span class="line"></span><br><span class="line">&#x2F;**</span><br><span class="line"> * Returns the next hash code.</span><br><span class="line"> *&#x2F;</span><br><span class="line">private static int nextHashCode() &#123;</span><br><span class="line">    return nextHashCode.getAndAdd(HASH_INCREMENT);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>其中定义了一个魔法值 HASH_INCREMENT = <strong>0x61c88647</strong>，对于实例变量threadLocalHashCode，每当创建ThreadLocal实例时这个值都会<strong>getAndAdd(0x61c88647)</strong>。</p>
+<p>HASH_INCREMENT 再借助一定的算法，就可以将哈希码能均匀的分布在 2 的 N 次方的数组里，<strong>保证了散列表的离散度</strong>，从而降低了冲突几率。我们不妨来写段测试代码吧：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">public class FibonacciHash &#123;</span><br><span class="line"></span><br><span class="line">    private static final int HASH_INCREMENT &#x3D; 0x61c88647;</span><br><span class="line"></span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        magicHash(16);</span><br><span class="line">        magicHash(32);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private static void magicHash(int size) &#123;</span><br><span class="line">        int hashCode &#x3D; 0;</span><br><span class="line">        for (int i &#x3D; 0; i &lt; size; i++) &#123;</span><br><span class="line">            hashCode &#x3D; i * HASH_INCREMENT + HASH_INCREMENT;</span><br><span class="line">            System.out.print((hashCode &amp; (size - 1)) + &quot; &quot;);</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(&quot;&quot;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>执行main()方法的结果：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">7 14 5 12 3 10 1 8 15 6 13 4 11 2 9 0 </span><br><span class="line">7 14 21 28 3 10 17 24 31 6 13 20 27 2 9 16 23 30 5 12 19 26 1 8 15 22 29 4 11 18 25 0</span><br></pre></td></tr></table></figure>
+
+<p><strong>产生的哈希码分布确实是很均匀，而且没有任何冲突。</strong></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://xkjava.github.io/2020/06/20/JAVA%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E9%98%B6%E6%AE%B5%E6%80%BB%E7%BB%93%E7%AF%87%EF%BC%8C%E8%A7%A3%E5%86%B3%E6%AD%BB%E9%94%81%E9%97%AE%E9%A2%98%E4%BB%A5%E5%8F%8AThreadLocal%E5%8E%9F%E7%90%86%E5%88%86%E6%9E%90/" data-id="ckbnhdbuo0007nvraa4u8blm7" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-JAVA并发编程递进篇，探索线程安全性volatile关键字如何保证可见性" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2020/05/30/JAVA%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E9%80%92%E8%BF%9B%E7%AF%87%EF%BC%8C%E6%8E%A2%E7%B4%A2%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8%E6%80%A7volatile%E5%85%B3%E9%94%AE%E5%AD%97%E5%A6%82%E4%BD%95%E4%BF%9D%E8%AF%81%E5%8F%AF%E8%A7%81%E6%80%A7/" class="article-date">
@@ -192,7 +273,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://xkjava.github.io/2020/05/30/JAVA%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E9%80%92%E8%BF%9B%E7%AF%87%EF%BC%8C%E6%8E%A2%E7%B4%A2%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8%E6%80%A7volatile%E5%85%B3%E9%94%AE%E5%AD%97%E5%A6%82%E4%BD%95%E4%BF%9D%E8%AF%81%E5%8F%AF%E8%A7%81%E6%80%A7/" data-id="ckatekjzm00063vra0mnt3sxn" class="article-share-link">Share</a>
+      <a data-url="https://xkjava.github.io/2020/05/30/JAVA%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E9%80%92%E8%BF%9B%E7%AF%87%EF%BC%8C%E6%8E%A2%E7%B4%A2%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8%E6%80%A7volatile%E5%85%B3%E9%94%AE%E5%AD%97%E5%A6%82%E4%BD%95%E4%BF%9D%E8%AF%81%E5%8F%AF%E8%A7%81%E6%80%A7/" data-id="ckbnhdbu70006nvragfox4js3" class="article-share-link">Share</a>
       
       
     </footer>
@@ -310,7 +391,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://xkjava.github.io/2020/05/23/JAVA%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E5%85%A5%E9%97%A8%E7%AF%87%EF%BC%8C%E6%80%9D%E8%80%83%E5%90%8C%E6%AD%A5%E9%94%81Synchronized%E8%83%8C%E5%90%8E%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%93%B2%E5%AD%A6/" data-id="ckatekjzk00053vra87gx7avt" class="article-share-link">Share</a>
+      <a data-url="https://xkjava.github.io/2020/05/23/JAVA%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E5%85%A5%E9%97%A8%E7%AF%87%EF%BC%8C%E6%80%9D%E8%80%83%E5%90%8C%E6%AD%A5%E9%94%81Synchronized%E8%83%8C%E5%90%8E%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%93%B2%E5%AD%A6/" data-id="ckbnhdbu60005nvra9m7yevwu" class="article-share-link">Share</a>
       
       
     </footer>
@@ -450,7 +531,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://xkjava.github.io/2020/05/18/JAVA%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E6%8F%AD%E5%BC%80%E7%AF%87%E7%AB%A0%EF%BC%8C%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E5%9F%BA%E6%9C%AC%E8%AE%A4%E8%AF%86%EF%BC%8C%E4%BA%86%E8%A7%A3%E5%A4%9A%E7%BA%BF%E7%A8%8B%E6%84%8F%E4%B9%89%E5%92%8C%E4%BD%BF%E7%94%A8/" data-id="ckateklep000n3vrafhsa2ptw" class="article-share-link">Share</a>
+      <a data-url="https://xkjava.github.io/2020/05/18/JAVA%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E6%8F%AD%E5%BC%80%E7%AF%87%E7%AB%A0%EF%BC%8C%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E5%9F%BA%E6%9C%AC%E8%AE%A4%E8%AF%86%EF%BC%8C%E4%BA%86%E8%A7%A3%E5%A4%9A%E7%BA%BF%E7%A8%8B%E6%84%8F%E4%B9%89%E5%92%8C%E4%BD%BF%E7%94%A8/" data-id="ckbnhdd9g000onvra7fco0ee7" class="article-share-link">Share</a>
       
       
     </footer>
@@ -681,7 +762,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://xkjava.github.io/2020/05/15/%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E9%98%85%E8%AF%BBmybatis%E6%A0%B8%E5%BF%83%E6%BA%90%E7%A0%81%EF%BC%8C%E6%8E%8C%E6%8F%A1%E5%BA%95%E5%B1%82%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86%E4%B8%8E%E8%AE%BE%E8%AE%A1%E6%80%9D%E6%83%B3/" data-id="ckateklfn000w3vra8xjzc704" class="article-share-link">Share</a>
+      <a data-url="https://xkjava.github.io/2020/05/15/%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E9%98%85%E8%AF%BBmybatis%E6%A0%B8%E5%BF%83%E6%BA%90%E7%A0%81%EF%BC%8C%E6%8E%8C%E6%8F%A1%E5%BA%95%E5%B1%82%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86%E4%B8%8E%E8%AE%BE%E8%AE%A1%E6%80%9D%E6%83%B3/" data-id="ckbnhdda4000xnvra7ttb34yo" class="article-share-link">Share</a>
       
       
     </footer>
@@ -810,7 +891,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://xkjava.github.io/2020/05/14/%E9%9D%A2%E8%AF%95%E5%AE%98%E5%8F%A3%E4%B8%AD%E7%9A%84Mybatis%EF%BC%8C%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B%E3%80%81%E6%9E%B6%E6%9E%84%E5%88%86%E5%B1%82%E4%B8%8E%E6%A8%A1%E5%9D%97%E5%88%92%E5%88%86%E4%BB%A5%E5%8F%8A%E7%BC%93%E5%AD%98%E6%9C%BA%E5%88%B6/" data-id="ckateklfh000u3vraey6ffd6e" class="article-share-link">Share</a>
+      <a data-url="https://xkjava.github.io/2020/05/14/%E9%9D%A2%E8%AF%95%E5%AE%98%E5%8F%A3%E4%B8%AD%E7%9A%84Mybatis%EF%BC%8C%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B%E3%80%81%E6%9E%B6%E6%9E%84%E5%88%86%E5%B1%82%E4%B8%8E%E6%A8%A1%E5%9D%97%E5%88%92%E5%88%86%E4%BB%A5%E5%8F%8A%E7%BC%93%E5%AD%98%E6%9C%BA%E5%88%B6/" data-id="ckbnhdd9x000vnvra03cn1ysu" class="article-share-link">Share</a>
       
       
     </footer>
@@ -905,7 +986,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://xkjava.github.io/2020/05/05/23%E7%A7%8D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E7%9A%84%E5%AD%A6%E4%B9%A0%EF%BC%8C%E6%88%91%E4%BB%AC%E9%9C%80%E8%A6%81%E6%8E%8C%E6%8F%A1%E7%9A%84%E6%98%AF%E2%80%9C%E9%81%93%E2%80%9D%EF%BC%8C%E8%80%8C%E4%B8%8D%E5%8F%AA%E6%98%AF%E2%80%9C%E6%9C%AF%E2%80%9D/" data-id="ckatekjyn00003vrabr9h6k0t" class="article-share-link">Share</a>
+      <a data-url="https://xkjava.github.io/2020/05/05/23%E7%A7%8D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E7%9A%84%E5%AD%A6%E4%B9%A0%EF%BC%8C%E6%88%91%E4%BB%AC%E9%9C%80%E8%A6%81%E6%8E%8C%E6%8F%A1%E7%9A%84%E6%98%AF%E2%80%9C%E9%81%93%E2%80%9D%EF%BC%8C%E8%80%8C%E4%B8%8D%E5%8F%AA%E6%98%AF%E2%80%9C%E6%9C%AF%E2%80%9D/" data-id="ckbnhdbt30000nvraef5902hp" class="article-share-link">Share</a>
       
       
     </footer>
@@ -974,7 +1055,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://xkjava.github.io/2020/04/05/%E6%B7%B1%E5%BA%A6%E9%98%85%E8%AF%BBSpring5-x%E6%BA%90%E7%A0%81%E5%90%8E%EF%BC%8C%E4%BD%BF%E7%94%A8Java%E5%AE%9E%E7%8E%B0%E8%BF%B7%E4%BD%A0%E7%89%88Spring%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%80%9D%E8%B7%AF%E5%AE%9E%E8%B7%B5/" data-id="ckateklee000m3vrafcnpdqv0" class="article-share-link">Share</a>
+      <a data-url="https://xkjava.github.io/2020/04/05/%E6%B7%B1%E5%BA%A6%E9%98%85%E8%AF%BBSpring5-x%E6%BA%90%E7%A0%81%E5%90%8E%EF%BC%8C%E4%BD%BF%E7%94%A8Java%E5%AE%9E%E7%8E%B0%E8%BF%B7%E4%BD%A0%E7%89%88Spring%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%80%9D%E8%B7%AF%E5%AE%9E%E8%B7%B5/" data-id="ckbnhdbv3000nnvra61blcnes" class="article-share-link">Share</a>
       
       
     </footer>
@@ -1097,7 +1178,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://xkjava.github.io/2020/03/30/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C23%E7%A7%8D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B8%AD%E6%9C%80%E4%B8%BA%E5%A4%8D%E6%9D%82%E7%9A%84%E8%AE%BF%E9%97%AE%E8%80%85%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" data-id="ckatekleq000p3vra35mj106v" class="article-share-link">Share</a>
+      <a data-url="https://xkjava.github.io/2020/03/30/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C23%E7%A7%8D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B8%AD%E6%9C%80%E4%B8%BA%E5%A4%8D%E6%9D%82%E7%9A%84%E8%AE%BF%E9%97%AE%E8%80%85%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" data-id="ckbnhdd9k000qnvraeiho6kzm" class="article-share-link">Share</a>
       
       
     </footer>
@@ -1196,94 +1277,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://xkjava.github.io/2020/03/27/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E8%A2%AB%E8%AA%89%E4%B8%BA%E6%91%A9%E6%96%AF%E5%AF%86%E7%A0%81%E7%9A%84%E8%A7%A3%E9%87%8A%E5%99%A8%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" data-id="ckatekled000k3vra87b7gfzn" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-架构师内功心法，不需要中间商赚差价的中介者模式详解" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2020/03/25/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E4%B8%8D%E9%9C%80%E8%A6%81%E4%B8%AD%E9%97%B4%E5%95%86%E8%B5%9A%E5%B7%AE%E4%BB%B7%E7%9A%84%E4%B8%AD%E4%BB%8B%E8%80%85%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" class="article-date">
-  <time datetime="2020-03-25T05:21:57.000Z" itemprop="datePublished">2020-03-25</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/03/25/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E4%B8%8D%E9%9C%80%E8%A6%81%E4%B8%AD%E9%97%B4%E5%95%86%E8%B5%9A%E5%B7%AE%E4%BB%B7%E7%9A%84%E4%B8%AD%E4%BB%8B%E8%80%85%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/">架构师内功心法，不需要中间商赚差价的中介者模式详解</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>中介者模式（Mediator Pattern）又称为调解者模式或者调停者模式。用一个中介对象封装一系列的对象交互，中介者使各对象不需要显示地互相作用，从而使其松散耦合，而且可以独立的改变他们之间的交互。</p>
-<p>中介者模式包装了一系列对象相互作用的方式，使得这些对象不必相互明显作用。当某些对象之间的作用发生改变时，不会立即影响其它的一些对象之间的作用。保证这些作用可以彼此独立的变化。其核心思想是，通过中介者解耦系统各层次对象的直接耦合，层次对象的对外依赖通信统统交由中介者转发。</p>
-<h1 id="一、中介者模式的应用场景"><a href="#一、中介者模式的应用场景" class="headerlink" title="一、中介者模式的应用场景"></a>一、中介者模式的应用场景</h1><p>在现实生活中，中介者的存在是不可缺少的，如果没有了中介者，我们就不能与远方的朋友进行交流了。各个对象将会互相进行引用，如果每个对象都与多个对象进行交互时，将会形成如下图所示的网状结构。</p>
-<p><img src="https://user-gold-cdn.xitu.io/2020/3/25/1710fac9b4f6a8df?w=603&h=432&f=png&s=44219" alt=""></p>
-<p>从上面的图可以发现，每个对象之间过度耦合，这样既不利于信息的复用也不利于扩展。如果引入了中介者模式，那么对象之间的关系将变为星状结构，采用中介者模式后如下图所示：</p>
-<p><img src="https://user-gold-cdn.xitu.io/2020/3/25/1710fac782e44b8d?w=582&h=567&f=png&s=43118" alt=""></p>
-<p>引入中介者模式后，任何一个类的变化，只会影响中介者合类本身，之前的设计是任何一个类的变化都会引起其关联所有类的变化。这样的设计减少了系统的耦合度。</p>
-<p>其实在我们日常生活中每天在刷的微信朋友圈，就是一个中介者。还有信息交易平台，也是中介者模式的体现。</p>
-<p><img src="https://user-gold-cdn.xitu.io/2020/3/25/1710fb1bc3473ecf?w=500&h=400&f=png&s=149052" alt=""></p>
-<p><img src="https://user-gold-cdn.xitu.io/2020/3/25/1710fb27716e6c1a?w=640&h=425&f=png&s=287081" alt=""></p>
-<p>中介者模式是用来降低多个对象和类之间的通信复杂性。这种模式通过提供一个中介类，将系统各层次对象间的多对多关系变成一对多关系，中介者对象可以将复杂的网状结构变成以调停者为中心的星形结构，达到降低系统的复杂性，提高可扩展性的作用。</p>
-<p>若系统各层次对象之间存在大量的关联关系，即层次对象呈复杂的网状结构，如果直接让它们紧耦合通信，会造成系统结构变得异常复杂，且其中某个层次对象发生改变，则与其紧耦合的相应层次对象也需进行修改，系统很难进行维护。而通过为该系统增加一个中介者层次对象让其他各层次需对外通信的行为统统交由中介者进行转发，系统呈现以中介者为中心进行通讯的星形结构，系统的复杂性大大降低。</p>
-<p>简单的说如果多个类相互耦合，形成了网状结构，则需要考虑使用中介者模式进行优化处理。中介者模式适用以下几个场景：</p>
-<ul>
-<li>系统中对象之间存在复杂的引用关系，产生的相互依赖关系结构混乱且难以理解；</li>
-<li>交互的公共行为，如果需要改变行为则可以新增新的中介者类。</li>
-</ul>
-<p>中介者模式主要包含4个角色：</p>
-<ul>
-<li>抽象中介者（Mediator）：定义统一的接口，用户各个同事角色间的通讯；</li>
-<li>具体中介者（ConcreateMediator）：从具体的同事对象接收消息，协调各同事对象间的协作；</li>
-<li>抽象同事类（Colleague）：每一个同事对象均需要依赖中介者角色，与其他同事通信时，交由中介者进行转发；</li>
-<li>具体同事类（ConcreteColleague）：负责实现自发行为（Self-Method），转发依赖方法（Dep-Method）交由中介者进行协调。</li>
-</ul>
-<h2 id="1-1-简易聊天室系统使用中介者模式"><a href="#1-1-简易聊天室系统使用中介者模式" class="headerlink" title="1.1 简易聊天室系统使用中介者模式"></a>1.1 简易聊天室系统使用中介者模式</h2><p>假设我们要构建一个聊天室系统，用户可以向聊天室发送消息，聊天室会向所有的用户显示消息。实际上就是用户发信息与聊天室显示的通信过程，不过用户无法直接将信息发给聊天室，而是需要将信息先发到服务器上，然后服务器再将该消息发给聊天室进行显示。具体代码如下。</p>
-<p>创建User类：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">public class User &#123;</span><br><span class="line"></span><br><span class="line">    private String name;</span><br><span class="line"></span><br><span class="line">    private ChatRoom chatRoom;</span><br><span class="line"></span><br><span class="line">    public User(String name, ChatRoom chatRoom) &#123;</span><br><span class="line">        this.name &#x3D; name;</span><br><span class="line">        this.chatRoom &#x3D; chatRoom;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void sendMsg(String msg) &#123;</span><br><span class="line">        chatRoom.showMsg(this, msg);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public String getName() &#123;</span><br><span class="line">        return name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void setName(String name) &#123;</span><br><span class="line">        this.name &#x3D; name;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>创建聊天室ChatRoom类：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">public class ChatRoom &#123;</span><br><span class="line"></span><br><span class="line">    public void showMsg(User user, String msg) &#123;</span><br><span class="line">        System.out.println(&quot;[&quot; + user.getName() + &quot;] ：&quot; + msg);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>测试main方法：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">public static void main(String[] args) &#123;</span><br><span class="line"></span><br><span class="line">    ChatRoom chatRoom &#x3D; new ChatRoom();</span><br><span class="line"></span><br><span class="line">    User kevin &#x3D; new User(&quot;Kevin&quot;, chatRoom);</span><br><span class="line">    User jhon &#x3D; new User(&quot;Jhon&quot;, chatRoom);</span><br><span class="line">    kevin.sendMsg(&quot;Hello, Jhon!&quot;);</span><br><span class="line">    jhon.sendMsg(&quot;Hi, Kevin!&quot;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>运行结果：</p>
-<p><img src="https://user-gold-cdn.xitu.io/2020/3/25/1710fd1ef6a080cd?w=480&h=213&f=png&s=11682" alt=""></p>
-<h1 id="二、中介者模式在源码中的体现"><a href="#二、中介者模式在源码中的体现" class="headerlink" title="二、中介者模式在源码中的体现"></a>二、中介者模式在源码中的体现</h1><p><strong>JDK中的Timer类</strong><br>打开Timer类的结构图我们发现Timer类中有很多schedule()方法重载，如下图：</p>
-<p><img src="https://user-gold-cdn.xitu.io/2020/3/25/1710fd58032837db?w=609&h=612&f=png&s=56835" alt=""></p>
-<p>任意点开其中的一个方法，发现所有的方法最终都是调用了私有的sched()方法，看下它们的源码：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"> private void sched(TimerTask task, long time, long period) &#123;</span><br><span class="line">    if (time &lt; 0)</span><br><span class="line">        throw new IllegalArgumentException(&quot;Illegal execution time.&quot;);</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; Constrain value of period sufficiently to prevent numeric</span><br><span class="line">    &#x2F;&#x2F; overflow while still being effectively infinitely large.</span><br><span class="line">    if (Math.abs(period) &gt; (Long.MAX_VALUE &gt;&gt; 1))</span><br><span class="line">        period &gt;&gt;&#x3D; 1;</span><br><span class="line"></span><br><span class="line">    synchronized(queue) &#123;</span><br><span class="line">        if (!thread.newTasksMayBeScheduled)</span><br><span class="line">            throw new IllegalStateException(&quot;Timer already cancelled.&quot;);</span><br><span class="line"></span><br><span class="line">        synchronized(task.lock) &#123;</span><br><span class="line">            if (task.state !&#x3D; TimerTask.VIRGIN)</span><br><span class="line">                throw new IllegalStateException(</span><br><span class="line">                    &quot;Task already scheduled or cancelled&quot;);</span><br><span class="line">            task.nextExecutionTime &#x3D; time;</span><br><span class="line">            task.period &#x3D; period;</span><br><span class="line">            task.state &#x3D; TimerTask.SCHEDULED;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        queue.add(task);</span><br><span class="line">        if (queue.getMin() &#x3D;&#x3D; task)</span><br><span class="line">            queue.notify();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>不管什么样的任务都加入到一个队列中顺序执行。把这个队列中所有的对象称之为“同事”。同事之间通过Timer来协调完成，Timer承担了中介者的角色。</p>
-<h1 id="三、中介者模式的优缺点"><a href="#三、中介者模式的优缺点" class="headerlink" title="三、中介者模式的优缺点"></a>三、中介者模式的优缺点</h1><p>优点</p>
-<ul>
-<li>减少类间依赖，将多对多依赖转化成了一对多，降低了类间耦合；</li>
-<li>类间各司其职，符合迪米特法则。</li>
-</ul>
-<p>缺点</p>
-<ul>
-<li>中介者模式中将原本多个对象直接的相互依赖变成了中介者和多个同事类的依赖关系。当同事类越多时，中介者就会越臃肿，变得复杂且难以维护。</li>
-</ul>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://xkjava.github.io/2020/03/25/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E4%B8%8D%E9%9C%80%E8%A6%81%E4%B8%AD%E9%97%B4%E5%95%86%E8%B5%9A%E5%B7%AE%E4%BB%B7%E7%9A%84%E4%B8%AD%E4%BB%8B%E8%80%85%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" data-id="ckatekjyw00023vra2fet9mey" class="article-share-link">Share</a>
+      <a data-url="https://xkjava.github.io/2020/03/27/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E8%A2%AB%E8%AA%89%E4%B8%BA%E6%91%A9%E6%96%AF%E5%AF%86%E7%A0%81%E7%9A%84%E8%A7%A3%E9%87%8A%E5%99%A8%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" data-id="ckbnhdbv1000lnvrahhbk5a2n" class="article-share-link">Share</a>
       
       
     </footer>
@@ -1316,7 +1310,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li></ul>
     </div>
   </div>
 
@@ -1327,6 +1321,10 @@
     <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2020/06/20/JAVA%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E9%98%B6%E6%AE%B5%E6%80%BB%E7%BB%93%E7%AF%87%EF%BC%8C%E8%A7%A3%E5%86%B3%E6%AD%BB%E9%94%81%E9%97%AE%E9%A2%98%E4%BB%A5%E5%8F%8AThreadLocal%E5%8E%9F%E7%90%86%E5%88%86%E6%9E%90/">JAVA并发编程阶段总结篇，解决死锁问题以及ThreadLocal原理分析</a>
+          </li>
         
           <li>
             <a href="/2020/05/30/JAVA%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E9%80%92%E8%BF%9B%E7%AF%87%EF%BC%8C%E6%8E%A2%E7%B4%A2%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8%E6%80%A7volatile%E5%85%B3%E9%94%AE%E5%AD%97%E5%A6%82%E4%BD%95%E4%BF%9D%E8%AF%81%E5%8F%AF%E8%A7%81%E6%80%A7/">JAVA并发编程递进篇，探索线程安全性volatile关键字如何保证可见性</a>
@@ -1342,10 +1340,6 @@
         
           <li>
             <a href="/2020/05/15/%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E9%98%85%E8%AF%BBmybatis%E6%A0%B8%E5%BF%83%E6%BA%90%E7%A0%81%EF%BC%8C%E6%8E%8C%E6%8F%A1%E5%BA%95%E5%B1%82%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86%E4%B8%8E%E8%AE%BE%E8%AE%A1%E6%80%9D%E6%83%B3/">手把手教你阅读mybatis核心源码，掌握底层工作原理与设计思想</a>
-          </li>
-        
-          <li>
-            <a href="/2020/05/14/%E9%9D%A2%E8%AF%95%E5%AE%98%E5%8F%A3%E4%B8%AD%E7%9A%84Mybatis%EF%BC%8C%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B%E3%80%81%E6%9E%B6%E6%9E%84%E5%88%86%E5%B1%82%E4%B8%8E%E6%A8%A1%E5%9D%97%E5%88%92%E5%88%86%E4%BB%A5%E5%8F%8A%E7%BC%93%E5%AD%98%E6%9C%BA%E5%88%B6/">面试官口中的Mybatis，工作流程、架构分层与模块划分以及缓存机制</a>
           </li>
         
       </ul>

@@ -74,6 +74,109 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-架构师内功心法，注重方法调用顺序的建造者模式详解" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/03/01/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E6%B3%A8%E9%87%8D%E6%96%B9%E6%B3%95%E8%B0%83%E7%94%A8%E9%A1%BA%E5%BA%8F%E7%9A%84%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" class="article-date">
+  <time datetime="2020-03-01T07:51:27.000Z" itemprop="datePublished">2020-03-01</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/03/01/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E6%B3%A8%E9%87%8D%E6%96%B9%E6%B3%95%E8%B0%83%E7%94%A8%E9%A1%BA%E5%BA%8F%E7%9A%84%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/">架构师内功心法，注重方法调用顺序的建造者模式详解</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="一、建造者模式的定义"><a href="#一、建造者模式的定义" class="headerlink" title="一、建造者模式的定义"></a>一、建造者模式的定义</h1><p>大家平时都去过肯德基用餐，那里不变的是炸鸡、汉堡、薯条、可乐等，这些都是一直都有的，不变的，而其它组合是经常变化的，从而生成不同的“套餐”罢了。而建造模式（Builder Pattern）是将一个复杂的对象的构建过程与它的表示分离，使得同样的构建过程构建不同的表示。使用建造者模式对于用户而言只需要关注指定需要建造的类型就可以获得对象，而不需要了解建造的过程以及细节。</p>
+<p><img src="https://user-gold-cdn.xitu.io/2020/3/1/170950ed1508a094?w=750&h=423&f=png&s=768819" alt=""></p>
+<p>建造者模式适用于创建对象需要很多步骤，但是步骤的顺序不是固定不变的。先看一下建造者模式的类图：</p>
+<p><img src="https://user-gold-cdn.xitu.io/2020/3/1/17094b9a96e4f1ee?w=456&h=405&f=png&s=150230" alt=""></p>
+<p>建造者模式中的四个重要角色：</p>
+<ul>
+<li>产品（Product）：要创建的产品类对象</li>
+<li>抽象建造者（Builder）：规范产品对象的各个组成部分的建造</li>
+<li>建造者（Concrete Builder）：具体化对象的各个组成部分的创建</li>
+<li>调用者（Director）：负责保证对象各部分完整创建或按某种顺序创建</li>
+</ul>
+<h1 id="二、建造者模式的应用场景"><a href="#二、建造者模式的应用场景" class="headerlink" title="二、建造者模式的应用场景"></a>二、建造者模式的应用场景</h1><p>建造者模式适用于一个具有较多的零件的复杂产品的创建过程，由于需求的变化，组成这个复杂产品的各个零件经常猛烈变化，但是它们的组合方式却相对稳定。</p>
+<p>建造者模式适用于以下几种场景：</p>
+<ul>
+<li>相同的方法，不同的执行顺序，产生的结果也不同</li>
+<li>多个部件或零件，装配到一个对象中，产生的结果不同</li>
+<li>产品类复杂，或者产品类中调用顺序不同产生不同的作用</li>
+<li>初始化对象特别复杂，参数多，而且很多参数都有默认值</li>
+</ul>
+<h2 id="2-1-建造者模式的基本写法"><a href="#2-1-建造者模式的基本写法" class="headerlink" title="2.1 建造者模式的基本写法"></a>2.1 建造者模式的基本写法</h2><p>我们以公司的技术培训为例，一个完整的技术培训需要由发布培训通知、制作培训PPT、组织员工培训、现场（远程）培训、提交培训问卷等步骤。下面我们用建造模式的代码来简单实现这类场景，首先创建一个技术培训的 TechnicalTraining 产品类  ：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line">public class TechnicalTraining &#123;</span><br><span class="line"></span><br><span class="line">    private String notice;</span><br><span class="line">    private String ppt;</span><br><span class="line">    private String training;</span><br><span class="line">    private String questionnaire;</span><br><span class="line"></span><br><span class="line">    public String getNotice() &#123;</span><br><span class="line">        return notice;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void setNotice(String notice) &#123;</span><br><span class="line">        this.notice &#x3D; notice;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public String getPpt() &#123;</span><br><span class="line">        return ppt;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void setPpt(String ppt) &#123;</span><br><span class="line">        this.ppt &#x3D; ppt;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public String getTraining() &#123;</span><br><span class="line">        return training;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void setTraining(String training) &#123;</span><br><span class="line">        this.training &#x3D; training;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public String getQuestionnaire() &#123;</span><br><span class="line">        return questionnaire;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void setQuestionnaire(String questionnaire) &#123;</span><br><span class="line">        this.questionnaire &#x3D; questionnaire;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public String toString() &#123;</span><br><span class="line">        return &quot;TechnicalTraining&#123;&quot; +</span><br><span class="line">                &quot;notice&#x3D;&#39;&quot; + notice + &#39;\&#39;&#39; +</span><br><span class="line">                &quot;, ppt&#x3D;&#39;&quot; + ppt + &#39;\&#39;&#39; +</span><br><span class="line">                &quot;, training&#x3D;&#39;&quot; + training + &#39;\&#39;&#39; +</span><br><span class="line">                &quot;, questionnaire&#x3D;&#39;&quot; + questionnaire + &#39;\&#39;&#39; +</span><br><span class="line">                &#39;&#125;&#39;;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>接着创建建造者 TrainingBuilder 类，将复杂的构造过程封装起来：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">public class TrainingBuilder &#123;</span><br><span class="line"></span><br><span class="line">    private TechnicalTraining technicalTraining &#x3D; new TechnicalTraining();</span><br><span class="line"></span><br><span class="line">    &#x2F;**</span><br><span class="line">     * 发布培训通知</span><br><span class="line">     * @param notice</span><br><span class="line">     *&#x2F;</span><br><span class="line">    public void PostNotice(String notice) &#123;</span><br><span class="line">        technicalTraining.setNotice(notice);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;**</span><br><span class="line">     * 制作培训PPT</span><br><span class="line">     *&#x2F;</span><br><span class="line">    public void createPPT(String ppt) &#123;</span><br><span class="line">        technicalTraining.setPpt(ppt);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;**</span><br><span class="line">     * 组织员工培训</span><br><span class="line">     *&#x2F;</span><br><span class="line">    public void organizeTraining(String training) &#123;</span><br><span class="line">        technicalTraining.setTraining(training);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;**</span><br><span class="line">     * 提交培训问卷</span><br><span class="line">     *&#x2F;</span><br><span class="line">    public void sumitQuestionnaire(String questionnaire) &#123;</span><br><span class="line">        technicalTraining.setQuestionnaire(questionnaire);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">     public TechnicalTraining build() &#123;</span><br><span class="line">        return technicalTraining;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>测试main方法：</p>
+<p>public static void main(String[] args) {</p>
+<pre><code>TrainingBuilder builder = new TrainingBuilder();
+builder.PostNotice(&quot;发布培训通知&quot;);
+builder.createPPT(&quot;创建ppt&quot;);
+builder.organizeTraining(&quot;组织员工培训&quot;);
+builder.sumitQuestionnaire(&quot;提交培训问卷&quot;);
+System.out.println(builder.build());</code></pre><p>}</p>
+<p>最后来看一下类图：</p>
+<p><img src="https://user-gold-cdn.xitu.io/2020/3/1/17094dea480736e2?w=868&h=586&f=png&s=60246" alt=""></p>
+<h2 id="2-2-建造者模式的链式写法"><a href="#2-2-建造者模式的链式写法" class="headerlink" title="2.2 建造者模式的链式写法"></a>2.2 建造者模式的链式写法</h2><p>在平时的应用中，建造者模式通常是采用链式编程的方式构造对象，下面我们来改造上面的案例代码，将TechnicalTraining变成TrainingBuilder的内部类，将构造步骤添加进去，每完成一个步骤，都返回 this：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br></pre></td><td class="code"><pre><span class="line">public class TrainingBuilder &#123;</span><br><span class="line"></span><br><span class="line">    public class TechnicalTraining &#123;</span><br><span class="line"></span><br><span class="line">        private String notice;</span><br><span class="line">        private String ppt;</span><br><span class="line">        private String training;</span><br><span class="line">        private String questionnaire;</span><br><span class="line"></span><br><span class="line">        public String getNotice() &#123;</span><br><span class="line">            return notice;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        public void setNotice(String notice) &#123;</span><br><span class="line">            this.notice &#x3D; notice;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        public String getPpt() &#123;</span><br><span class="line">            return ppt;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        public void setPpt(String ppt) &#123;</span><br><span class="line">            this.ppt &#x3D; ppt;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        public String getTraining() &#123;</span><br><span class="line">            return training;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        public void setTraining(String training) &#123;</span><br><span class="line">            this.training &#x3D; training;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        public String getQuestionnaire() &#123;</span><br><span class="line">            return questionnaire;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        public void setQuestionnaire(String questionnaire) &#123;</span><br><span class="line">            this.questionnaire &#x3D; questionnaire;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private TechnicalTraining technicalTraining &#x3D; new TechnicalTraining();</span><br><span class="line"></span><br><span class="line">    &#x2F;**</span><br><span class="line">     * 发布培训通知</span><br><span class="line">     * @param notice</span><br><span class="line">     *&#x2F;</span><br><span class="line">    public TrainingBuilder PostNotice(String notice) &#123;</span><br><span class="line">        technicalTraining.setNotice(notice);</span><br><span class="line">        return this;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;**</span><br><span class="line">     * 制作培训PPT</span><br><span class="line">     *&#x2F;</span><br><span class="line">    public TrainingBuilder createPPT(String ppt) &#123;</span><br><span class="line">        technicalTraining.setPpt(ppt);</span><br><span class="line">        return this;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;**</span><br><span class="line">     * 组织员工培训</span><br><span class="line">     *&#x2F;</span><br><span class="line">    public TrainingBuilder organizeTraining(String training) &#123;</span><br><span class="line">        technicalTraining.setTraining(training);</span><br><span class="line">        return this;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;**</span><br><span class="line">     * 提交培训问卷</span><br><span class="line">     *&#x2F;</span><br><span class="line">    public TrainingBuilder sumitQuestionnaire(String questionnaire) &#123;</span><br><span class="line">        technicalTraining.setQuestionnaire(questionnaire);</span><br><span class="line">        return this;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public TechnicalTraining build() &#123;</span><br><span class="line">        return this.technicalTraining;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>测试main方法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"> public static void main(String[] args) &#123;</span><br><span class="line"></span><br><span class="line">    TrainingBuilder builder &#x3D; new TrainingBuilder();</span><br><span class="line">    builder.PostNotice(&quot;发布培训通知&quot;)</span><br><span class="line">    .createPPT(&quot;创建ppt&quot;)</span><br><span class="line">    .organizeTraining(&quot;组织员工培训&quot;)</span><br><span class="line">    .sumitQuestionnaire(&quot;提交培训问卷&quot;);</span><br><span class="line">    System.out.println(builder.build());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>最后再来看下类图：</p>
+<p><img src="https://user-gold-cdn.xitu.io/2020/3/1/17094e9be66020c5?w=574&h=589&f=png&s=42023" alt=""></p>
+<h1 id="三、建造者模式在源码中的体现"><a href="#三、建造者模式在源码中的体现" class="headerlink" title="三、建造者模式在源码中的体现"></a>三、建造者模式在源码中的体现</h1><h2 id="3-1-StringBuilder类"><a href="#3-1-StringBuilder类" class="headerlink" title="3.1 StringBuilder类"></a>3.1 StringBuilder类</h2><p>使用StringBuilder类，我们常用的有append()、toString()方法，我们来看下append()方法的源码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">public StringBuilder(CharSequence seq) &#123;</span><br><span class="line">    this(seq.length() + 16);</span><br><span class="line">    append(seq);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@Override</span><br><span class="line">public StringBuilder append(Object obj) &#123;</span><br><span class="line">    return append(String.valueOf(obj));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@Override</span><br><span class="line">public StringBuilder append(String str) &#123;</span><br><span class="line">    super.append(str);</span><br><span class="line">    return this;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="3-2-Spring中的BeanDefinitionBuilder类"><a href="#3-2-Spring中的BeanDefinitionBuilder类" class="headerlink" title="3.2 Spring中的BeanDefinitionBuilder类"></a>3.2 Spring中的BeanDefinitionBuilder类</h2><p>比如 BeanDefinitionBuilder 通过调用 getBeanDefinition()方法获得一个 BeanDefinition 对象，比如下面的源码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">private BeanDefinitionBuilder(AbstractBeanDefinition beanDefinition) &#123;</span><br><span class="line">    this.beanDefinition &#x3D; beanDefinition;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public AbstractBeanDefinition getRawBeanDefinition() &#123;</span><br><span class="line">    return this.beanDefinition;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public AbstractBeanDefinition getBeanDefinition() &#123;</span><br><span class="line">    this.beanDefinition.validate();</span><br><span class="line">    return this.beanDefinition;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="四、建造者模式的优缺点"><a href="#四、建造者模式的优缺点" class="headerlink" title="四、建造者模式的优缺点"></a>四、建造者模式的优缺点</h1><p>建造者模式的优点：</p>
+<ul>
+<li><p>封装性好，创建和使用分离；</p>
+</li>
+<li><p>扩展性好，建造类之间独立、一定程度上解耦。</p>
+</li>
+</ul>
+<p>建造者模式的缺点：</p>
+<ul>
+<li><p>产生多余的 Builder 对象；</p>
+</li>
+<li><p>产品内部发生变化，建造者都要修改，成本较大。</p>
+</li>
+</ul>
+<h1 id="建造者模式和工厂模式的区别"><a href="#建造者模式和工厂模式的区别" class="headerlink" title="建造者模式和工厂模式的区别"></a>建造者模式和工厂模式的区别</h1><p>通过前面的学习，我们已经了解建造者模式，那么它和工厂模式有什么区别呢？<br>1、建造者模式更加注重方法的调用顺序，工厂模式注重于创建对象。</p>
+<p>2、创建对象的力度不同，建造者模式创建复杂的对象，由各种复杂的部件组成，工厂模式创建出来的都一样。</p>
+<p>3、关注重点不一样，工厂模式模式只需要把对象创建出来就可以了，而建造者模式中不仅要创建出这个对象，还要知道这个对象由哪些部件组成。</p>
+<p>4、建造者模式根据建造过程中的顺序不一样，最终的对象部件组成也不一样。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://xkjava.github.io/2020/03/01/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E6%B3%A8%E9%87%8D%E6%96%B9%E6%B3%95%E8%B0%83%E7%94%A8%E9%A1%BA%E5%BA%8F%E7%9A%84%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" data-id="ckbnhdbuz000jnvracuza954e" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-架构师内功心法，属于游戏设计模式的策略模式详解" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2020/02/25/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E5%B1%9E%E4%BA%8E%E6%B8%B8%E6%88%8F%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E7%9A%84%E7%AD%96%E7%95%A5%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" class="article-date">
@@ -201,7 +304,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://xkjava.github.io/2020/02/25/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E5%B1%9E%E4%BA%8E%E6%B8%B8%E6%88%8F%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E7%9A%84%E7%AD%96%E7%95%A5%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" data-id="ckatekle7000g3vra8zef3grg" class="article-share-link">Share</a>
+      <a data-url="https://xkjava.github.io/2020/02/25/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E5%B1%9E%E4%BA%8E%E6%B8%B8%E6%88%8F%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E7%9A%84%E7%AD%96%E7%95%A5%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" data-id="ckbnhdbuy000hnvra3k158p6s" class="article-share-link">Share</a>
       
       
     </footer>
@@ -368,7 +471,7 @@ orderService.createOrder(order);</code></pre><p>}</p>
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://xkjava.github.io/2020/02/25/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E5%B9%B2%E8%BF%87%E4%B8%AD%E4%BB%8B%E5%B9%B2%E8%BF%87%E5%BF%AB%E9%80%92%E7%9A%84%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" data-id="ckatekleu000r3vra0xi44gjy" class="article-share-link">Share</a>
+      <a data-url="https://xkjava.github.io/2020/02/25/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E5%B9%B2%E8%BF%87%E4%B8%AD%E4%BB%8B%E5%B9%B2%E8%BF%87%E5%BF%AB%E9%80%92%E7%9A%84%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" data-id="ckbnhdd9l000snvraeky15qmr" class="article-share-link">Share</a>
       
       
     </footer>
@@ -464,7 +567,7 @@ orderService.createOrder(order);</code></pre><p>}</p>
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://xkjava.github.io/2020/02/22/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E5%8F%AA%E6%98%AF%E5%8D%95%E7%BA%AF%E5%90%AC%E8%AF%B4%E8%BF%87%E7%9A%84%E5%8E%9F%E5%9E%8B%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" data-id="ckatekle6000f3vra91iscazc" class="article-share-link">Share</a>
+      <a data-url="https://xkjava.github.io/2020/02/22/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E5%8F%AA%E6%98%AF%E5%8D%95%E7%BA%AF%E5%90%AC%E8%AF%B4%E8%BF%87%E7%9A%84%E5%8E%9F%E5%9E%8B%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" data-id="ckbnhdbux000gnvra51si4pmf" class="article-share-link">Share</a>
       
       
     </footer>
@@ -636,7 +739,7 @@ orderService.createOrder(order);</code></pre><p>}</p>
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://xkjava.github.io/2020/02/21/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E7%BB%8F%E5%85%B8%E9%AB%98%E9%A2%91%E9%9D%A2%E8%AF%95%E7%9A%84%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" data-id="ckateklfj000v3vra49amb51c" class="article-share-link">Share</a>
+      <a data-url="https://xkjava.github.io/2020/02/21/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E7%BB%8F%E5%85%B8%E9%AB%98%E9%A2%91%E9%9D%A2%E8%AF%95%E7%9A%84%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" data-id="ckbnhdd9z000wnvra2j635xxx" class="article-share-link">Share</a>
       
       
     </footer>
@@ -757,7 +860,7 @@ orderService.createOrder(order);</code></pre><p>}</p>
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://xkjava.github.io/2020/02/21/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E7%BB%8F%E5%85%B8%E6%A1%86%E6%9E%B6%E9%83%BD%E5%9C%A8%E7%94%A8%E7%9A%84%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" data-id="ckateklec000j3vraazsjhsmk" class="article-share-link">Share</a>
+      <a data-url="https://xkjava.github.io/2020/02/21/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E7%BB%8F%E5%85%B8%E6%A1%86%E6%9E%B6%E9%83%BD%E5%9C%A8%E7%94%A8%E7%9A%84%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" data-id="ckbnhdbv0000knvra48q09w0s" class="article-share-link">Share</a>
       
       
     </footer>
@@ -964,7 +1067,7 @@ orderService.createOrder(order);</code></pre><p>}</p>
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://xkjava.github.io/2020/02/19/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E8%BD%AF%E4%BB%B6%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1%E7%9A%84%E4%B8%83%E5%A4%A7%E5%8E%9F%E5%88%99%E7%B2%BE%E9%80%89%E6%A1%88%E4%BE%8B/" data-id="ckateklev000s3vra2o9g0fbc" class="article-share-link">Share</a>
+      <a data-url="https://xkjava.github.io/2020/02/19/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E8%BD%AF%E4%BB%B6%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1%E7%9A%84%E4%B8%83%E5%A4%A7%E5%8E%9F%E5%88%99%E7%B2%BE%E9%80%89%E6%A1%88%E4%BE%8B/" data-id="ckbnhdd9w000tnvra1ndbfnoe" class="article-share-link">Share</a>
       
       
     </footer>
@@ -1195,7 +1298,7 @@ b、可以Linux基准测试工具，得到文件系统、磁盘I/O、网络等�
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://xkjava.github.io/2020/02/17/%E5%A6%82%E4%BD%95%E4%BC%98%E9%9B%85%E7%9A%84%E5%AD%A6%E4%B9%A0JVM%EF%BC%8C%E7%BB%88%E7%BB%93%E7%AF%87%EF%BC%88%E5%85%AD%EF%BC%89/" data-id="ckatekleq000o3vrab7mv8rjz" class="article-share-link">Share</a>
+      <a data-url="https://xkjava.github.io/2020/02/17/%E5%A6%82%E4%BD%95%E4%BC%98%E9%9B%85%E7%9A%84%E5%AD%A6%E4%B9%A0JVM%EF%BC%8C%E7%BB%88%E7%BB%93%E7%AF%87%EF%BC%88%E5%85%AD%EF%BC%89/" data-id="ckbnhdd9h000pnvraf9dh5h23" class="article-share-link">Share</a>
       
       
     </footer>
@@ -1331,7 +1434,7 @@ b、可以Linux基准测试工具，得到文件系统、磁盘I/O、网络等�
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://xkjava.github.io/2020/02/13/%E5%A6%82%E4%BD%95%E4%BC%98%E9%9B%85%E7%9A%84%E5%AD%A6%E4%B9%A0JVM%EF%BC%8C%E7%BB%BC%E5%90%88%E7%AF%87%EF%BC%88%E4%BA%94%EF%BC%89/" data-id="ckatekle1000a3vra6jbrfl0b" class="article-share-link">Share</a>
+      <a data-url="https://xkjava.github.io/2020/02/13/%E5%A6%82%E4%BD%95%E4%BC%98%E9%9B%85%E7%9A%84%E5%AD%A6%E4%B9%A0JVM%EF%BC%8C%E7%BB%BC%E5%90%88%E7%AF%87%EF%BC%88%E4%BA%94%EF%BC%89/" data-id="ckbnhdbus000bnvraf6di8lgt" class="article-share-link">Share</a>
       
       
     </footer>
@@ -1563,156 +1666,7 @@ Root以及原因</code></p>
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://xkjava.github.io/2020/02/12/%E5%A6%82%E4%BD%95%E4%BC%98%E9%9B%85%E7%9A%84%E5%AD%A6%E4%B9%A0JVM%EF%BC%8C%E5%AE%9E%E6%88%98%E7%AF%87%EF%BC%88%E5%9B%9B%EF%BC%89/" data-id="ckatekldz00083vrafnc43v18" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-如何优雅的学习JVM，升华篇（三）" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2020/02/10/%E5%A6%82%E4%BD%95%E4%BC%98%E9%9B%85%E7%9A%84%E5%AD%A6%E4%B9%A0JVM%EF%BC%8C%E5%8D%87%E5%8D%8E%E7%AF%87%EF%BC%88%E4%B8%89%EF%BC%89/" class="article-date">
-  <time datetime="2020-02-10T12:32:51.000Z" itemprop="datePublished">2020-02-10</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/02/10/%E5%A6%82%E4%BD%95%E4%BC%98%E9%9B%85%E7%9A%84%E5%AD%A6%E4%B9%A0JVM%EF%BC%8C%E5%8D%87%E5%8D%8E%E7%AF%87%EF%BC%88%E4%B8%89%EF%BC%89/">如何优雅的学习JVM，升华篇（三）</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>此次内容和大家分享JVM中关于垃圾回收（Garbage Collect）的相关知识。</p>
-<h1 id="一、如何确定一个对象是垃圾？"><a href="#一、如何确定一个对象是垃圾？" class="headerlink" title="一、如何确定一个对象是垃圾？"></a>一、如何确定一个对象是垃圾？</h1><p><strong>要想进行垃圾回收，得先知道什么样的对象是垃圾。</strong></p>
-<h2 id="1-1-引用计数法"><a href="#1-1-引用计数法" class="headerlink" title="1.1 引用计数法"></a>1.1 引用计数法</h2><p>对于某个对象而言，只要应用程序中持有该对象的引用，就说明该对象不是垃圾，如果一个对象没有任何指针对其引用，它就是垃圾。</p>
-<p><strong>注意：</strong> 如果A、B两个对象互相持有引用，会导致永远不能被回收。</p>
-<h2 id="1-2-可达性分析"><a href="#1-2-可达性分析" class="headerlink" title="1.2 可达性分析"></a>1.2 可达性分析</h2><p>通过GC Root的对象，可以开始向下寻找，看某个对象是否可达。<br>可以作为GC Root：类加载器、Thread、虚拟机栈的本地变量表、静态成员、常量引用、本地方法栈的变量等。</p>
-<h1 id="二、垃圾回收算法"><a href="#二、垃圾回收算法" class="headerlink" title="二、垃圾回收算法"></a>二、垃圾回收算法</h1><h2 id="2-1-标记-清除（Mark-Sweep）"><a href="#2-1-标记-清除（Mark-Sweep）" class="headerlink" title="2.1 标记-清除（Mark-Sweep）"></a>2.1 标记-清除（Mark-Sweep）</h2><p><strong>标记（Mark）</strong></p>
-<p>找出内存中需要回收的对象，并把它们标记出来。此时堆中所有的对象都会被扫描一遍，从而才能确定需要回收的对象，比较耗时。</p>
-<p><img src="https://user-gold-cdn.xitu.io/2020/2/9/170291940db6274f?w=1089&h=405&f=png&s=27984" alt=""></p>
-<p><strong>清除（Sweep）</strong></p>
-<p>清除掉被标记需要回收的对象，释放出对应的内存空间。</p>
-<p><img src="https://user-gold-cdn.xitu.io/2020/2/9/170291f1cf91e70f?w=1089&h=405&f=png&s=27600" alt=""></p>
-<p><strong>不足</strong></p>
-<p>1、标记和清除两个过程都比较耗时，效率不高</p>
-<p>2、会产生大量的不连续的内存碎片，空间碎片太多可能会导致在以后程序运行的过程中需要分配较大的对象时，无法找到足够的连续内存而不得不提前触发一次垃圾回收动作。</p>
-<h2 id="2-2-复制（Copying）"><a href="#2-2-复制（Copying）" class="headerlink" title="2.2 复制（Copying）"></a>2.2 复制（Copying）</h2><p>将内存划分为两块相等的区域，每次只使用其中一块，如下图</p>
-<p><img src="https://user-gold-cdn.xitu.io/2020/2/9/17029f3b74f9396f?w=1089&h=405&f=png&s=29603" alt=""></p>
-<p>当其中一块内存使用完了，就将还存活的对象复制到另一块上面，然后把已经使用过的内存空间一次清除掉。</p>
-<p><img src="https://user-gold-cdn.xitu.io/2020/2/9/17029f8ffbf82088?w=1089&h=405&f=png&s=28597" alt=""></p>
-<p><strong>不足</strong></p>
-<p>空间利用率降低。</p>
-<h2 id="2-3-标记-整理（Mark-Compact）"><a href="#2-3-标记-整理（Mark-Compact）" class="headerlink" title="2.3 标记-整理（Mark-Compact）"></a>2.3 标记-整理（Mark-Compact）</h2><p>标记的过程仍然与“标记-清除”的算法一样，但是后续的步骤不是直接对回收对象进行清理，而是让所有存活的对象都向一端移动，然后直接清理掉端边界以外的内存。</p>
-<p><img src="https://user-gold-cdn.xitu.io/2020/2/10/1702dc55145466eb?w=1089&h=405&f=png&s=27984" alt=""></p>
-<p>让所有存活的对象都向一端移动，清掉边界外的内存。</p>
-<p><img src="https://user-gold-cdn.xitu.io/2020/2/10/1702dc7ad25a5df8?w=1089&h=405&f=png&s=25892" alt=""></p>
-<h1 id="三、分代收集算法"><a href="#三、分代收集算法" class="headerlink" title="三、分代收集算法"></a>三、分代收集算法</h1><p>上面介绍了三种垃圾回收算法，那么在堆内存中到底用哪一种呢？</p>
-<p>1.<strong>Yonug区</strong>：复制算法（对象被分配之后，可能生命周期比较短，此区的复制效率比较高）</p>
-<p>2、<strong>Old区</strong>：标记清除或标记整理（Old区对象存活时间比较长，复制来复制去没必要，不如做个标记再清理）</p>
-<h1 id="四、-垃圾收集器"><a href="#四、-垃圾收集器" class="headerlink" title="四、 垃圾收集器"></a>四、 垃圾收集器</h1><h2 id="4-1-Serial收集器"><a href="#4-1-Serial收集器" class="headerlink" title="4.1 Serial收集器"></a>4.1 Serial收集器</h2><p>在JDK1.3.1之前，曾经是虚拟机新生代收集的唯一选择，它是最基本、发展历史最悠久的收集器。</p>
-<p>它是一种<strong>单线程</strong>收集器，不仅仅意味着它只会使用一个CPU或者一条收集线程去完成垃圾收集工作，更重要的是其在进行收集的同时需要暂停其它线程。</p>
-<p><img src="https://user-gold-cdn.xitu.io/2020/2/10/1702e0a78a1eb434?w=1017&h=576&f=png&s=38780" alt=""></p>
-<p>优点：简单高效，拥有很高的单线程收集效率</p>
-<p>缺点：收集过程中需要暂停其它所有的线程</p>
-<p>算法：复制算法</p>
-<p>使用范围：新生代</p>
-<p>应用：client模式下的默认新生代收集器</p>
-<h2 id="4-2-ParNew收集器"><a href="#4-2-ParNew收集器" class="headerlink" title="4.2 ParNew收集器"></a>4.2 ParNew收集器</h2><p>可以把ParNew收集器当作多线程版本的Serial收集器。</p>
-<p><img src="https://user-gold-cdn.xitu.io/2020/2/10/1702e16d4741267a?w=1017&h=595&f=png&s=41599" alt=""></p>
-<p>优点：在多CPU下，比Serial收集器效率高</p>
-<p>缺点：收集过程中需要暂停其它所有的线程，单CPU时比Serial效率差</p>
-<p>算法：复制算法</p>
-<p>使用范围：新生代</p>
-<p>应用：运行在server模式下的虚拟机首选新生代收集器</p>
-<h2 id="4-3-Parallel-Scavenge收集器"><a href="#4-3-Parallel-Scavenge收集器" class="headerlink" title="4.3 Parallel Scavenge收集器"></a>4.3 Parallel Scavenge收集器</h2><p>它是一个新生代收集器，使用<strong>复制算法</strong>，又是并行多线程收集器，看上去和ParNew一样，但是更多关注的是<strong>系统的吞吐量</strong>。</p>
-<p>吞吐量 = 运行用户程序的时间 / (运行用户程序时间 + 垃圾收集时间)</p>
-<p>例如：虚拟机总共运行了100m，垃圾收集用了1m，吞吐量 =(100 - 1) / 100 = 99%</p>
-<p>吞吐量越大，则垃圾收集时间越短，则用户程序可以充分利用CPU资源，尽快完成程序的运算任务。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">-XX:MaxGCPauseMillis 控制最大的垃圾收集停顿时间，</span><br><span class="line">-XX:GC Time Ratio 直接设置吞吐量的大小。</span><br></pre></td></tr></table></figure>
-
-<h2 id="4-4-Serial-Old收集器"><a href="#4-4-Serial-Old收集器" class="headerlink" title="4.4 Serial Old收集器"></a>4.4 Serial Old收集器</h2><p>它是Serial收集器的老年代版本，也是一个单线程收集器，不同的是采用“标记-整理”的算法，运行过程和Serial收集器一样。</p>
-<p><img src="https://user-gold-cdn.xitu.io/2020/2/10/1702e5514f36024b?w=1626&h=576&f=png&s=78910" alt=""></p>
-<h2 id="4-5-Parallel-Old收集器"><a href="#4-5-Parallel-Old收集器" class="headerlink" title="4.5 Parallel Old收集器"></a>4.5 Parallel Old收集器</h2><p>Parallel Old收集器是Parallel Scavenge收集器的老年代版本，使用“标记-整理”的算法进行垃圾回收。吞吐量优先。</p>
-<h2 id="4-6-CMS（Concurrent-Mark-Sweep）收集器"><a href="#4-6-CMS（Concurrent-Mark-Sweep）收集器" class="headerlink" title="4.6 CMS（Concurrent Mark Sweep）收集器"></a>4.6 CMS（Concurrent Mark Sweep）收集器</h2><p>CMS收集器是一种以获取<strong>最短回收停顿时间</strong>为目标的收集器。采用“标记-清除”算法，整个过程分为4步：</p>
-<p>1、<strong>初始标记</strong>（CMS initial mark），标记GC Roots能关联到的对象，Stop The World–&gt;速度很快</p>
-<p>2、<strong>并发标记</strong>（CMS ConCurrent mark），进行GC Roots Tracing</p>
-<p>3、<strong>重新标记</strong>（CMS remark），修改并发标记因用户程序变动的内容，Stop The World</p>
-<p>4、<strong>并发清除</strong>（CMS Concurrent Sweep）</p>
-<p>由于整个过程，并发标记和并发清除，收集器线程可以和用户线程一起工作，所以总体上来说，<strong>CMS收集器的内存回收过程是和用户线程一起并发执行的</strong>。</p>
-<p><img src="https://user-gold-cdn.xitu.io/2020/2/10/1702e886eccea396?w=1626&h=596&f=png&s=60610" alt=""><br>优点：并发收集、低停顿</p>
-<p>缺点：产生大量空间碎片，并发阶段会降低吞吐量</p>
-<h2 id="4-7-G1收集器"><a href="#4-7-G1收集器" class="headerlink" title="4.7 G1收集器"></a>4.7 G1收集器</h2><p>使用G1收集器时，Java堆的内存布局与其它收集器的差别很大，它<strong>将整个Java堆划分为多个大小相等的独立区域</strong>（Region），虽然还保留有新生代和老年代的概念，但新生代和老年代不再是物理隔离了，它们都是一部分Region（不需要连续）的集合。整体上属于“<strong>标记-整理</strong>”算法，不会到处连续的空间碎片，<strong>可预测的停顿</strong>（比CMS更先进的地方在于能够让使用者明确指定一个长度为m毫秒的时间片段内，消耗在垃圾收集上的时间不得超过m毫秒）。整个过程分为4部分：</p>
-<p>1、<strong>初始标记</strong>（Initial Marking）,标记一下GC Roots能够关联的对象，并且修改TAMS(top at mark start)的值，需要暂停用户线程</p>
-<p>2、<strong>并发标记</strong>（Concurrent Marking），从GC Roots进行可达性分析，找出存活的对象，与用户线程并发执行</p>
-<p>3、<strong>最终标记</strong>（Final Marking），修正在并发标记阶段因为用户程序的并发执行导致变动的数据，需暂停用户线程</p>
-<p>4、<strong>筛选回收</strong>（Live Data Counting And Evacuation），对各个Region的回收价值和成本进行排序，根据用户所期望的GC停顿时间制定回收计划。</p>
-<p><img src="https://user-gold-cdn.xitu.io/2020/2/10/1702ea2c3b877a18?w=1638&h=590&f=png&s=65534" alt=""></p>
-<h2 id="4-8-垃圾收集器分类"><a href="#4-8-垃圾收集器分类" class="headerlink" title="4.8 垃圾收集器分类"></a>4.8 垃圾收集器分类</h2><ul>
-<li><p>串行收集器</p>
-<p>  Serial、Old Serial</p>
-<p>  <strong>只有一个垃圾回收线程执行，用户线程暂停。</strong></p>
-<p>  适用于内存比较小的嵌入式设备。</p>
-</li>
-<li><p>并行收集</p>
-<p>  Parallel Scanvenge、Parallel Old</p>
-<p>  <strong>多条垃圾收集器线程并行工作，但此时用户线程仍然处于等待状态。</strong></p>
-<p>  适用于科学计算、后台处理等若干交互场景。</p>
-<p>  <strong>吞吐量优先</strong></p>
-</li>
-<li><p>并发收集器</p>
-<p>  CMS、G1</p>
-<p>  <strong>用户线程和垃圾收集器线程同时执行</strong>（但不一定是并行，可能是交替执行），垃圾收集线程在执行的时候不会停顿用户线程的运行。</p>
-<p>  适用于相对时间有要求的场景，比如Web</p>
-<p>  <strong>停顿时间优先</strong></p>
-</li>
-</ul>
-<h2 id="4-9-如何选择合适的垃圾收集器"><a href="#4-9-如何选择合适的垃圾收集器" class="headerlink" title="4.9 如何选择合适的垃圾收集器"></a>4.9 如何选择合适的垃圾收集器</h2><ul>
-<li>优先调整堆的大小让服务器自己来选择</li>
-<li>如果内存小于100M,使用串行收集器</li>
-<li>如果是CPU单核，并且没有停顿时间的要求，使用串行或者JVM自行选择</li>
-<li>如果允许停顿时间超过1S，选择并行或者JVM自行选择</li>
-<li>如果响应时间最重要，并且不能超过1S,使用并发收集器。</li>
-<li>来看看官网如何给出答案的： <a href="https://docs.oracle.com/javase/8/docs/technotes/guides/vm/gctuning/collectors.html#sthref28" target="_blank" rel="noopener">https://docs.oracle.com/javase/8/docs/technotes/guides/vm/gctuning/collectors.html#sthref28</a></li>
-</ul>
-<h2 id="4-10-如何开启垃圾收集器"><a href="#4-10-如何开启垃圾收集器" class="headerlink" title="4.10 如何开启垃圾收集器"></a>4.10 如何开启垃圾收集器</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">（1）串行</span><br><span class="line">-XX：+UseSerialGC</span><br><span class="line">-XX：+UseSerialOldGC</span><br><span class="line">（2）并行(吞吐量优先)：</span><br><span class="line"> -XX：+UseParallelGC</span><br><span class="line"> -XX：+UseParallelOldGC</span><br><span class="line">（3）并发收集器(响应时间优先)</span><br><span class="line">-XX：+UseConcMarkSweepGC</span><br><span class="line">-XX：+UseG1GC</span><br></pre></td></tr></table></figure>
-
-<h2 id="4-11-如何理解吞吐量和停顿时间"><a href="#4-11-如何理解吞吐量和停顿时间" class="headerlink" title="4.11 如何理解吞吐量和停顿时间"></a>4.11 如何理解吞吐量和停顿时间</h2><ul>
-<li><p>吞吐量</p>
-<p>  <strong>运行用户代码时间/(运行用户代码时间+垃圾收集时间)</strong></p>
-<p>  高吞吐量则可以高效地利用CPU时间，尽快完成程序的运算任务，主要适合在后台运算而不需要太多交互的任<br>务。</p>
-</li>
-</ul>
-<ul>
-<li><p>停顿时间</p>
-<p>  <strong>垃圾收集器进行垃圾回收终端应用执行响应的时间</strong></p>
-<p>  停顿时间越短就越适合需要和用户交互的程序，良好的响应速度能提升用户体验。</p>
-</li>
-</ul>
-<h2 id="4-12-在什么情况下使用G1？"><a href="#4-12-在什么情况下使用G1？" class="headerlink" title="4.12 在什么情况下使用G1？"></a>4.12 在什么情况下使用G1？</h2><p>JDK 7开始使用，JDK 8非常成熟，<strong>JDK 9</strong>默认的垃圾收集器，适用于<strong>新老生代</strong>。</p>
-<p>判断是否需要使用G1收集器？</p>
-<ul>
-<li>50%以上的堆被存活对象占用</li>
-<li>对象分配和晋升的速度变化非常大</li>
-<li>垃圾回收时间比较长</li>
-</ul>
-<h1 id="未完待续……"><a href="#未完待续……" class="headerlink" title="未完待续……"></a>未完待续……</h1>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://xkjava.github.io/2020/02/10/%E5%A6%82%E4%BD%95%E4%BC%98%E9%9B%85%E7%9A%84%E5%AD%A6%E4%B9%A0JVM%EF%BC%8C%E5%8D%87%E5%8D%8E%E7%AF%87%EF%BC%88%E4%B8%89%EF%BC%89/" data-id="ckatekjzn00073vra3vr9dbkv" class="article-share-link">Share</a>
+      <a data-url="https://xkjava.github.io/2020/02/12/%E5%A6%82%E4%BD%95%E4%BC%98%E9%9B%85%E7%9A%84%E5%AD%A6%E4%B9%A0JVM%EF%BC%8C%E5%AE%9E%E6%88%98%E7%AF%87%EF%BC%88%E5%9B%9B%EF%BC%89/" data-id="ckbnhdbuq0009nvrabkh1410p" class="article-share-link">Share</a>
       
       
     </footer>
@@ -1745,7 +1699,7 @@ Root以及原因</code></p>
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li></ul>
     </div>
   </div>
 
@@ -1756,6 +1710,10 @@ Root以及原因</code></p>
     <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2020/06/20/JAVA%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E9%98%B6%E6%AE%B5%E6%80%BB%E7%BB%93%E7%AF%87%EF%BC%8C%E8%A7%A3%E5%86%B3%E6%AD%BB%E9%94%81%E9%97%AE%E9%A2%98%E4%BB%A5%E5%8F%8AThreadLocal%E5%8E%9F%E7%90%86%E5%88%86%E6%9E%90/">JAVA并发编程阶段总结篇，解决死锁问题以及ThreadLocal原理分析</a>
+          </li>
         
           <li>
             <a href="/2020/05/30/JAVA%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E9%80%92%E8%BF%9B%E7%AF%87%EF%BC%8C%E6%8E%A2%E7%B4%A2%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8%E6%80%A7volatile%E5%85%B3%E9%94%AE%E5%AD%97%E5%A6%82%E4%BD%95%E4%BF%9D%E8%AF%81%E5%8F%AF%E8%A7%81%E6%80%A7/">JAVA并发编程递进篇，探索线程安全性volatile关键字如何保证可见性</a>
@@ -1771,10 +1729,6 @@ Root以及原因</code></p>
         
           <li>
             <a href="/2020/05/15/%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E9%98%85%E8%AF%BBmybatis%E6%A0%B8%E5%BF%83%E6%BA%90%E7%A0%81%EF%BC%8C%E6%8E%8C%E6%8F%A1%E5%BA%95%E5%B1%82%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86%E4%B8%8E%E8%AE%BE%E8%AE%A1%E6%80%9D%E6%83%B3/">手把手教你阅读mybatis核心源码，掌握底层工作原理与设计思想</a>
-          </li>
-        
-          <li>
-            <a href="/2020/05/14/%E9%9D%A2%E8%AF%95%E5%AE%98%E5%8F%A3%E4%B8%AD%E7%9A%84Mybatis%EF%BC%8C%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B%E3%80%81%E6%9E%B6%E6%9E%84%E5%88%86%E5%B1%82%E4%B8%8E%E6%A8%A1%E5%9D%97%E5%88%92%E5%88%86%E4%BB%A5%E5%8F%8A%E7%BC%93%E5%AD%98%E6%9C%BA%E5%88%B6/">面试官口中的Mybatis，工作流程、架构分层与模块划分以及缓存机制</a>
           </li>
         
       </ul>
