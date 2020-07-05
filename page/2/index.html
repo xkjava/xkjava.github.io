@@ -74,6 +74,129 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-架构师内功心法，23种设计模式中最为复杂的访问者模式详解" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/03/30/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C23%E7%A7%8D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B8%AD%E6%9C%80%E4%B8%BA%E5%A4%8D%E6%9D%82%E7%9A%84%E8%AE%BF%E9%97%AE%E8%80%85%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" class="article-date">
+  <time datetime="2020-03-30T03:37:03.000Z" itemprop="datePublished">2020-03-30</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/03/30/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C23%E7%A7%8D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B8%AD%E6%9C%80%E4%B8%BA%E5%A4%8D%E6%9D%82%E7%9A%84%E8%AE%BF%E9%97%AE%E8%80%85%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/">架构师内功心法，23种设计模式中最为复杂的访问者模式详解</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>访问者模式（Visitor Pattern）是一种将数据结构和数据操作分离的设计模式。是指封装一些作用于某种数据结构中的各种元素的操作，它可以在不改变数据结构的前提下定义作用于这些元素的新的操作。</p>
+<p>访问者模式被称为最复杂的设计模式，并且使用频率不高，设计模式的作者也评价为：大多情况下，你不需要使用访问者模式，但是一旦需要使用它时，那就真的需要使用了。访问者模式的基本思想是，针对系统中拥有固定类型数的对象结构（元素），在其内提供一个accept()方法用来接受访问者对象的访问。不同的访问者对同一元素的访问内容不同，使得相同的元素集合可以产生不同的数据结果。accept()方法可以接收不同的访问者对象，然后在内部将自己（元素）转发到接收到的访问者对象的visit()方法内。访问者内部对应类型的visit()方法就会得到回调执行，对元素进行操作。也就是通过两次动态分发（第一次是对访问者的分发accept()方法，第二次是对元素的分发visit()方法），才最终将一个具体的元素传递到一个具体的访问者。如此一来，就解耦了数据结构与操作，且数据操作不会改变元素状态。</p>
+<h1 id="一、访问者模式的应用场景"><a href="#一、访问者模式的应用场景" class="headerlink" title="一、访问者模式的应用场景"></a>一、访问者模式的应用场景</h1><p>访问者模式在生活场景中也是非常当多的，例如每年年底的KPI考核，KPI考核标准是相对稳定的，但是参与KPI考核的员工可能每年都会发生变化，那么员工就是访问者。我们平时去食堂或者餐厅吃饭，餐厅的菜单和就餐方式是相对稳定的，但是去餐厅就餐的人员是每天都在发生变化的，因此就餐人员就是访问者。</p>
+<p><img src="https://user-gold-cdn.xitu.io/2020/3/29/17124e40cf3045f9?w=600&h=327&f=png&s=121106" alt=""><br><img src="https://user-gold-cdn.xitu.io/2020/3/29/17124e533c17755f?w=480&h=359&f=png&s=308415" alt=""></p>
+<p>访问者模式的核心是，解耦数据结构与数据操作，使得对元素的操作具备优秀的扩展性。可以通过扩展不同的数据操作类型（访问者）实现对相同元素的不同的操作。简而言之就是对集合中的不同类型数据（类型数量稳定）进行多种操作，则使用访问者模式。</p>
+<p>访问者模式的应用场景适用于以下几个场景：</p>
+<ul>
+<li>数据结构稳定，作用于数据结构的操作经常变化的场景；</li>
+<li>需要数据结构与数据操作呢分离的场景；</li>
+<li>需要对不同数据类型（元素）进行操作，而不使用分支判断具体类型的场景。</li>
+</ul>
+<p>访问者模式主要包含五种角色：</p>
+<ul>
+<li>抽象访问者（Visitor)：接口或抽象类，该类地冠以了对每一个具体元素（Element）的访问行为visit()方法，其参数就是具体的元素（Element）对象。理论上来说，Visitor的方法个数与元素（Element）个数是相等的。如果元素（Element）个数经常变动，会导致Visitor的方法也要进行变动，此时，该情形并不适用访问者模式；</li>
+<li>具体访问者（ConcreteVisitor）：实现对具体元素的操作；</li>
+<li>抽象元素（Element）：接囗或抽象类，定义了一个接受访问者访问的方法accept()表示所有元素类型都支持被访问者访问；</li>
+<li>具体元素（ConcreteElement）：具体元素类型，提供接受访问者的具体实现。通常的实现都为：visitor.visit(this)；</li>
+<li>结构对象（ObjectStructure）：内部维护了元素集合，并提供方法接受访问者对该集合所有元素进行操作。</li>
+</ul>
+<h2 id="1-1-利用访问者模式实现公司KPI考核"><a href="#1-1-利用访问者模式实现公司KPI考核" class="headerlink" title="1.1 利用访问者模式实现公司KPI考核"></a>1.1 利用访问者模式实现公司KPI考核</h2><p>每到年底，公司的管理层就要开始评定员工一年的工作绩效了，管理层有CEO和CTO，那么CEO关注的是工程师的KPI和经理的KPI以及新产品的数量，而CTO关心的是工程师的代码量、经理的新产品数量。</p>
+<p>由于CEO和CTO对于不同员工的关注点是不一样的，这就需要对不同的员工类型进行不同的处理。此时访问者模式就派上用场了。下面来看下具体的代码实现，首先创建员工Employee类：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">public abstract class Employee &#123;</span><br><span class="line"></span><br><span class="line">    private String name;</span><br><span class="line"></span><br><span class="line">    private int kpi;</span><br><span class="line"></span><br><span class="line">    public Employee(String name) &#123;</span><br><span class="line">        this.name &#x3D; name;</span><br><span class="line">        this.kpi &#x3D; new Random().nextInt(10);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;**</span><br><span class="line">     * 接收访问者的访问</span><br><span class="line">     * @param visitor</span><br><span class="line">     *&#x2F;</span><br><span class="line">    public abstract void accept(IVisitor visitor);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Employee类的accept()方法表示接受访问者的访问，由具体的子类实现。<strong>访问者是一个接口，传入不同的实现类，可以访问不同的数据。</strong> 分别创建工程师Engineer类和经理Manager类：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">public class Engineer extends Employee &#123;</span><br><span class="line">    public Engineer(String name) &#123;</span><br><span class="line">        super(name);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public void accept(IVisitor visitor) &#123;</span><br><span class="line">        visitor.visit(this);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public int getCodeLines() &#123;</span><br><span class="line">        return new Random().nextInt(10 * 10000);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">public class Manager extends Employee &#123;</span><br><span class="line">    public Manager(String name) &#123;</span><br><span class="line">        super(name);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public void accept(IVisitor visitor) &#123;</span><br><span class="line">        visitor.visit(this);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public int getPrducts() &#123;</span><br><span class="line">        return new Random().nextInt(10);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>工程师考核的是代码数量，经理考核的是产品数量，二者的职责不一样。也正是因为有这样的差异性，才使得访问模式能够在这个场景下发挥作用。将这些员工添加到一个业务报表类中，公司高层可以通过该报表类的showReport()方法查看所有员工的绩效，创建BusinessReport类：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">public class BusinessReport &#123;</span><br><span class="line"></span><br><span class="line">    private List&lt;Employee&gt; employeeList &#x3D; new LinkedList&lt;&gt;();</span><br><span class="line"></span><br><span class="line">    public BusinessReport() &#123;</span><br><span class="line">        employeeList.add(new Engineer(&quot;工程师1&quot;));</span><br><span class="line">        employeeList.add(new Engineer(&quot;工程师2&quot;));</span><br><span class="line">        employeeList.add(new Engineer(&quot;工程师3&quot;));</span><br><span class="line">        employeeList.add(new Engineer(&quot;工程师4&quot;));</span><br><span class="line"></span><br><span class="line">        employeeList.add(new Manager(&quot;产品经理1&quot;));</span><br><span class="line">        employeeList.add(new Manager(&quot;产品经理2&quot;));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;**</span><br><span class="line">     *</span><br><span class="line">     * @param visitor 公司高层，如CEO，CTO</span><br><span class="line">     *&#x2F;</span><br><span class="line">    public void showReport(IVisitor visitor) &#123;</span><br><span class="line">        for(Employee employee : employeeList) &#123;</span><br><span class="line">            employee.accept(visitor);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>定义访问者类型，创建接口IVisitor，访问者声明了两个visit()方法，分别针对工程师和经理，代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">public interface IVisitor &#123;</span><br><span class="line"></span><br><span class="line">    void visit(Engineer engineer);</span><br><span class="line"></span><br><span class="line">    void visit(Manager manager);</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>具体访问者CEOVisitor和CTOVisitor类：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">public class CEOVisitor implements IVisitor &#123;</span><br><span class="line">    @Override</span><br><span class="line">    public void visit(Engineer engineer) &#123;</span><br><span class="line">        System.out.println(&quot;工程师：&quot; + engineer.name + &quot;, KPI：&quot; + engineer.kpi);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public void visit(Manager manager) &#123;</span><br><span class="line">        System.out.println(&quot;经理：&quot; + manager.name + &quot;, KPI：&quot; + manager.kpi +</span><br><span class="line">                            &quot;, 新产品数量&quot; + manager.getPrducts() );</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">public class CTOVisitor implements IVisitor &#123;</span><br><span class="line">    @Override</span><br><span class="line">    public void visit(Engineer engineer) &#123;</span><br><span class="line">        System.out.println(&quot;工程师：&quot; + engineer.name + &quot;, 代码数量：&quot; + engineer.getCodeLines());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public void visit(Manager manager) &#123;</span><br><span class="line">        System.out.println(&quot;经理：&quot; + manager.name +</span><br><span class="line">                            &quot;, 新产品数量&quot; + manager.getPrducts() );</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>测试main方法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">public static void main(String[] args) &#123;</span><br><span class="line">    BusinessReport businessReport &#x3D; new BusinessReport();</span><br><span class="line">    businessReport.showReport(new CEOVisitor());</span><br><span class="line">    businessReport.showReport(new CTOVisitor());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>运行结果如下：</p>
+<p><img src="https://user-gold-cdn.xitu.io/2020/3/29/171256fdfa21be22?w=721&h=556&f=png&s=46852" alt=""><br>在上述的案例中，Employee扮演了Element角色，而Engineer和Manager都是ConcreteElement；CEOVisitor和CTOVisitor都是具体的Visitor对象；而BusinessReport就是ObjectStructure。</p>
+<p>访问者模式最大的优点就是增加访问者非常容，我们从代码中可以看到，如果要增加一访问者，只要新实现一个访问者接口的类，从而达到数据对象与数据操作相分离的效果。如果不实用访问者模式而又不想对不同的元素进行不同的操作，那么必定需要使用if-else和类型转换，这使得代码唯以升级维护。</p>
+<p>我们要根据具体情况来评估是否适合使用访问者模式，例如，我们的对象结构是否足够稳定是否需要经常定义新的操作，使用访问者模式是否能优化我们的代码而不是使我们的代码变得更复杂。</p>
+<h2 id="1-2-从静态分派到动态分派"><a href="#1-2-从静态分派到动态分派" class="headerlink" title="1.2 从静态分派到动态分派"></a>1.2 从静态分派到动态分派</h2><p><strong>变量被声明时的类型叫做变量的静态类型（Static Type），有些人把静态类型叫做明显类型（Apparent Type）；而变量所引用的对象的真是类型又叫做变量的实际类型（Actual Type）。</strong> 比如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">List list &#x3D; null;</span><br><span class="line">list &#x3D; new ArrayList();</span><br></pre></td></tr></table></figure>
+
+<p>上面的代码声明了一个list，它的静态类型（也叫明显类型）是List，而它的实际类型是ArrayList。根据对象的类型而对方法进行的选择，就是分派（Dispatch）。分派又分为两种，即动态分派和静态分派。</p>
+<h2 id="1-2-1-静态分派"><a href="#1-2-1-静态分派" class="headerlink" title="1.2.1 静态分派"></a>1.2.1 静态分派</h2><p>静态分派（Static Dispatch）就是按照变量的静态类型进行分派，从而确定方法的执行版本，静态分派在编译时期就可以确定方法的版本。而静态分配最经典的就是方法重载，请看下面的这段代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">public class StaticDispatch &#123;</span><br><span class="line"></span><br><span class="line">    public void test(String string) &#123;</span><br><span class="line">        System.out.println(&quot;string&quot;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void test(Integer integer) &#123;</span><br><span class="line">        System.out.println(&quot;integer&quot;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        String string &#x3D; &quot;1&quot;;</span><br><span class="line">        Integer integer &#x3D; 1;</span><br><span class="line">        StaticDispatch staticDispatch &#x3D; new StaticDispatch();</span><br><span class="line">        staticDispatch.test(string);</span><br><span class="line">        staticDispatch.test(integer);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在静态分派判断的时候，我们根据多个判断依据（即参数类型和个数）判断出了方法的版本，那么这个就是多分派的概念，因为有一个以上的考量标准。所以<strong>Java语言是静态多分派语言。</strong></p>
+<h2 id="1-2-2-动态分派"><a href="#1-2-2-动态分派" class="headerlink" title="1.2.2 动态分派"></a>1.2.2 动态分派</h2><p>动态分派，与静态相反，它不是在编译期间确定方法的版本，而是在运行时确定的。Java是动态单分派语言。</p>
+<h2 id="1-2-3-访问者模式中的伪动态双分派"><a href="#1-2-3-访问者模式中的伪动态双分派" class="headerlink" title="1.2.3 访问者模式中的伪动态双分派"></a>1.2.3 访问者模式中的伪动态双分派</h2><p>通过前面分析，我们知道Java是静态多分派、动态单分派的语言。Java底层不支持动态的双分派。但是通过使用设计模式，也可以在Java语言里实现伪动态双分派。在访问者模式中使用的就是伪动态双分派。所谓动态双分派就是在运行时依据两个实际类型去判断一个方法的运行行为，而访问者模式实现的手段是进行了两次动态单分派来达到这个效果。<br>还是回到前面的公司KPI考核业务场景当中，BusinessReport类中的showReport()方法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"> &#x2F;**</span><br><span class="line"> *</span><br><span class="line"> * @param visitor 公司高层，如CEO，CTO</span><br><span class="line"> *&#x2F;</span><br><span class="line">public void showReport(IVisitor visitor) &#123;</span><br><span class="line">    for(Employee employee : employeeList) &#123;</span><br><span class="line">        employee.accept(visitor);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里就是依据Employee和IVisitor两个实际类型决定了showReport()方法的执行结果从而决定了accept()方法的动作。</p>
+<p>分析accept()方法的调用过程<br>1、当调用accept()方法时，根据Employee的实际类型决定是调用Engineer还是Manager的accept()方法。</p>
+<p>2、这时accept()方法的版本已经确定，假如是Engineer，它的accept()方去是调用下面这行代码。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">public void accept(IVisitor visitor) &#123;</span><br><span class="line">    visitor.visit(this);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>此时的this是Engineer类型，所以对应的IVisitor接口的visit(Engineer enginner)方法，此时需要再根据访问者的实际类型确定visit()方法的版本，这样一来，就完成了动态分派的过程。</p>
+<p>以上的过程就是通过两次动态双分派，第一次对accept()方法进行动态分派，第二次访问者的visit()方法进行动态分派，从而到达了根据两个实际类型确定一个方法的行为结果。</p>
+<h1 id="二、访问者模式在源码中的体现"><a href="#二、访问者模式在源码中的体现" class="headerlink" title="二、访问者模式在源码中的体现"></a>二、访问者模式在源码中的体现</h1><h2 id="2-1-NIO中的FileVisitor接口"><a href="#2-1-NIO中的FileVisitor接口" class="headerlink" title="2.1 NIO中的FileVisitor接口"></a>2.1 NIO中的FileVisitor接口</h2><p>JDK中的NIO模块下的FileVisitor接口，它提供递归遍历文件树的支持。来看下源码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br></pre></td><td class="code"><pre><span class="line">public interface FileVisitor&lt;T&gt; &#123;</span><br><span class="line"></span><br><span class="line">    &#x2F;**</span><br><span class="line">     * Invoked for a directory before entries in the directory are visited.</span><br><span class="line">     *</span><br><span class="line">     * &lt;p&gt; If this method returns &#123;@link FileVisitResult#CONTINUE CONTINUE&#125;,</span><br><span class="line">     * then entries in the directory are visited. If this method returns &#123;@link</span><br><span class="line">     * FileVisitResult#SKIP_SUBTREE SKIP_SUBTREE&#125; or &#123;@link</span><br><span class="line">     * FileVisitResult#SKIP_SIBLINGS SKIP_SIBLINGS&#125; then entries in the</span><br><span class="line">     * directory (and any descendants) will not be visited.</span><br><span class="line">     *</span><br><span class="line">     * @param   dir</span><br><span class="line">     *          a reference to the directory</span><br><span class="line">     * @param   attrs</span><br><span class="line">     *          the directory&#39;s basic attributes</span><br><span class="line">     *</span><br><span class="line">     * @return  the visit result</span><br><span class="line">     *</span><br><span class="line">     * @throws  IOException</span><br><span class="line">     *          if an I&#x2F;O error occurs</span><br><span class="line">     *&#x2F;</span><br><span class="line">    FileVisitResult preVisitDirectory(T dir, BasicFileAttributes attrs)</span><br><span class="line">        throws IOException;</span><br><span class="line"></span><br><span class="line">    &#x2F;**</span><br><span class="line">     * Invoked for a file in a directory.</span><br><span class="line">     *</span><br><span class="line">     * @param   file</span><br><span class="line">     *          a reference to the file</span><br><span class="line">     * @param   attrs</span><br><span class="line">     *          the file&#39;s basic attributes</span><br><span class="line">     *</span><br><span class="line">     * @return  the visit result</span><br><span class="line">     *</span><br><span class="line">     * @throws  IOException</span><br><span class="line">     *          if an I&#x2F;O error occurs</span><br><span class="line">     *&#x2F;</span><br><span class="line">    FileVisitResult visitFile(T file, BasicFileAttributes attrs)</span><br><span class="line">        throws IOException;</span><br><span class="line"></span><br><span class="line">    &#x2F;**</span><br><span class="line">     * Invoked for a file that could not be visited. This method is invoked</span><br><span class="line">     * if the file&#39;s attributes could not be read, the file is a directory</span><br><span class="line">     * that could not be opened, and other reasons.</span><br><span class="line">     *</span><br><span class="line">     * @param   file</span><br><span class="line">     *          a reference to the file</span><br><span class="line">     * @param   exc</span><br><span class="line">     *          the I&#x2F;O exception that prevented the file from being visited</span><br><span class="line">     *</span><br><span class="line">     * @return  the visit result</span><br><span class="line">     *</span><br><span class="line">     * @throws  IOException</span><br><span class="line">     *          if an I&#x2F;O error occurs</span><br><span class="line">     *&#x2F;</span><br><span class="line">    FileVisitResult visitFileFailed(T file, IOException exc)</span><br><span class="line">        throws IOException;</span><br><span class="line"></span><br><span class="line">    &#x2F;**</span><br><span class="line">     * Invoked for a directory after entries in the directory, and all of their</span><br><span class="line">     * descendants, have been visited. This method is also invoked when iteration</span><br><span class="line">     * of the directory completes prematurely (by a &#123;@link #visitFile visitFile&#125;</span><br><span class="line">     * method returning &#123;@link FileVisitResult#SKIP_SIBLINGS SKIP_SIBLINGS&#125;,</span><br><span class="line">     * or an I&#x2F;O error when iterating over the directory).</span><br><span class="line">     *</span><br><span class="line">     * @param   dir</span><br><span class="line">     *          a reference to the directory</span><br><span class="line">     * @param   exc</span><br><span class="line">     *          &#123;@code null&#125; if the iteration of the directory completes without</span><br><span class="line">     *          an error; otherwise the I&#x2F;O exception that caused the iteration</span><br><span class="line">     *          of the directory to complete prematurely</span><br><span class="line">     *</span><br><span class="line">     * @return  the visit result</span><br><span class="line">     *</span><br><span class="line">     * @throws  IOException</span><br><span class="line">     *          if an I&#x2F;O error occurs</span><br><span class="line">     *&#x2F;</span><br><span class="line">    FileVisitResult postVisitDirectory(T dir, IOException exc)</span><br><span class="line">        throws IOException;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这个接口上面定义的方法表示了遍历文件的关键过程，允许在文件被访问、目录被访问、目录已被访问、放生错误过程中进行控制整个流程。调用接口中的方法，会返回访问结果FileVisitResult对象值，用于决定当前操作完成后接下来该如何处理。FileVisitResult的标准返回值存放到枚举类型中：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">public enum FileVisitResult &#123;</span><br><span class="line">    &#x2F;**</span><br><span class="line">     * Continue. When returned from a &#123;@link FileVisitor#preVisitDirectory</span><br><span class="line">     * preVisitDirectory&#125; method then the entries in the directory should also</span><br><span class="line">     * be visited.</span><br><span class="line">     *&#x2F;</span><br><span class="line">     &#x2F;&#x2F;当前的遍历过程将会继续</span><br><span class="line">    CONTINUE,</span><br><span class="line">    &#x2F;**</span><br><span class="line">     * Terminate.</span><br><span class="line">     *&#x2F;</span><br><span class="line">     &#x2F;&#x2F;表示当前的遍历过程将会停止</span><br><span class="line">    TERMINATE,</span><br><span class="line">    &#x2F;**</span><br><span class="line">     * Continue without visiting the entries in this directory. This result</span><br><span class="line">     * is only meaningful when returned from the &#123;@link</span><br><span class="line">     * FileVisitor#preVisitDirectory preVisitDirectory&#125; method; otherwise</span><br><span class="line">     * this result type is the same as returning &#123;@link #CONTINUE&#125;.</span><br><span class="line">     *&#x2F;</span><br><span class="line">     &#x2F;&#x2F;当前的遍历过程将会继续，但是要忽略当前目录下的所有节点</span><br><span class="line">    SKIP_SUBTREE,</span><br><span class="line">    &#x2F;**</span><br><span class="line">     * Continue without visiting the &lt;em&gt;siblings&lt;&#x2F;em&gt; of this file or directory.</span><br><span class="line">     * If returned from the &#123;@link FileVisitor#preVisitDirectory</span><br><span class="line">     * preVisitDirectory&#125; method then the entries in the directory are also</span><br><span class="line">     * skipped and the &#123;@link FileVisitor#postVisitDirectory postVisitDirectory&#125;</span><br><span class="line">     * method is not invoked.</span><br><span class="line">     *&#x2F;</span><br><span class="line">     &#x2F;&#x2F;当前的遍历过程将会继续，但是要忽略当前文件&#x2F;目录的兄弟节点</span><br><span class="line">    SKIP_SIBLINGS;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-2-Spring中的BeanDefinitionVisitor类"><a href="#2-2-Spring中的BeanDefinitionVisitor类" class="headerlink" title="2.2 Spring中的BeanDefinitionVisitor类"></a>2.2 Spring中的BeanDefinitionVisitor类</h2><p>在Spring的Ioc中有个BeanDefinitionVisitor类，它有一个visitBeanDefinition()方法，看下源码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">public void visitBeanDefinition(BeanDefinition beanDefinition) &#123;</span><br><span class="line">	visitParentName(beanDefinition);</span><br><span class="line">	visitBeanClassName(beanDefinition);</span><br><span class="line">	visitFactoryBeanName(beanDefinition);</span><br><span class="line">	visitFactoryMethodName(beanDefinition);</span><br><span class="line">	visitScope(beanDefinition);</span><br><span class="line">	if (beanDefinition.hasPropertyValues()) &#123;</span><br><span class="line">		visitPropertyValues(beanDefinition.getPropertyValues());</span><br><span class="line">	&#125;</span><br><span class="line">	if (beanDefinition.hasConstructorArgumentValues()) &#123;</span><br><span class="line">		ConstructorArgumentValues cas &#x3D; beanDefinition.getConstructorArgumentValues();</span><br><span class="line">		visitIndexedArgumentValues(cas.getIndexedArgumentValues());</span><br><span class="line">		visitGenericArgumentValues(cas.getGenericArgumentValues());</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在其方法中分别访问了其它的数据，比如父类的名字、自己的类名、在Ioc容器中的名称等各种信息。</p>
+<h1 id="三、访问者模式的优缺点"><a href="#三、访问者模式的优缺点" class="headerlink" title="三、访问者模式的优缺点"></a>三、访问者模式的优缺点</h1><p>优点</p>
+<ul>
+<li>解耦了数据结构与数据操作，使得操作集合可以独立变化；</li>
+<li>扩展性好：可以通过扩展访问者角色，实现对数据集的不同操作；</li>
+<li>元素具体类型并非单一，访问者均可操作；</li>
+<li>各角色职责分离，符合单一职责原则。</li>
+</ul>
+<p>缺点</p>
+<ul>
+<li>无法增加元素类型：若系统数据结构对象另于变化，经常有新的数据对象增加进来，则访问者类必须增加对应元素类型的操作，违背了开闭原则。</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://xkjava.github.io/2020/03/30/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C23%E7%A7%8D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B8%AD%E6%9C%80%E4%B8%BA%E5%A4%8D%E6%9D%82%E7%9A%84%E8%AE%BF%E9%97%AE%E8%80%85%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" data-id="ckc8x9v4p000rnira1b3319de" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-架构师内功心法，被誉为摩斯密码的解释器模式详解" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2020/03/27/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E8%A2%AB%E8%AA%89%E4%B8%BA%E6%91%A9%E6%96%AF%E5%AF%86%E7%A0%81%E7%9A%84%E8%A7%A3%E9%87%8A%E5%99%A8%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" class="article-date">
@@ -163,7 +286,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://xkjava.github.io/2020/03/27/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E8%A2%AB%E8%AA%89%E4%B8%BA%E6%91%A9%E6%96%AF%E5%AF%86%E7%A0%81%E7%9A%84%E8%A7%A3%E9%87%8A%E5%99%A8%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" data-id="ckbvyt2yi000l2fra59br63fd" class="article-share-link">Share</a>
+      <a data-url="https://xkjava.github.io/2020/03/27/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E8%A2%AB%E8%AA%89%E4%B8%BA%E6%91%A9%E6%96%AF%E5%AF%86%E7%A0%81%E7%9A%84%E8%A7%A3%E9%87%8A%E5%99%A8%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" data-id="ckc8x9v45000mnira5a6d50bh" class="article-share-link">Share</a>
       
       
     </footer>
@@ -250,7 +373,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://xkjava.github.io/2020/03/25/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E4%B8%8D%E9%9C%80%E8%A6%81%E4%B8%AD%E9%97%B4%E5%95%86%E8%B5%9A%E5%B7%AE%E4%BB%B7%E7%9A%84%E4%B8%AD%E4%BB%8B%E8%80%85%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" data-id="ckbvyt1gy00022frab7h6furw" class="article-share-link">Share</a>
+      <a data-url="https://xkjava.github.io/2020/03/25/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E4%B8%8D%E9%9C%80%E8%A6%81%E4%B8%AD%E9%97%B4%E5%95%86%E8%B5%9A%E5%B7%AE%E4%BB%B7%E7%9A%84%E4%B8%AD%E4%BB%8B%E8%80%85%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" data-id="ckc8x9ueg0002niragn1f2vtj" class="article-share-link">Share</a>
       
       
     </footer>
@@ -324,7 +447,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://xkjava.github.io/2020/03/22/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E5%8F%82%E4%B8%8E%E5%AF%8C%E6%96%87%E6%9C%AC%E7%BC%96%E8%BE%91%E5%99%A8%E5%BC%80%E5%8F%91%E7%9A%84%E5%A4%87%E5%BF%98%E5%BD%95%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" data-id="ckbvyt2xx000f2fradkua3q03" class="article-share-link">Share</a>
+      <a data-url="https://xkjava.github.io/2020/03/22/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E5%8F%82%E4%B8%8E%E5%AF%8C%E6%96%87%E6%9C%AC%E7%BC%96%E8%BE%91%E5%99%A8%E5%BC%80%E5%8F%91%E7%9A%84%E5%A4%87%E5%BF%98%E5%BD%95%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" data-id="ckc8x9v3j000gnira0t4487a5" class="article-share-link">Share</a>
       
       
     </footer>
@@ -426,7 +549,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://xkjava.github.io/2020/03/21/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E5%8F%82%E4%B8%8E%E7%94%B5%E5%95%86%E8%AE%A2%E5%8D%95%E4%B8%9A%E5%8A%A1%E5%BC%80%E5%8F%91%E7%9A%84%E7%8A%B6%E6%80%81%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" data-id="ckbvyt2z6000r2fradazv8t1n" class="article-share-link">Share</a>
+      <a data-url="https://xkjava.github.io/2020/03/21/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E5%8F%82%E4%B8%8E%E7%94%B5%E5%95%86%E8%AE%A2%E5%8D%95%E4%B8%9A%E5%8A%A1%E5%BC%80%E5%8F%91%E7%9A%84%E7%8A%B6%E6%80%81%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" data-id="ckc8x9v4q000snira6c6p78r2" class="article-share-link">Share</a>
       
       
     </footer>
@@ -536,7 +659,7 @@ controller.executes();</code></pre><p>}</p>
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://xkjava.github.io/2020/03/21/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E7%86%9F%E6%82%89%E7%94%B5%E8%84%91%E4%B8%AD%E7%9A%84%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%9A%84%E5%91%BD%E4%BB%A4%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" data-id="ckbvyt1h000042frag0hagozz" class="article-share-link">Share</a>
+      <a data-url="https://xkjava.github.io/2020/03/21/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E7%86%9F%E6%82%89%E7%94%B5%E8%84%91%E4%B8%AD%E7%9A%84%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%9A%84%E5%91%BD%E4%BB%A4%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" data-id="ckc8x9uez0004nira16ue2uew" class="article-share-link">Share</a>
       
       
     </footer>
@@ -622,7 +745,7 @@ controller.executes();</code></pre><p>}</p>
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://xkjava.github.io/2020/03/19/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E9%9D%9E%E5%B8%B8%E7%86%9F%E7%9F%A5%E4%BD%86%E5%B9%B6%E4%B8%8D%E7%9F%A5%E5%85%B6%E6%89%80%E4%BB%A5%E7%84%B6%E7%9A%84%E8%BF%AD%E4%BB%A3%E5%99%A8%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" data-id="ckbvyt2yk000m2frabbtthmlc" class="article-share-link">Share</a>
+      <a data-url="https://xkjava.github.io/2020/03/19/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E9%9D%9E%E5%B8%B8%E7%86%9F%E7%9F%A5%E4%BD%86%E5%B9%B6%E4%B8%8D%E7%9F%A5%E5%85%B6%E6%89%80%E4%BB%A5%E7%84%B6%E7%9A%84%E8%BF%AD%E4%BB%A3%E5%99%A8%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" data-id="ckc8x9v46000nnirabkztg2tm" class="article-share-link">Share</a>
       
       
     </footer>
@@ -732,7 +855,7 @@ controller.executes();</code></pre><p>}</p>
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://xkjava.github.io/2020/03/16/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E5%BF%85%E9%A1%BB%E5%AE%8C%E5%85%A8%E6%8E%8C%E6%8F%A1%E5%90%83%E9%80%8F%E7%9A%84%E8%B8%A2%E7%9A%AE%E7%90%83%E6%96%B9%E5%BC%8F%E7%9A%84%E8%B4%A3%E4%BB%BB%E9%93%BE%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" data-id="ckbvyt2y4000i2frabt9p7et6" class="article-share-link">Share</a>
+      <a data-url="https://xkjava.github.io/2020/03/16/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E5%BF%85%E9%A1%BB%E5%AE%8C%E5%85%A8%E6%8E%8C%E6%8F%A1%E5%90%83%E9%80%8F%E7%9A%84%E8%B8%A2%E7%9A%AE%E7%90%83%E6%96%B9%E5%BC%8F%E7%9A%84%E8%B4%A3%E4%BB%BB%E9%93%BE%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" data-id="ckc8x9v41000jnira3k6g68q9" class="article-share-link">Share</a>
       
       
     </footer>
@@ -853,7 +976,7 @@ controller.executes();</code></pre><p>}</p>
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://xkjava.github.io/2020/03/11/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E8%BF%9E%E6%8E%A5%E4%B8%A4%E4%B8%AA%E7%A9%BA%E9%97%B4%E7%BB%B4%E5%BA%A6%E7%9A%84%E6%A1%A5%E6%8E%A5%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" data-id="ckbvyt2z9000u2fra95rm8ok7" class="article-share-link">Share</a>
+      <a data-url="https://xkjava.github.io/2020/03/11/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E8%BF%9E%E6%8E%A5%E4%B8%A4%E4%B8%AA%E7%A9%BA%E9%97%B4%E7%BB%B4%E5%BA%A6%E7%9A%84%E6%A1%A5%E6%8E%A5%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" data-id="ckc8x9v4t000vnira8cdz6ulm" class="article-share-link">Share</a>
       
       
     </footer>
@@ -963,144 +1086,7 @@ controller.executes();</code></pre><p>}</p>
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://xkjava.github.io/2020/03/10/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E4%BD%9C%E4%B8%BA%E6%A0%91%E5%BD%A2%E7%BB%93%E6%9E%84%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84%E7%9A%84%E7%BB%84%E5%90%88%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" data-id="ckbvyt1jq000d2fra6xhxavsp" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-架构师内功心法，使用共享对象来提高性能的享元模式详解" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2020/03/08/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E4%BD%BF%E7%94%A8%E5%85%B1%E4%BA%AB%E5%AF%B9%E8%B1%A1%E6%9D%A5%E6%8F%90%E9%AB%98%E6%80%A7%E8%83%BD%E7%9A%84%E4%BA%AB%E5%85%83%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" class="article-date">
-  <time datetime="2020-03-08T08:01:05.887Z" itemprop="datePublished">2020-03-08</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/03/08/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E4%BD%BF%E7%94%A8%E5%85%B1%E4%BA%AB%E5%AF%B9%E8%B1%A1%E6%9D%A5%E6%8F%90%E9%AB%98%E6%80%A7%E8%83%BD%E7%9A%84%E4%BA%AB%E5%85%83%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/">架构师内功心法，使用共享对象来提高性能的享元模式详解</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <hr>
-<p>title: 架构师内功心法，使用共享对象来提高性能的享元模式详解<br>date: 2020-03-08 16:00:12<br>tags:<br>–</p>
-<h1 id="一、享元模式的应用场景"><a href="#一、享元模式的应用场景" class="headerlink" title="一、享元模式的应用场景"></a>一、享元模式的应用场景</h1><p>在我们的日常生活中享元模式很常见，比如各种中介机构的房源共享，再比如全国社保联网。面向对象技术很好的解决一些灵活性或者扩展性问题，但是很多情况下需要在系统内增加对象的个数。当对象太多时，将导致运行代价过高，带来性能下降等问题。享元模式正式为解决这一类问题而诞生的。</p>
-<p><img src="https://user-gold-cdn.xitu.io/2020/3/8/170b89e48f9d05a5?w=1056&h=559&f=png&s=1145889" alt=""><br><img src="https://user-gold-cdn.xitu.io/2020/3/8/170b89e5ec72042f?w=946&h=536&f=png&s=799191" alt=""></p>
-<p>享元模式（FlyWeight Pattern）又称为<strong>轻量级模式，是对象池的一种实现。类似线程池</strong>，线程池可以避免不停的创建和销毁对象，消耗性能。提供了减少对象数量从而改善应用所需的对象结构方式。其宗旨是共享细粒度对象，将多个多同一对象的访问集中起来，不必为每个访问者创建一个单独的对象，以此来降低内存的消耗。</p>
-<p><strong>享元模式把一个对象的状态分为内部状态和外部状态，内部状态是不变的，外部状态是变化的。</strong> 然后通过共享不变的部分，达到减少对象数量并节约内存的目的。<strong>享元模式的本质是缓存共享对象，降低内存消耗。</strong> </p>
-<h2 id="1-1-享元模式的角色"><a href="#1-1-享元模式的角色" class="headerlink" title="1.1 享元模式的角色"></a>1.1 享元模式的角色</h2><p>享元模式有三个参与角色：</p>
-<ul>
-<li>抽象享元角色（Flyweight）：享元对象抽象基类或者接口，同时定义出对象的外部状态和内部状态的接口或实现；</li>
-<li>具体享元角色（ConcreteFlyweight）：实现抽象角色定义的业务。该角色的内部状态处理应该与环境无关，不能出现会有一个操作改变内部状态，同时修改了外部状态；</li>
-<li>享元工厂（FlyweightFactory）：负责管理享元对象池和创建享元对象。</li>
-</ul>
-<p><strong>享元模式通用的UML图</strong></p>
-<p><img src="https://user-gold-cdn.xitu.io/2020/3/8/170b8b19d4e10b5b?w=382&h=430&f=png&s=147486" alt=""></p>
-<p>享元模式有以下两个应用场景：</p>
-<ul>
-<li>常常应用于系统底层的开发，以便解决系统的性能问题；</li>
-<li>系统有大量的相似对象、需要缓冲池的场景。</li>
-</ul>
-<h2 id="1-2-刷火车票软件的享元模式应用"><a href="#1-2-刷火车票软件的享元模式应用" class="headerlink" title="1.2 刷火车票软件的享元模式应用"></a>1.2 刷火车票软件的享元模式应用</h2><p>我们每年春节为了抢到一张回家的火车票都要大费周折，进而出现了很多刷票<br>软件，刷票软件会将我们填写的信息缓存起来，然后定时检查余票信息。抢票的时候，我们肯定是要查询下有没有我们需要的票信息，这里我们假设一张火车的信息包含：出发站，目的站，价格，座位类别。现在要求编写一个查询火车票查询伪代码，可以通过出发站，目的站查到相关票的信息。</p>
-<p><img src="https://user-gold-cdn.xitu.io/2020/3/8/170b8b93759f8471?w=500&h=310&f=png&s=310089" alt=""></p>
-<p>比如要求通过出发站，目的站查询火车票的相关信息，只需要构建火车票对象，然后提供一个查询出发站、目的站的接口给客户进行查询即可，首先创建一个ITicket接口：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">public interface ITicket &#123;</span><br><span class="line"></span><br><span class="line">    void showInfo(String bunk);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>然后创建TrainTicket 类：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">public class TrainTicket implements ITicket &#123;</span><br><span class="line"></span><br><span class="line">    private String from;</span><br><span class="line"></span><br><span class="line">    private String to;</span><br><span class="line"></span><br><span class="line">    private double price;</span><br><span class="line"></span><br><span class="line">    public TrainTicket(String from, String to) &#123;</span><br><span class="line">        this.from &#x3D; from;</span><br><span class="line">        this.to &#x3D; to;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public void showInfo(String bunk) &#123;</span><br><span class="line">        this.price &#x3D; new Random().nextDouble();</span><br><span class="line">        System.out.println(String.format(&quot;%s-&gt;%s：%s 价格：%s 元&quot;, this.from, this.to, bunk, this.price));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>最后创建TicketFactory 类：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">public class TicketFacotry &#123;</span><br><span class="line"></span><br><span class="line">    public static ITicket queryTicket(String from, String to) &#123;</span><br><span class="line">        return new TrainTicket(from, to);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>测试main方法：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">public static void main(String[] args) &#123;</span><br><span class="line">    ITicket ticket &#x3D; TicketFacotry.queryTicket(&quot;北京西&quot;, &quot;武汉&quot;);</span><br><span class="line">    ticket.showInfo(&quot;二等座&quot;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>分析上面的代码，我们发现客户端进行查询时，系统通过TicketFactory直接创建一个火车票对象，但是这样做的话，当某个瞬间如果有大量的用户请求同一张票的信息时，系统就会创建出大量该火车票对象，系统内存压力骤增。而其实更好的做法应该是缓存该票对象，然后复用提供给其他查询请求，这样一个对象就足以支撑数以千计的查询请求，对内存完全无压力，使用享元模式可以很好地解决这个问题。我们继续优化代码，只需在 TicketFactory 类中进行更改，增加缓存机制：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">public class TicketFacotry &#123;</span><br><span class="line"></span><br><span class="line">    private static Map&lt;String, ITicket&gt; ticketTool &#x3D; new ConcurrentHashMap();</span><br><span class="line"></span><br><span class="line">    public static ITicket queryTicket(String from, String to) &#123;</span><br><span class="line">        String key &#x3D; from + &quot;-&gt;&quot; + to;</span><br><span class="line">        if(ticketTool.containsKey(key)) &#123;</span><br><span class="line">            System.out.println(&quot;使用缓存&quot; + key);</span><br><span class="line">            return ticketTool.get(key);</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(&quot;首次查询，创建对象: &quot; + key);</span><br><span class="line">        ITicket ticket &#x3D; new TrainTicket(from, to);</span><br><span class="line">        ticketTool.put(key, ticket);</span><br><span class="line">        return ticket;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>修改main测试方法：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">public static void main(String[] args) &#123;</span><br><span class="line">    ITicket ticket &#x3D; TicketFacotry.queryTicket(&quot;北京西&quot;, &quot;武汉&quot;);</span><br><span class="line">    ticket.showInfo(&quot;二等座&quot;);</span><br><span class="line">    ITicket ticket1 &#x3D; TicketFacotry.queryTicket(&quot;北京西&quot;, &quot;武汉&quot;);</span><br><span class="line">    ticket1.showInfo(&quot;一等座&quot;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>运行效果:</p>
-<p><img src="https://user-gold-cdn.xitu.io/2020/3/8/170b8d6b80036783?w=565&h=298&f=png&s=21503" alt=""><br>可以看到，除了第一次查询创建对象后，后续查询相同车次票信息都是使用缓存对象，无需创建新对象了。来看一下类结构图：</p>
-<p><img src="https://user-gold-cdn.xitu.io/2020/3/8/170b8d7effd99951?w=616&h=568&f=png&s=29253" alt=""></p>
-<p>其中 ITicket 就是抽象享元角色，TrainTicket 就是具体享元角色，TicketFactory 就是享元工厂。有些小伙伴一定会有疑惑了，这不就是注册式单例模式吗？对，这就是注册式单例模式。虽然，结构上很像，但是享元模式的重点在结构上，而不是在创建对象上。</p>
-<h2 id="1-3-数据库连接池Connection对象"><a href="#1-3-数据库连接池Connection对象" class="headerlink" title="1.3 数据库连接池Connection对象"></a>1.3 数据库连接池Connection对象</h2><p>我们经常使用的数据库连接池，因为我们使用Connection对象时主要性能消耗在建立连接和关闭连接的时候，为了提高 Connection 在调用时的性能，我们和将 Connection 对象在调用前创建好缓存起来，用的时候从缓存中取值，用完再放回去，达到资源重复利用的目的。来看下面的代码：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">public class ConnectionPool &#123;</span><br><span class="line"></span><br><span class="line">    private Vector&lt;Connection&gt; pool;</span><br><span class="line">    private String url &#x3D; &quot;jdbc:mysql:&#x2F;&#x2F;localhost:3306&#x2F;testDB&quot;;</span><br><span class="line">    private String username &#x3D; &quot;root&quot;;</span><br><span class="line">    private String password &#x3D; &quot;123456&quot;;</span><br><span class="line">    private String driverClassName &#x3D; &quot;com.mysql.jdbc.Driver&quot;;</span><br><span class="line">    private int poolSize &#x3D; 100;</span><br><span class="line">    public ConnectionPool() &#123;</span><br><span class="line">        pool &#x3D; new Vector&lt;Connection&gt;(poolSize);</span><br><span class="line">        try&#123;</span><br><span class="line">            Class.forName(driverClassName);</span><br><span class="line">            for (int i &#x3D; 0; i &lt; poolSize; i++) &#123;</span><br><span class="line">                Connection conn &#x3D; DriverManager.getConnection(url,username,password);</span><br><span class="line">                pool.add(conn);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;catch (Exception e)&#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    public synchronized Connection getConnection()&#123;</span><br><span class="line">        if(pool.size() &gt; 0)&#123;</span><br><span class="line">            Connection conn &#x3D; pool.get(0);</span><br><span class="line">            pool.remove(conn);</span><br><span class="line">            return conn;</span><br><span class="line">        &#125;</span><br><span class="line">        return null;</span><br><span class="line">    &#125;</span><br><span class="line">    public synchronized void release(Connection conn)&#123;</span><br><span class="line">        pool.add(conn);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>这样的连接池，普遍应用于开源框架，有效提升底层的运行性能。</p>
-<h1 id="二、享元模式在源码中的体现"><a href="#二、享元模式在源码中的体现" class="headerlink" title="二、享元模式在源码中的体现"></a>二、享元模式在源码中的体现</h1><h2 id="2-1-String中的享元模式"><a href="#2-1-String中的享元模式" class="headerlink" title="2.1 String中的享元模式"></a>2.1 String中的享元模式</h2><p>Java 中将 String 类定义为final（不可改变的），JVM中字符串一般保存在字符串常量池中，java会确保一个字符串在常量池中只有一个拷贝，这个字符串常量池在 JDK6.0 以前是位于常量池中，位于永久代，而在JDK7.0中，JVM将其从永久代拿出来放置于堆中。</p>
-<p>关于String 的测试类：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">public class StringTest &#123;</span><br><span class="line"></span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line"></span><br><span class="line">        String s1 &#x3D; &quot;hello&quot;;</span><br><span class="line">        String s2 &#x3D; &quot;hello&quot;;</span><br><span class="line">        String s3 &#x3D; &quot;hell&quot; + &quot;o&quot;;</span><br><span class="line">        String s4 &#x3D; &quot;hello&quot; + new String(&quot;o&quot;);</span><br><span class="line">        String s5 &#x3D; new String(&quot;hello&quot;);</span><br><span class="line">        String s6 &#x3D; s5.intern();</span><br><span class="line">        String s7 &#x3D; &quot;hell&quot;;</span><br><span class="line">        String s8 &#x3D; &quot;o&quot;;</span><br><span class="line">        String s9 &#x3D; s7 + s8;</span><br><span class="line">        System.out.println(s1 &#x3D;&#x3D; s2);&#x2F;&#x2F;true</span><br><span class="line">        System.out.println(s1 &#x3D;&#x3D; s3);&#x2F;&#x2F;ture</span><br><span class="line">        System.out.println(s1 &#x3D;&#x3D; s4);&#x2F;&#x2F;false</span><br><span class="line">        System.out.println(s4 &#x3D;&#x3D; s5);&#x2F;&#x2F;false</span><br><span class="line">        System.out.println(s1 &#x3D;&#x3D; s6);&#x2F;&#x2F;true</span><br><span class="line">        System.out.println(s1 &#x3D;&#x3D; s9);&#x2F;&#x2F;false</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>String类是用final修饰的，以字面量的形式创建String变量时，JVM会在编译的时候把该字面的“hello”放到<strong>字符串常量池</strong>中，Java程序启动的时候就已经加载到内存里面了。这个字符串常量池的特点就是有且仅有一份相同的字面量，如果有其它相同的字面量，JVM则返回这个字面量的引用，如果没有相同的字面量，则在字符串常量池中创建字面量并返回它的引用。</p>
-<ul>
-<li>s2 指向的字面量”hello”在常量池中已经存在了（s1 先于 s2），于是 JVM 就返回这个字面量绑定的引用，所以 s1==s2。</li>
-<li>s3 中字面量的拼接其实就是”hello”，JVM 在编译期间就已经对它进行优化，所以 s1 和 s3 也是相等的。</li>
-<li>s4 中的 new String(“o”)生成了两个对象，lo，new String(“o”)，o 存在字符串常量池，new String(“o”)存在堆中，String s4 = “hell” + new String(“o”)实质上是两个对象的相加，编译器不会进行优化，相加的结果存在堆中，而 s1 存在字符串常量池中，当然不相等。s1==s9 的原理一样。</li>
-<li>s4==s5 两个相加的结果都在堆中，不用说，肯定不相等。</li>
-<li>s1==s6 中，s5.intern()方法能使一个位于堆中的字符串在运行期间动态地加入到字符串常量池中（字符串常量池的内容是程序启动的时候就已经加载好了），如果字符串常量池中有该对象对应的字面量，则返回该字面量在字符串常量池中的引用，否则，创建复制一份该字面量到字符串常量池并返回它的引用。因此 s1==s6 输出 true。</li>
-</ul>
-<h2 id="2-2-Integer的享元模式"><a href="#2-2-Integer的享元模式" class="headerlink" title="2.2 Integer的享元模式"></a>2.2 Integer的享元模式</h2><p>再举例一个大家都非常熟悉的对象Integer，也用到了享元模式，其中暗藏玄机，我们来看个例子：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">public class IntegerTest &#123;</span><br><span class="line"></span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line"></span><br><span class="line">        Integer a &#x3D; 100;</span><br><span class="line">        Integer b &#x3D; Integer.valueOf(100);</span><br><span class="line"></span><br><span class="line">        Integer c &#x3D; 1000;</span><br><span class="line">        Integer d &#x3D; Integer.valueOf(1000);</span><br><span class="line"></span><br><span class="line">        System.out.println(a &#x3D;&#x3D; b);</span><br><span class="line">        System.out.println(c &#x3D;&#x3D; d);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>我们跑完程序之后才发现总有些不对，得到了一个意向不到的结果，其运行结果如下：<br><img src="https://user-gold-cdn.xitu.io/2020/3/8/170b901a88493689?w=772&h=142&f=png&s=8585" alt=""></p>
-<p>之所以得到这样的结果，是因为 Integer 用到的享元模式，我们来看 Integer 的源码：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"> public static Integer valueOf(int i) &#123;</span><br><span class="line">    if (i &gt;&#x3D; IntegerCache.low &amp;&amp; i &lt;&#x3D; IntegerCache.high)</span><br><span class="line">        return IntegerCache.cache[i + (-IntegerCache.low)];</span><br><span class="line">    return new Integer(i);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>我们发现 Integer 源码中的 valueOf()方法做了一个条件判断，如果目标值在-128 到 127 之间，则直接从缓存中取值，否则新建对象。那JDK为何要这样做呢？因为在-128 到 127 之间的数据在int范围内是使用最频繁的，为了节省频繁创建对象带来的内存消耗，这里就用到了享元模式，来提高性能。</p>
-<h2 id="2-3-Long的享元模式"><a href="#2-3-Long的享元模式" class="headerlink" title="2.3 Long的享元模式"></a>2.3 Long的享元模式</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">public final class Long extends Number implements Comparable&lt;Long&gt; &#123;</span><br><span class="line">    public static Long valueOf(long var0) &#123;</span><br><span class="line">        return var0 &gt;&#x3D; -128L &amp;&amp; var0 &lt;&#x3D; 127L ? Long.LongCache.cache[(int)var0 + 128] : new Long(var0);</span><br><span class="line">    &#125;</span><br><span class="line">    private static class LongCache &#123;</span><br><span class="line">    private LongCache()&#123;&#125;</span><br><span class="line">    static final Long cache[] &#x3D; new Long[-(-128) + 127 + 1];</span><br><span class="line">    static &#123;</span><br><span class="line">        for(int i &#x3D; 0; i &lt; cache.length; i++)</span><br><span class="line">            cache[i] &#x3D; new Long(i - 128);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">&#x2F;&#x2F;...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>同理，Long 中也有缓存，不过不能指定缓存最大值。</p>
-<h2 id="2-4-Apache-Commons-Pool2-中的享元模式"><a href="#2-4-Apache-Commons-Pool2-中的享元模式" class="headerlink" title="2.4 Apache Commons Pool2 中的享元模式"></a>2.4 Apache Commons Pool2 中的享元模式</h2><p>对象池化的基本思路：将用过的对象保存起来，等下次需要再次使用这种对象的时候，再拿出来重复使用，从一定程度上减少频繁创建对象所造成的开销。用于充当保存对象的“容器”的对象，被称之为对象池。（Object Pool，或简称Pool）。</p>
-<ul>
-<li>Apache Commons Pool</li>
-</ul>
-<p>实现了对象池的功能。定义了对象的生成、销毁、激活、钝化等操作及其状态转换，并提供几个默认的对象池实现。有几个重要的对象：</p>
-<ul>
-<li>PooledObject（池对象）</li>
-</ul>
-<p>用于封装对象（如：线程、数据库连接、TCP连接），将其包裹成可被池管理的对象。</p>
-<ul>
-<li><p>PooledObjectFactory（池对象工厂）：<br>定义了操作 PooledObject实例生命周期的一些方法，PooledObjectFactory必须实现线程安全。</p>
-</li>
-<li><p>ObjectPool （对象池）</p>
-</li>
-</ul>
-<p>ObjectPool 负责管理 PooledObject，如：借出对象，返回对象，校验对象，有多少激活对象，有多少空闲对象。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">private final Map&lt;IdentityWrapper&lt;T&gt;, PooledObject&lt;T&gt;&gt; allObjects;</span><br></pre></td></tr></table></figure>
-<p>这里我们就不分析其具体源码了。</p>
-<h1 id="三、享元模式的内部状态和外部状态"><a href="#三、享元模式的内部状态和外部状态" class="headerlink" title="三、享元模式的内部状态和外部状态"></a>三、享元模式的内部状态和外部状态</h1><p>享元模式的定义为我们提出了两个要求：细粒度和共享对象。因为要求细粒度对象，所以不可避免地会使对象数量多且性质相近，此时我们就将这些对象的信息分为两个部分：内部状态和外部状态。</p>
-<p><strong>内部状态指对象共享出来的信息，存储在享元对象内部并且不会随环境的改变而改变；外部状态指对象得以依赖的一个标记，是随环境改变而改变的、不可共享的状态</strong>。</p>
-<p>比如，连接池中的连接对象，保存在连接对象中的用户名、密码、连接 url 等信息，在创建对象的时候就设置好了，不会随环境的改变而改变，这些为内部状态。而每个连接要回收利用时，我们需要给它标记为可用状态，这些为外部状态。</p>
-<h1 id="四、享元模式的优缺点"><a href="#四、享元模式的优缺点" class="headerlink" title="四、享元模式的优缺点"></a>四、享元模式的优缺点</h1><p>优点:</p>
-<ul>
-<li>减少对象的创建，降低内存中对象的数量，降低系统的内存，提高效率;</li>
-<li>减少内存之外的其他资源占用。</li>
-</ul>
-<p>缺点：</p>
-<ul>
-<li>关注内、外部状态、关注线程安全问题；</li>
-<li>使系统、程序的逻辑复杂化。</li>
-</ul>
-<p>-</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://xkjava.github.io/2020/03/08/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E4%BD%BF%E7%94%A8%E5%85%B1%E4%BA%AB%E5%AF%B9%E8%B1%A1%E6%9D%A5%E6%8F%90%E9%AB%98%E6%80%A7%E8%83%BD%E7%9A%84%E4%BA%AB%E5%85%83%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" data-id="ckbvyt2xw000e2fraauzgdkzn" class="article-share-link">Share</a>
+      <a data-url="https://xkjava.github.io/2020/03/10/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E4%BD%9C%E4%B8%BA%E6%A0%91%E5%BD%A2%E7%BB%93%E6%9E%84%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84%E7%9A%84%E7%BB%84%E5%90%88%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" data-id="ckc8x9v3g000enirafmf06io8" class="article-share-link">Share</a>
       
       
     </footer>
@@ -1133,7 +1119,7 @@ controller.executes();</code></pre><p>}</p>
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li></ul>
     </div>
   </div>
 
@@ -1144,6 +1130,10 @@ controller.executes();</code></pre><p>}</p>
     <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2020/07/05/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E6%A0%B8%E5%BF%83%E9%87%8D%E6%96%B0%E8%AE%A4%E8%AF%86SpringBoot%EF%BC%8C%E6%8E%8C%E6%8F%A1%E6%A0%B8%E5%BF%83%E7%89%B9%E6%80%A7%E5%8F%8A%E8%AE%BE%E8%AE%A1%E6%80%9D%E6%83%B3/">微服务核心重新认识SpringBoot，掌握核心特性及设计思想</a>
+          </li>
         
           <li>
             <a href="/2020/06/26/JAVA%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E5%85%B3%E4%BA%8E%E9%94%81%E7%9A%84%E9%82%A3%E4%BA%9B%E4%BA%8B%EF%BC%8CReentantLock%E7%9A%84%E5%BA%95%E5%B1%82%E8%AE%BE%E8%AE%A1%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BA/">JAVA并发编程关于锁的那些事，ReentantLock的底层设计深入浅出</a>
@@ -1159,10 +1149,6 @@ controller.executes();</code></pre><p>}</p>
         
           <li>
             <a href="/2020/05/23/JAVA%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E5%85%A5%E9%97%A8%E7%AF%87%EF%BC%8C%E6%80%9D%E8%80%83%E5%90%8C%E6%AD%A5%E9%94%81Synchronized%E8%83%8C%E5%90%8E%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%93%B2%E5%AD%A6/">JAVA并发编程入门篇，思考同步锁Synchronized背后的实现哲学</a>
-          </li>
-        
-          <li>
-            <a href="/2020/05/18/JAVA%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E6%8F%AD%E5%BC%80%E7%AF%87%E7%AB%A0%EF%BC%8C%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E5%9F%BA%E6%9C%AC%E8%AE%A4%E8%AF%86%EF%BC%8C%E4%BA%86%E8%A7%A3%E5%A4%9A%E7%BA%BF%E7%A8%8B%E6%84%8F%E4%B9%89%E5%92%8C%E4%BD%BF%E7%94%A8/">JAVA并发编程揭开篇章，并发编程基本认识，了解多线程意义和使用</a>
           </li>
         
       </ul>
