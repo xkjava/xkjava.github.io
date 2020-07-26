@@ -74,6 +74,116 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-架构师内功心法，作为树形结构系统架构的组合模式详解" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/03/10/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E4%BD%9C%E4%B8%BA%E6%A0%91%E5%BD%A2%E7%BB%93%E6%9E%84%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84%E7%9A%84%E7%BB%84%E5%90%88%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" class="article-date">
+  <time datetime="2020-03-10T06:11:49.012Z" itemprop="datePublished">2020-03-10</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/03/10/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E4%BD%9C%E4%B8%BA%E6%A0%91%E5%BD%A2%E7%BB%93%E6%9E%84%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84%E7%9A%84%E7%BB%84%E5%90%88%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/">架构师内功心法，作为树形结构系统架构的组合模式详解</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <hr>
+<p>title: 架构师内功心法，作为树形结构系统架构的组合模式详解<br>date: 2020-03-10 14:08:50<br>tags:<br>–</p>
+<p>在古代皇帝要想管理整个国家，他是不可能直接管理到具体每一个老百姓的，因此皇帝设置了很多机构，比如三省六部，这些机构下面又有很多小的组织，它们共同管理着整个国家。再比如有一个很大的公司，下面有很多部门，每一个部门下面又有很多个部门，这些就是组合模式的体现。比如树形菜单，操作系统目录结构等，所以组合模式在我们生活中也是非常常见的。<br><img src="https://user-gold-cdn.xitu.io/2020/3/8/170b94613880e925?w=640&h=227&f=png&s=89247" alt=""><br><img src="https://user-gold-cdn.xitu.io/2020/3/8/170b9463f6890abb?w=764&h=364&f=png&s=239325" alt=""><br><img src="https://user-gold-cdn.xitu.io/2020/3/8/170b96877fa79fbe?w=567&h=286&f=png&s=174802" alt=""></p>
+<h1 id="一、组合模式的应用场景"><a href="#一、组合模式的应用场景" class="headerlink" title="一、组合模式的应用场景"></a>一、组合模式的应用场景</h1><p>组合模式（Composite Pattern）也称为整体-部分（Part-Whole）模式，它的宗旨是通过将单个对象（叶子节点）和组合对象（树枝节点）用相同的接口进行表示，使得客户对单个对象和组合对象使用具有一致性。</p>
+<h2 id="1-1-组合关系与聚和关系的区别"><a href="#1-1-组合关系与聚和关系的区别" class="headerlink" title="1.1 组合关系与聚和关系的区别"></a>1.1 组合关系与聚和关系的区别</h2><p>组合关系：在古代皇宫的三宫六院，贵妃很多，但是每一个贵妃都属于一个皇帝（具有相同的生命周期）；</p>
+<p>聚和关系：一个老师有很多学生，但是每一个学生也属于多个老师（具有不同的生命周期）。</p>
+<p>组合模式一般用来描述整体与部分的关系，它将对象组织到树形结构中，最顶层的节点成为根节点，根节点下面包括树枝节点和叶子节点，树枝节点下面又包括树枝节点和叶子节点。</p>
+<p><img src="https://user-gold-cdn.xitu.io/2020/3/8/170b95ab6ade04b0?w=1195&h=665&f=png&s=332684" alt=""><br>由上图可以看出，其实根节点和树枝节点本质上是同一种数据类型，可以作为容器使用；而叶子节点与树枝节点在语义上不属于同一种类型，但是在组合模式中，会把树枝节点和叶子节点认为是同一种数据类型（用同一接口定义），让它们具备一致行为。这样，在组合模式中，整个树形结构中的对象都是同一种类型，带来的一个好处就是客户无需辨别树枝节点还是叶子节点，而是可以直接进行操作，给客户使用带来极大的便利。</p>
+<h2 id="1-2-组合模式的角色"><a href="#1-2-组合模式的角色" class="headerlink" title="1.2 组合模式的角色"></a>1.2 组合模式的角色</h2><p>组合模式包含 3 个角色：</p>
+<ul>
+<li>抽象根节点（Component）：定义系统各层次对象的共有方法和属性，可以预先定义一些默认行为和属性；</li>
+<li>树枝节点（Composite）：定义树枝节点的行为，存储子节点，组合树枝节点和叶子节点形成一个树形结构；</li>
+<li>叶子节点（Leaf）：叶子节点对象，其下再无分支，是系统层次遍历的最小单位。</li>
+</ul>
+<p>组合模式在代码具体实现上，有两种不同的方式，分别是<strong>透明组合模式和安全组合模式。</strong></p>
+<h2 id="1-3-组合模式应用场景"><a href="#1-3-组合模式应用场景" class="headerlink" title="1.3 组合模式应用场景"></a>1.3 组合模式应用场景</h2><p>当子系统与其内各个对象层次呈现树形结构时，可以使用组合模式让子系统内各个对象层次的行为操作具备一致性。客户端使用该子系统内任意一个层次对象时，无须进行区分，直接使用通用操作即可，为客户端的使用带来了便捷。</p>
+<p>组合模式有以下两个应用场景：</p>
+<ul>
+<li>希望客户端可以忽略组合对象与单个对象的差异时；</li>
+<li>对象层次具备整体和部分，呈树形结构。</li>
+</ul>
+<h2 id="1-4-透明组合模式的写法"><a href="#1-4-透明组合模式的写法" class="headerlink" title="1.4 透明组合模式的写法"></a>1.4 透明组合模式的写法</h2><p>透明组合模式是把所有的公共方法都定义在Component中，这样做的好处是客户度无需分辨树枝节点（Composite）和叶子节点（Leaf），它们具备完全一致的接口。来看一下UML类图吧：<br><img src="https://user-gold-cdn.xitu.io/2020/3/9/170bf36b37bf19d3?w=525&h=475&f=png&s=222437" alt=""><br>下面来看一个实际的案例吧。以某IT教育培训的课程为例，来设计一个课程的关系结构。有嵌入式编程、Web前端、Java编程、云计算、Hadoop、Flink等课程。而云计算、Hadoop、Flink都属于大数据系列课程，每个课程的定价也是不一样的。但是这些课程不管怎么组合，都有一些共性，而且都是整体和部分的关系，可以用组合模式来设计。先创建一个顶层的抽象类 CourseComponent：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">public abstract class CourseComponent &#123;</span><br><span class="line"></span><br><span class="line">    public void addChild(CourseComponent catalogComponent) &#123;</span><br><span class="line">        throw new UnsupportedOperationException(&quot;不支持添加操作！&quot;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void removeChild(CourseComponent catalogComponent) &#123;</span><br><span class="line">        throw new UnsupportedOperationException(&quot;不支持删除操作！&quot;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public String getName(CourseComponent catalogComponent) &#123;</span><br><span class="line">        throw new UnsupportedOperationException(&quot;不支持获取名称操作！&quot;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public double getPrice(CourseComponent catalogComponent) &#123;</span><br><span class="line">        throw new UnsupportedOperationException(&quot;不支持获取价格操作！&quot;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void print() &#123;</span><br><span class="line">        throw new UnsupportedOperationException(&quot;不支持打印操作！&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>把所有可能用到的方法都定义到这个最顶层的抽象类中，但是不写任何逻辑处理的代码，而是直接抛异常。这里，有些小伙伴会有疑惑，为什么不用抽象方法？因为，<strong>用了抽象方法，其子类就必须实现，这样便体现不出各子类的细微差异。</strong> 因此，子类继承此抽象类后，只需要重写有差异的方法覆盖父类的方法即可。接下来分别创建课程类Course 和课程包 CoursePackage类。先创建Course类：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">public class Course extends CourseComponent &#123;</span><br><span class="line"></span><br><span class="line">    private String name;</span><br><span class="line"></span><br><span class="line">    private double price;</span><br><span class="line"></span><br><span class="line">    public Course(String name, double price) &#123;</span><br><span class="line">        this.name &#x3D; name;</span><br><span class="line">        this.price &#x3D; price;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public String getName(CourseComponent catalogComponent) &#123;</span><br><span class="line">        return this.name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public double getPrice(CourseComponent catalogComponent) &#123;</span><br><span class="line">        return this.price;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public void print() &#123;</span><br><span class="line">        System.out.println(name + &quot; (￥&quot; + price + &quot;元)&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>再创建CoursePackage类：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line">public class CoursePackage extends CourseComponent &#123;</span><br><span class="line"></span><br><span class="line">    private List&lt;CourseComponent&gt; items &#x3D; new ArrayList&lt;&gt;();</span><br><span class="line">    private String name;</span><br><span class="line">    private Integer level;</span><br><span class="line"></span><br><span class="line">    public CoursePackage(String name, Integer level) &#123;</span><br><span class="line">        this.name &#x3D; name;</span><br><span class="line">        this.level &#x3D; level;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public void addChild(CourseComponent catalogComponent) &#123;</span><br><span class="line">        items.add(catalogComponent);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public void removeChild(CourseComponent catalogComponent) &#123;</span><br><span class="line">        items.remove(catalogComponent);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public String getName(CourseComponent catalogComponent) &#123;</span><br><span class="line">        return this.name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public void print() &#123;</span><br><span class="line">        System.out.println(name);</span><br><span class="line">        for(CourseComponent courseComponent : items) &#123;</span><br><span class="line">            &#x2F;&#x2F;控制显示格式</span><br><span class="line">            if(this.level !&#x3D; null)&#123;</span><br><span class="line">                for(int i &#x3D; 0; i &lt; this.level; i ++)&#123;</span><br><span class="line">                    &#x2F;&#x2F;打印空格控制格式</span><br><span class="line">                    System.out.print(&quot; &quot;);</span><br><span class="line">                &#125;</span><br><span class="line">                for(int i &#x3D; 0; i &lt; this.level; i ++)&#123;</span><br><span class="line">                    &#x2F;&#x2F;每一行开始打印一个+号</span><br><span class="line">                    if(i &#x3D;&#x3D; 0)&#123;</span><br><span class="line">                        System.out.print(&quot;+&quot;);</span><br><span class="line">                    &#125;</span><br><span class="line">                    System.out.print(&quot;-&quot;);</span><br><span class="line">                &#125;</span><br><span class="line">                &#x2F;&#x2F;打印标题</span><br><span class="line">                courseComponent.print();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>测试main方法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">public static void main(String[] args) &#123;</span><br><span class="line">    System.out.println(&quot;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;透明组合模式&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&quot;);</span><br><span class="line"></span><br><span class="line">    CourseComponent course &#x3D; new Course(&quot;嵌入式编程&quot;, 3000.00);</span><br><span class="line">    CourseComponent webFront &#x3D; new Course(&quot;Web前端&quot;, 10000.00);</span><br><span class="line">    CourseComponent java &#x3D; new Course(&quot;Java编程&quot;, 8000.00);</span><br><span class="line"></span><br><span class="line">    CoursePackage bigData &#x3D; new CoursePackage(&quot;大数据&quot;, 2);</span><br><span class="line"></span><br><span class="line">    CourseComponent cloudCalc &#x3D; new Course(&quot;云计算&quot;, 3000.00);</span><br><span class="line">    CourseComponent hadoop &#x3D; new Course(&quot;hadoop&quot;, 3500.00);</span><br><span class="line">    CourseComponent flink &#x3D; new Course(&quot;flink&quot;, 4000.00);</span><br><span class="line">    bigData.addChild(cloudCalc);</span><br><span class="line">    bigData.addChild(hadoop);</span><br><span class="line">    bigData.addChild(flink);</span><br><span class="line"></span><br><span class="line">    CourseComponent catalog &#x3D; new CoursePackage(&quot;课程主目录&quot;,1);</span><br><span class="line">    catalog.addChild(course);</span><br><span class="line">    catalog.addChild(webFront);</span><br><span class="line">    catalog.addChild(java);</span><br><span class="line">    catalog.addChild(bigData);</span><br><span class="line"></span><br><span class="line">    catalog.print();</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>运行结果：</p>
+<p><img src="https://user-gold-cdn.xitu.io/2020/3/9/170bf7e86d12d180?w=574&h=499&f=png&s=28502" alt=""></p>
+<p>透明组合模式把所有公共方法都定义在Component中，这样做的好处是客户端无需分辨是叶子节点（Leaf）和树枝节点（Composite），它们具备完全一致的接口；缺点是叶子节点（Leaf）会继承得到一些它所不需要（管理子类操作的方法）的方法，这与设计模式 接口隔离原则相违背。</p>
+<p>为了让大家更加透彻理解，下面我们来看安全组合模式的写法。</p>
+<h2 id="1-5-安全组合模式的写法"><a href="#1-5-安全组合模式的写法" class="headerlink" title="1.5 安全组合模式的写法"></a>1.5 安全组合模式的写法</h2><p>安全组合模式是只规定系统各个层次的最基础的一致行为，而把组合（树节点）本身的方法（管理子类对象的添加，删除等）放到自身当中。其 UML 类图如下所示：</p>
+<p><img src="https://user-gold-cdn.xitu.io/2020/3/9/170bf88b74198cb4?w=553&h=403&f=png&s=175824" alt=""></p>
+<p>再举一个大家都熟悉的例子吧。电脑里面的文件系统其实就是一个典型的树形结构，目录包含文件夹和文件，文件夹里面又包含文件夹和文件……接下来就用代码来实现这个目录系统。<br>文件系统有两个大的层次：文件夹，文件。其中，文件夹能容纳其他层次，为树枝节点；文件为最小单位，为叶子节点。由于目录系统层次较少，且树枝节点（文件夹）结构相对稳定，而文件其实可以有很多类型，所以这里我们选择使用 安全组合模式 来实现目录系统，可以避免为叶子类型（文件）引入冗余方法。先创建最顶层的抽象组件 Directory 类：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">public abstract class Directory &#123;</span><br><span class="line"></span><br><span class="line">    protected String name;</span><br><span class="line"></span><br><span class="line">    public Directory(String name) &#123;</span><br><span class="line">        this.name &#x3D; name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public abstract void show();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后分别创建Folder和File类：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line">public class Folder extends Directory &#123;</span><br><span class="line"></span><br><span class="line">    private List&lt;Directory&gt; dirs;</span><br><span class="line"></span><br><span class="line">    private Integer level;</span><br><span class="line"></span><br><span class="line">    public Folder(String name, Integer level) &#123;</span><br><span class="line">        super(name);</span><br><span class="line">        this.level &#x3D; level;</span><br><span class="line">        this.dirs &#x3D; new ArrayList&lt;&gt;();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public boolean add(Directory dir) &#123;</span><br><span class="line">        return dirs.add(dir);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public boolean remove(Directory dir) &#123;</span><br><span class="line">        return dirs.remove(dir);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public Object get(int index) &#123;</span><br><span class="line">        return dirs.get(index);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void list() &#123;</span><br><span class="line">        for(Directory dir : dirs) &#123;</span><br><span class="line">            System.out.println(dir.name);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public void show() &#123;</span><br><span class="line">        System.out.println(this.name);</span><br><span class="line">        for (Directory dir : this.dirs) &#123;</span><br><span class="line">            &#x2F;&#x2F;控制显示格式</span><br><span class="line">            if (this.level !&#x3D; null) &#123;</span><br><span class="line">                for (int i &#x3D; 0; i &lt; this.level; i++) &#123;</span><br><span class="line">                    &#x2F;&#x2F;打印空格控制格式</span><br><span class="line">                    System.out.print(&quot; &quot;);</span><br><span class="line">                &#125;</span><br><span class="line">                for (int i &#x3D; 0; i &lt; this.level; i++) &#123;</span><br><span class="line">                    &#x2F;&#x2F;每一行开始打印一个+号</span><br><span class="line">                    if (i &#x3D;&#x3D; 0) &#123;</span><br><span class="line">                        System.out.print(&quot;+&quot;);</span><br><span class="line">                    &#125;</span><br><span class="line">                    System.out.print(&quot;-&quot;);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            &#x2F;&#x2F;打印名称</span><br><span class="line">            dir.show();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">public class File extends Directory &#123;</span><br><span class="line"></span><br><span class="line">    public File(String name) &#123;</span><br><span class="line">        super(name);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public void show() &#123;</span><br><span class="line">        System.out.println(this.name);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>测试main方法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">public static void main(String[] args) &#123;</span><br><span class="line">    System.out.println(&quot;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;安全组合模式&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&quot;);</span><br><span class="line">    File chrome &#x3D; new File(&quot;谷歌浏览器&quot;);</span><br><span class="line">    File safe360 &#x3D; new File(&quot;360浏览器&quot;);</span><br><span class="line">    File edge &#x3D; new File(&quot;微软Edge浏览器&quot;);</span><br><span class="line"></span><br><span class="line">    Folder browser &#x3D; new Folder(&quot;浏览器&quot;, 2);</span><br><span class="line">    browser.add(chrome);</span><br><span class="line">    browser.add(safe360);</span><br><span class="line">    browser.add(edge);</span><br><span class="line"></span><br><span class="line">    File wx &#x3D; new File(&quot;wechat.exe&quot;);</span><br><span class="line">    File qq &#x3D; new File(&quot;QQ.exe&quot;);</span><br><span class="line">    File dd &#x3D; new File(&quot;DingDing.exe&quot;);</span><br><span class="line"></span><br><span class="line">    Folder root &#x3D; new Folder(&quot;root&quot;, 1);</span><br><span class="line">    root.add(wx);</span><br><span class="line">    root.add(qq);</span><br><span class="line">    root.add(dd);</span><br><span class="line">    root.add(browser);</span><br><span class="line"></span><br><span class="line">    System.out.println(&quot;----------show()方法效果-----------&quot;);</span><br><span class="line">    root.show();</span><br><span class="line">    System.out.println(&quot;----------list()方法效果-----------&quot;);</span><br><span class="line">    root.list();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>运行结果：</p>
+<p><img src="https://user-gold-cdn.xitu.io/2020/3/10/170c273472c3ac19?w=583&h=685&f=png&s=31850" alt=""><br>安全组合模式的好处是接口定义职责清晰，符合设计模式单一职责原则和接口隔离原则；缺点是客户需要区分树枝节点（Composite）和叶子节点（Leaf），这样才能正确处理各个层次的操作，客户端无法依赖抽象（Component），违背了设计模式依赖倒置原则。</p>
+<h1 id="二、组合模式在源码中的体现"><a href="#二、组合模式在源码中的体现" class="headerlink" title="二、组合模式在源码中的体现"></a>二、组合模式在源码中的体现</h1><h2 id="2-1-HashMap中的putAll-方法"><a href="#2-1-HashMap中的putAll-方法" class="headerlink" title="2.1 HashMap中的putAll()方法"></a>2.1 HashMap中的putAll()方法</h2><p>组合模式在源码中应用也是非常广泛的。首先我们来看一个非常熟悉的HashMap，他里面有一个putAll()方法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">public void putAll(Map&lt;? extends K, ? extends V&gt; m) &#123;</span><br><span class="line">    putMapEntries(m, true);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">final void putMapEntries(Map&lt;? extends K, ? extends V&gt; m, boolean evict) &#123;</span><br><span class="line">    int s &#x3D; m.size();</span><br><span class="line">    if (s &gt; 0) &#123;</span><br><span class="line">        if (table &#x3D;&#x3D; null) &#123; &#x2F;&#x2F; pre-size</span><br><span class="line">            float ft &#x3D; ((float)s &#x2F; loadFactor) + 1.0F;</span><br><span class="line">            int t &#x3D; ((ft &lt; (float)MAXIMUM_CAPACITY) ?</span><br><span class="line">                     (int)ft : MAXIMUM_CAPACITY);</span><br><span class="line">            if (t &gt; threshold)</span><br><span class="line">                threshold &#x3D; tableSizeFor(t);</span><br><span class="line">        &#125;</span><br><span class="line">        else if (s &gt; threshold)</span><br><span class="line">            resize();</span><br><span class="line">        for (Map.Entry&lt;? extends K, ? extends V&gt; e : m.entrySet()) &#123;</span><br><span class="line">            K key &#x3D; e.getKey();</span><br><span class="line">            V value &#x3D; e.getValue();</span><br><span class="line">            putVal(hash(key), key, value, false, evict);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>putAll()方法传入的是Map对象，Map就是一个抽象构件（同时这个构件中只支持键值对的存储方式），而HashMap是一个中间构件，<strong>HashMap中间的Node节点是叶子节点</strong>。说到中间构件就会有规定的存储方式。HashMap中的存储方式是一个静态内部类的数组Node&lt;K,V&gt;，源码如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">static class Node&lt;K,V&gt; implements Map.Entry&lt;K,V&gt; &#123;</span><br><span class="line">    final int hash;</span><br><span class="line">    final K key;</span><br><span class="line">    V value;</span><br><span class="line">    Node&lt;K,V&gt; next;</span><br><span class="line"></span><br><span class="line">    Node(int hash, K key, V value, Node&lt;K,V&gt; next) &#123;</span><br><span class="line">        this.hash &#x3D; hash;</span><br><span class="line">        this.key &#x3D; key;</span><br><span class="line">        this.value &#x3D; value;</span><br><span class="line">        this.next &#x3D; next;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public final K getKey()        &#123; return key; &#125;</span><br><span class="line">    public final V getValue()      &#123; return value; &#125;</span><br><span class="line">    public final String toString() &#123; return key + &quot;&#x3D;&quot; + value; &#125;</span><br><span class="line"></span><br><span class="line">    public final int hashCode() &#123;</span><br><span class="line">        return Objects.hashCode(key) ^ Objects.hashCode(value);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public final V setValue(V newValue) &#123;</span><br><span class="line">        V oldValue &#x3D; value;</span><br><span class="line">        value &#x3D; newValue;</span><br><span class="line">        return oldValue;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public final boolean equals(Object o) &#123;</span><br><span class="line">        if (o &#x3D;&#x3D; this)</span><br><span class="line">            return true;</span><br><span class="line">        if (o instanceof Map.Entry) &#123;</span><br><span class="line">            Map.Entry&lt;?,?&gt; e &#x3D; (Map.Entry&lt;?,?&gt;)o;</span><br><span class="line">            if (Objects.equals(key, e.getKey()) &amp;&amp;</span><br><span class="line">                Objects.equals(value, e.getValue()))</span><br><span class="line">                return true;</span><br><span class="line">        &#125;</span><br><span class="line">        return false;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-2-ArrayList中的addAll-方法"><a href="#2-2-ArrayList中的addAll-方法" class="headerlink" title="2.2 ArrayList中的addAll()方法"></a>2.2 ArrayList中的addAll()方法</h2><p>常用的 ArrayList 对象也有 addAll()方法，其参数也是 ArrayList 的父类 Collection，来看源代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"> public boolean addAll(Collection&lt;? extends E&gt; c) &#123;</span><br><span class="line">    Object[] a &#x3D; c.toArray();</span><br><span class="line">    int numNew &#x3D; a.length;</span><br><span class="line">    ensureCapacityInternal(size + numNew);  &#x2F;&#x2F; Increments modCount</span><br><span class="line">    System.arraycopy(a, 0, elementData, size, numNew);</span><br><span class="line">    size +&#x3D; numNew;</span><br><span class="line">    return numNew !&#x3D; 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>组合对象和被组合对象都应该有统一的接口实现或者统一的抽象父类。</p>
+<h1 id="三、组合模式的优缺点"><a href="#三、组合模式的优缺点" class="headerlink" title="三、组合模式的优缺点"></a>三、组合模式的优缺点</h1><p>优点：</p>
+<ul>
+<li>清楚地定义分层次的复杂对象，表示对象的全部或部分层次；</li>
+<li>让客户端忽略了层次的差异，方便对整个层次结构进行控制；</li>
+<li>简化客户端代码；</li>
+<li>符合开闭原则。</li>
+</ul>
+<p>缺点：</p>
+<ul>
+<li>限制类型时会较为复杂；</li>
+<li>使设计变得更加抽象。</li>
+</ul>
+<p>-</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://xkjava.github.io/2020/03/10/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E4%BD%9C%E4%B8%BA%E6%A0%91%E5%BD%A2%E7%BB%93%E6%9E%84%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84%E7%9A%84%E7%BB%84%E5%90%88%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" data-id="ckd302sca000fcrrahkar52nw" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-架构师内功心法，使用共享对象来提高性能的享元模式详解" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2020/03/08/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E4%BD%BF%E7%94%A8%E5%85%B1%E4%BA%AB%E5%AF%B9%E8%B1%A1%E6%9D%A5%E6%8F%90%E9%AB%98%E6%80%A7%E8%83%BD%E7%9A%84%E4%BA%AB%E5%85%83%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" class="article-date">
@@ -201,7 +311,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://xkjava.github.io/2020/03/08/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E4%BD%BF%E7%94%A8%E5%85%B1%E4%BA%AB%E5%AF%B9%E8%B1%A1%E6%9D%A5%E6%8F%90%E9%AB%98%E6%80%A7%E8%83%BD%E7%9A%84%E4%BA%AB%E5%85%83%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" data-id="ckc8x9v3h000fniragw9hfbbx" class="article-share-link">Share</a>
+      <a data-url="https://xkjava.github.io/2020/03/08/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E4%BD%BF%E7%94%A8%E5%85%B1%E4%BA%AB%E5%AF%B9%E8%B1%A1%E6%9D%A5%E6%8F%90%E9%AB%98%E6%80%A7%E8%83%BD%E7%9A%84%E4%BA%AB%E5%85%83%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" data-id="ckd302scd000gcrrahvrsc9x0" class="article-share-link">Share</a>
       
       
     </footer>
@@ -277,7 +387,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://xkjava.github.io/2020/03/08/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E5%A4%96%E7%95%8C%E8%AE%BF%E9%97%AE%E7%B3%BB%E7%BB%9F%E5%86%85%E9%83%A8%E5%94%AF%E4%B8%80%E9%80%9A%E9%81%93%E7%9A%84%E9%97%A8%E9%9D%A2%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" data-id="ckc8x9ueh0003nira9zsxe0xy" class="article-share-link">Share</a>
+      <a data-url="https://xkjava.github.io/2020/03/08/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E5%A4%96%E7%95%8C%E8%AE%BF%E9%97%AE%E7%B3%BB%E7%BB%9F%E5%86%85%E9%83%A8%E5%94%AF%E4%B8%80%E9%80%9A%E9%81%93%E7%9A%84%E9%97%A8%E9%9D%A2%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" data-id="ckd302rnd0003crra9ulg7ehv" class="article-share-link">Share</a>
       
       
     </footer>
@@ -380,7 +490,7 @@ System.out.println(builder.build());</code></pre><p>}</p>
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://xkjava.github.io/2020/03/01/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E6%B3%A8%E9%87%8D%E6%96%B9%E6%B3%95%E8%B0%83%E7%94%A8%E9%A1%BA%E5%BA%8F%E7%9A%84%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" data-id="ckc8x9v43000kniraefb6brox" class="article-share-link">Share</a>
+      <a data-url="https://xkjava.github.io/2020/03/01/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E6%B3%A8%E9%87%8D%E6%96%B9%E6%B3%95%E8%B0%83%E7%94%A8%E9%A1%BA%E5%BA%8F%E7%9A%84%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" data-id="ckd302scz000lcrra1cm93jrq" class="article-share-link">Share</a>
       
       
     </footer>
@@ -517,7 +627,7 @@ System.out.println(builder.build());</code></pre><p>}</p>
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://xkjava.github.io/2020/02/25/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E5%B1%9E%E4%BA%8E%E6%B8%B8%E6%88%8F%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E7%9A%84%E7%AD%96%E7%95%A5%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" data-id="ckc8x9v3z000inirahy56c9ql" class="article-share-link">Share</a>
+      <a data-url="https://xkjava.github.io/2020/02/25/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E5%B1%9E%E4%BA%8E%E6%B8%B8%E6%88%8F%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E7%9A%84%E7%AD%96%E7%95%A5%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" data-id="ckd302scx000jcrragfsb5zn1" class="article-share-link">Share</a>
       
       
     </footer>
@@ -684,7 +794,7 @@ orderService.createOrder(order);</code></pre><p>}</p>
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://xkjava.github.io/2020/02/25/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E5%B9%B2%E8%BF%87%E4%B8%AD%E4%BB%8B%E5%B9%B2%E8%BF%87%E5%BF%AB%E9%80%92%E7%9A%84%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" data-id="ckc8x9v4r000tnirabsvq8gn6" class="article-share-link">Share</a>
+      <a data-url="https://xkjava.github.io/2020/02/25/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E5%B9%B2%E8%BF%87%E4%B8%AD%E4%BB%8B%E5%B9%B2%E8%BF%87%E5%BF%AB%E9%80%92%E7%9A%84%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" data-id="ckd302se6000ucrra0lyigpff" class="article-share-link">Share</a>
       
       
     </footer>
@@ -780,7 +890,7 @@ orderService.createOrder(order);</code></pre><p>}</p>
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://xkjava.github.io/2020/02/22/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E5%8F%AA%E6%98%AF%E5%8D%95%E7%BA%AF%E5%90%AC%E8%AF%B4%E8%BF%87%E7%9A%84%E5%8E%9F%E5%9E%8B%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" data-id="ckc8x9v3m000hnirad8290nwr" class="article-share-link">Share</a>
+      <a data-url="https://xkjava.github.io/2020/02/22/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E5%8F%AA%E6%98%AF%E5%8D%95%E7%BA%AF%E5%90%AC%E8%AF%B4%E8%BF%87%E7%9A%84%E5%8E%9F%E5%9E%8B%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" data-id="ckd302scv000icrra9f91cy70" class="article-share-link">Share</a>
       
       
     </footer>
@@ -952,7 +1062,7 @@ orderService.createOrder(order);</code></pre><p>}</p>
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://xkjava.github.io/2020/02/21/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E7%BB%8F%E5%85%B8%E9%AB%98%E9%A2%91%E9%9D%A2%E8%AF%95%E7%9A%84%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" data-id="ckc8x9vua000ynira8v4f416f" class="article-share-link">Share</a>
+      <a data-url="https://xkjava.github.io/2020/02/21/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E7%BB%8F%E5%85%B8%E9%AB%98%E9%A2%91%E9%9D%A2%E8%AF%95%E7%9A%84%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" data-id="ckd302seo000zcrradgu7002m" class="article-share-link">Share</a>
       
       
     </footer>
@@ -1073,7 +1183,7 @@ orderService.createOrder(order);</code></pre><p>}</p>
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://xkjava.github.io/2020/02/21/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E7%BB%8F%E5%85%B8%E6%A1%86%E6%9E%B6%E9%83%BD%E5%9C%A8%E7%94%A8%E7%9A%84%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" data-id="ckc8x9v44000lnira0nnm5dm4" class="article-share-link">Share</a>
+      <a data-url="https://xkjava.github.io/2020/02/21/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E7%BB%8F%E5%85%B8%E6%A1%86%E6%9E%B6%E9%83%BD%E5%9C%A8%E7%94%A8%E7%9A%84%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" data-id="ckd302sd0000mcrrafocycbf1" class="article-share-link">Share</a>
       
       
     </footer>
@@ -1280,238 +1390,7 @@ orderService.createOrder(order);</code></pre><p>}</p>
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://xkjava.github.io/2020/02/19/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E8%BD%AF%E4%BB%B6%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1%E7%9A%84%E4%B8%83%E5%A4%A7%E5%8E%9F%E5%88%99%E7%B2%BE%E9%80%89%E6%A1%88%E4%BE%8B/" data-id="ckc8x9v4s000unira3vnse4s4" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-如何优雅的学习JVM，终结篇（六）" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2020/02/17/%E5%A6%82%E4%BD%95%E4%BC%98%E9%9B%85%E7%9A%84%E5%AD%A6%E4%B9%A0JVM%EF%BC%8C%E7%BB%88%E7%BB%93%E7%AF%87%EF%BC%88%E5%85%AD%EF%BC%89/" class="article-date">
-  <time datetime="2020-02-17T07:30:08.000Z" itemprop="datePublished">2020-02-17</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/02/17/%E5%A6%82%E4%BD%95%E4%BC%98%E9%9B%85%E7%9A%84%E5%AD%A6%E4%B9%A0JVM%EF%BC%8C%E7%BB%88%E7%BB%93%E7%AF%87%EF%BC%88%E5%85%AD%EF%BC%89/">如何优雅的学习JVM，终结篇（六）</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="一、如何计算一个对象占用的内存大小？"><a href="#一、如何计算一个对象占用的内存大小？" class="headerlink" title="一、如何计算一个对象占用的内存大小？"></a>一、如何计算一个对象占用的内存大小？</h1><p>我们在编写代码的过程中会创建大量的对象，有没有考虑到底某个对象占用了多少内存呢？</p>
-<p>在C/C++中，我们可以通过sizeof()函数来计算一个变量或者类型所占用的大小，然而在Java中并没有这样的系统调用，那么在Java中如何实现类似的计算对象占用的内存大小呢？Java对象的内存结构，我们在前面的章节也进行了学习，它包括<strong>对象头（标记位、对象指针）、实例数据、对齐填充</strong>。那么我们只要按照顺序计算出各个区域所占用的内存并求和就可以了。其实仔细想想肯定没有这么简单，其中还有很多细节问题需要考虑。</p>
-<ul>
-<li>对象头</li>
-</ul>
-<p>在不开启JVM对象头压缩的情况下：</p>
-<p><strong>32位</strong> JRE中一个对象头大小是<strong>8个字节</strong>（4 + 4）</p>
-<p><strong>64位</strong> JRE中则是<strong>16个字节</strong>（8 + 8）</p>
-<ul>
-<li>实例数据</li>
-</ul>
-<p>成员变量主要包括两种：基本类型和引用类型，非静态成员变量所占用的数据。在确定JRE运行环境中，基本类型和引用类型占用的内存大小都是确定的，因此需要简单通过反射做个加法似乎就可以了。但是实际情况不是你想的这样简单，让我们来写代码测试一下吧。</p>
-<p>通过jol工具可以查看到一个对象的实际内存布局，我们使用OpenJDK，提供了JOL包，<strong>官网：</strong> <a href="http://openjdk.java.net/projects/code-tools/jol/" target="_blank" rel="noopener">http://openjdk.java.net/projects/code-tools/jol/</a></p>
-<p>POM依赖：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;org.openjdk.jol&lt;&#x2F;groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;jol-core&lt;&#x2F;artifactId&gt;</span><br><span class="line">    &lt;version&gt;0.8&lt;&#x2F;version&gt;</span><br><span class="line">&lt;&#x2F;dependency&gt;</span><br></pre></td></tr></table></figure>
-
-
-<p>创建一个如下示例代码的测试类：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">import org.openjdk.jol.info.ClassLayout;</span><br><span class="line"></span><br><span class="line">public class Pojo &#123;</span><br><span class="line">    public int a;</span><br><span class="line">    public String b;</span><br><span class="line">    public int c;</span><br><span class="line">    public boolean d;</span><br><span class="line">    private long e; &#x2F;&#x2F; e设置为私有的，后面讲解为什么</span><br><span class="line">    public Object f;</span><br><span class="line">    Pojo() &#123; e &#x3D; 1024L;&#125;</span><br><span class="line"></span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        Pojo pojo &#x3D; new Pojo();</span><br><span class="line">        System.out.println(ClassLayout.parseInstance(pojo).toPrintable());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>使用 jol 工具查看其内存布局如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"> OFFSET  SIZE               TYPE DESCRIPTION                               VALUE</span><br><span class="line">      0     4                    (object header)                           01 00 00 00 (00000001 00000000 00000000 00000000) (1)</span><br><span class="line">      4     4                    (object header)                           00 00 00 00 (00000000 00000000 00000000 00000000) (0)</span><br><span class="line">      8     4                    (object header)                           05 c1 00 f8 (00000101 11000001 00000000 11111000) (-134168315)</span><br><span class="line">     12     4                int Pojo.a                                    0</span><br><span class="line">     16     8               long Pojo.e                                    1024</span><br><span class="line">     24     4                int Pojo.c                                    0</span><br><span class="line">     28     1            boolean Pojo.d                                    false</span><br><span class="line">     29     3                    (alignment&#x2F;padding gap)                  </span><br><span class="line">     32     4   java.lang.String Pojo.b                                    null</span><br><span class="line">     36     4   java.lang.Object Pojo.f                                    null</span><br><span class="line">Instance size: 40 bytes</span><br><span class="line">Space losses: 3 bytes internal + 0 bytes external &#x3D; 3 bytes total</span><br></pre></td></tr></table></figure>
-
-<p>由此可以看出对象头所占用的大小为12字节。从这个内存布局表上不难看出，成员变量在实际分配内存时，并不是按照声明的顺序来储存的，此外在变量d之后，还出现了一块用于对齐内存的padding gap，这说明计算对象实际数据所占用的内存大小时，并不是简单的求和就可以的。</p>
-<p>在上面的内存布局表中，可以看到OFFSET一列，这就是对应变量的偏移地址，如同C++中的指针，其实就是告诉了CPU要从什么位置取出对应的数据。举个例子，假设 Pojo 类的一个对象pojo存放在以 0x0010 开始的内存空间中，我们需要获取它的成员变量 b ，由于其偏移地址是 32（转换成十六进制为20），占用大小是 4 ，那么实际储存变量b的内存空间就是 0 x0030 ~ 0x0033 ，根据这个 CPU 就可以很容易地获取到变量了。</p>
-<p>实际上在反射中，正式通过这样的方式来获取指定属性的值，具体实际上则需要借助强大的Unsafe工具。Unsafe可以实现系统底层不可思议的操作（比如修改变量的可见性，分配和回收堆外内存等），不过正因为其功能的强大性，随意使用有可能引发程序崩溃，所以官方不建议在除系统之外（如反射等）以外的场景使用，使用Unsafe如何通过变量偏移地址来获取一个变量。</p>
-<p>示例代码：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">@Test</span><br><span class="line">    public void testUnsafe() throws Exception &#123;</span><br><span class="line">        Class&lt;?&gt; unsafeClass &#x3D; null;</span><br><span class="line">        Unsafe unsafe &#x3D; null;</span><br><span class="line">        try &#123;</span><br><span class="line">            unsafeClass &#x3D; Class.forName(&quot;sun.misc.Unsafe&quot;);</span><br><span class="line">            final Field unsafeField &#x3D; unsafeClass.getDeclaredField(&quot;theUnsafe&quot;);</span><br><span class="line">            unsafeField.setAccessible(true);</span><br><span class="line">            unsafe &#x3D; (Unsafe) unsafeField.get(null);</span><br><span class="line">        &#125; catch (Exception e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">        Pojo pojo &#x3D; new Pojo();&#x2F;&#x2F;上面案例的测试实体类</span><br><span class="line">        Field field &#x3D; Pojo.class.getDeclaredField(&quot;e&quot;);</span><br><span class="line">        long offset &#x3D; unsafe.objectFieldOffset(field);</span><br><span class="line">        if(offset &gt; 0L) &#123;</span><br><span class="line">            long eVal &#x3D; unsafe.getLong(pojo, offset);</span><br><span class="line">            System.out.println(eVal);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-
-<p>运行结果打印：<strong>1024</strong></p>
-<p>出于安全起见，一般情况下在正常的代码中是无法直接获取 Unsafe的实例的，这里我们通过反射的方式hack了一把来拿到 unsafe实例。接着通过调用 <strong>objectFieldOffset</strong> 方法获取到成员变量 e的地址偏移为 16（和 jol 中的结果一致），最终我们通过 <strong>getLong()</strong> 方法，传入e 的地址偏移量，便获取到了 e 的值。可以看到尽管 Pojo 类中 e是一个私有属性，通过这种方法依然是可以获取到它的值的</p>
-<p>有了调用Unsafe的objectFieldOffset，我们可以通过代码精确的计算一个对象在内存中所占用的空间大小了，递归遍历对象中所有的引用并计算他们指向的实际对象的浅内存占用，最终求和即可。考虑到会有大量重复的类出现，我们可以使用一个数组来缓存已经计算过浅内存占用的class，避免重复计算。</p>
-<p>如果引用指向了数组或者集合类型，那么只需要计算其基本元素的大小，然后乘以数组长度/集合大小即可。</p>
-<p>具体实现代码在此不过多赘述，可以直接参考源代码（ from Apache luence ，入口方法为 sizeOf ( Object )）。</p>
-<p>源代码：<br><a href="https://github.com/MarkLux/Java-Memory-Monitor/blob/master/src/main/java/cn/marklux/memory/RamUsageEstimator.java" target="_blank" rel="noopener">https://github.com/MarkLux/Java-Memory-Monitor/blob/master/src/main/java/cn/marklux/memory/RamUsageEstimator.java</a></p>
-<p>需要注意的是，<strong>这种计算对象内存的方法并不是毫无代价的，由于使用了递归、反射和缓存，在性能和空间上都会有一定的消耗。</strong></p>
-<h1 id="二、性能优化经验总结"><a href="#二、性能优化经验总结" class="headerlink" title="二、性能优化经验总结"></a>二、性能优化经验总结</h1><h2 id="2-1-性能优化的背景"><a href="#2-1-性能优化的背景" class="headerlink" title="2.1 性能优化的背景"></a>2.1 性能优化的背景</h2><p>大家平时一定遇到过这样的问题：单机的线程池队列爆满，使用集群扩容增加集群；系统内存占用高，高峰时段OOM，重启就分分钟解决了等一系列的问题。如果临时性的补救措施只能是给应用埋雷，同时只能解决部分问题，治标不治本。</p>
-<p>添加硬件资源并不一定能够解决系统的性能问题，反而有时候会造成资源的浪费，得不偿失。因此对系统进行合理的性能优化，可以在系统稳定性、成本核算获得很大的收益。</p>
-<p>假设现在我们的系统已经出现了性能问题，需要准备开始进行优化工作，那么在这个优化过程中，潜在的痛点有哪些呢？</p>
-<p><strong>1、对性能优化的流程不是很清晰。</strong> 最终需要解决的问题其实是一个浅层次的性能瓶颈，真实的问题的根源并不能触达。</p>
-<p><strong>2、对性能瓶颈点的分析思路不是很清晰。</strong> 网路、CPU、内存等这么多的性能指标，到底该关注什么，应该从哪一块开始入手呢？</p>
-<p><strong>3、对性能优化的工具不是很了解。</strong> 遇到问题后，不清楚使用哪个工具，不知道通过工具得到的指标代表着什么。</p>
-<h2 id="2-2-性能优化的流程"><a href="#2-2-性能优化的流程" class="headerlink" title="2.2 性能优化的流程"></a>2.2 性能优化的流程</h2><p><strong>1、准备阶段：</strong> 通过性能测试，了解系统的概况、瓶颈的大概方向，明确优化目标；</p>
-<p><strong>2、分析阶段：</strong> 通过各种工具或手段，初步定为性能瓶颈点；</p>
-<p><strong>3、调优阶段：</strong> 根据定位到的瓶颈点，进行系统性能调优。</p>
-<p><strong>4、测试阶段：</strong> 让调优后的系统进行性能测试，与准备阶段的各项指标进行对比，观察其是否属于预期，如果瓶颈点没有消除或者性能指标不符合预期，则重复2和3步骤。</p>
-<p><img src="https://user-gold-cdn.xitu.io/2020/2/15/1704814cc768f998?w=748&h=967&f=png&s=46807" alt=""></p>
-<ul>
-<li><p>准备阶段详解：</p>
-<p>  <strong>对性能问题进行粗略评估，</strong> 比如线上应用日志级别不合理，可能会在大流量的时候导致CPU和磁盘的负载过高，这种情况需要调整日志级别；</p>
-<p>  <strong>了解应用的总体架构，</strong> 应用依赖的外部接口和本身核心接口有哪些，使用了哪些框架和组件，哪些接口，模块的使用率较高，上下游的数据链路是怎么样的；</p>
-<p>  <strong>了解应用对应的服务器信息，</strong> 服务器所在的集群信息、服务器的CPU、内存等信息，安装的操作系统Linux版本信息，服务器是容器还是虚拟机，所在的宿主机混部（把集群混合起来，将不同类型的任务调度到相同的物理资源上，通过调度，资源隔离等控制手段 , 在保障 SLO（服务等级目标） 的基础上，充分使用资源能力，极大降低成本）后是否当前应用有影响等。</p>
-<p>  a、通过压测工具或者压测平台（如果公司有的话），对应用进行压力测试，获取当前应用的宏观指标。也可以结合当前的实际业务和过往的监控数据，去统计一些核心业务指标，比如午高峰的服务TPS。</p>
-</li>
-</ul>
-<pre><code>* 响应时间
-
-
-* 吞吐量
-
-
-* TPS
-
-
-* QPS
-
-
-* 消费速率（对于使用MQ的中间件）
-
-
-b、可以Linux基准测试工具，得到文件系统、磁盘I/O、网络等性能报告，还有GC、Web服务器、网卡流量等信息。
-
-
-* jmeter
-
-
-* ab
-
-
-* loadrunnerwrk
-
-
-* wrk</code></pre><ul>
-<li><p>测试阶段详解：</p>
-<p>  <strong>性能瓶颈点通常呈现2/8分布，</strong> 即80%的性能问题通常是由20%的性能瓶颈点导致的，2/8原则也以为着并不是所有的性能问题都值得去优化；</p>
-<p>  <strong>不要过度追求应用的单机性能，</strong> 如果单机表现良好，则应该从架构的角度去思考；比如过滤追求CPU的性能而忽略了内存方面的瓶颈；</p>
-<p>  <strong>整个应用的优化，应与线上系统隔离</strong>， 新的代码上线应该有降级方案。</p>
-</li>
-</ul>
-<h2 id="2-3-工具箱"><a href="#2-3-工具箱" class="headerlink" title="2.3 工具箱"></a>2.3 工具箱</h2><p>工欲善其事必先利其器，我们该如何选择合适的工具呢？先来看看Linux性能工具图吧。</p>
-<p><img src="https://user-gold-cdn.xitu.io/2020/2/15/17048d7bd472a3b7?w=3000&h=2100&f=png&s=941208" alt=""></p>
-<p>上面的这张图非常经典，是做性能优化时候非常好的参考资料，但是事实上，我们在实际运用的时候，会发现可能并不合适。所以需要给出一张更为实用的图，该图从系统层、应用层（含组件层）的角度，列举我们在分析性能问题需要关注的各项指标，这些点是最有可能出现性能瓶颈的地方。</p>
-<p><img src="https://user-gold-cdn.xitu.io/2020/2/15/1704919977f1208e?w=1246&h=1850&f=png&s=109125" alt=""></p>
-<p>下面针对不同层次的核心性能指标做如下分析，同时也会介绍如何初步根据这些指标，判断系统或者应用是否存在性能瓶颈点。</p>
-<h2 id="2-3-1-网络"><a href="#2-3-1-网络" class="headerlink" title="2.3.1 网络"></a>2.3.1 网络</h2><p>这里说的网络指的是应用层的网络，通常指的是：</p>
-<ul>
-<li>网络带宽：表示链路的最大传输速率；</li>
-<li>网络吞吐：表示单位时间内成功传输的数据量大小；</li>
-<li>网络延时：表示从网络从请求发出后直到收到远端响应，所需要的时间；</li>
-<li>网络连接数和错误数。</li>
-</ul>
-<p>应用层的网络瓶颈有如下几类：</p>
-<ul>
-<li>网络出现分区；</li>
-<li>集群或机器所在的机房的网络带宽饱和，影响应用的<strong>TPS/QPS</strong>的提升；</li>
-<li>网络吞吐出现异常，如接口存在大量的数据传输，造成贷款占用过高；</li>
-<li>网络连接出现异常或错误。</li>
-</ul>
-<p>带宽和网络吞吐两个指标，一般会关注整个应用的，并通过监控系统可以直接得到，如一段时间内出现了明显的指标上升，说明存在网络瓶颈。对于单机，可以使用<strong>sar命令</strong>得到网络接口，进程的网络吞吐。</p>
-<p>使用<strong>ping</strong>或<strong>hping3</strong>可以得到是否出现网络分区、网络具体时延。整个应用链路的时延，可以通过中间件埋点后输出的trace日志得到链路上各个环节的时延信息。</p>
-<p>使用<strong>netstat、ss</strong>和<strong>sar</strong>可以获取网络连接数或网络错误数。系统可以支撑的网络连接数是有限的，一是会占用<strong>文件描述符</strong>，二是会占用<strong>缓存</strong>。</p>
-<h2 id="2-3-2-磁盘和文件"><a href="#2-3-2-磁盘和文件" class="headerlink" title="2.3.2 磁盘和文件"></a>2.3.2 磁盘和文件</h2><p>磁盘以及文件系统主要关注的指标有，常用命令有iostat（用于真个系统）和pidstat（用于具体的I/O进程）：</p>
-<ul>
-<li>磁盘I/O利用率：是指磁盘处理I/O的时间百分比；</li>
-<li>磁盘吞吐量：是指每秒的I/O请求大小，单位为KB；</li>
-<li>I/O响应时间：是指I/O请求从发出到收到响应的间隔，包含在队列中等待的时间和处理时间；</li>
-<li>IOPS（Input/Output Per Second）：每秒I/O请求数；</li>
-<li>I/O等待队列大小：是指平均I/O队列长度，队列长度越短越好。</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@iz2zea13o0oyywo7z5hawlz ~]# iostat -dx</span><br><span class="line">Linux 3.10.0-693.2.2.el7.x86_64 (iz2zea13o0oyywo7z5hawlz) 	02&#x2F;16&#x2F;2020 	_x86_64_	(1 CPU)</span><br><span class="line"></span><br><span class="line">Device:         rrqm&#x2F;s   wrqm&#x2F;s     r&#x2F;s     w&#x2F;s    rkB&#x2F;s    wkB&#x2F;s avgrq-sz avgqu-sz   await r_await w_await  svctm  %util</span><br><span class="line">vda               0.00     0.11    0.01    0.29     0.23     2.61    18.68     0.00    5.97    4.32    6.03   0.16   0.00</span><br></pre></td></tr></table></figure>
-
-<p><strong>%util：</strong> 磁盘的I/O利用率，同CPU利用率一样，这个值也可能超过100%（存在并行I/O）；</p>
-<p><strong>rKB/s、wKB/s：</strong> 每秒从磁盘读取和写入的数据量，即吞吐量，单位为KB；</p>
-<p><strong>r_await、w_await：</strong> 读和写请求处理的响应时间；</p>
-<p><strong>r/s、w/s：</strong> 每秒发送给磁盘的读请求数和写请求数；</p>
-<p><strong>svctm：</strong> 该指标废弃，表示处理I/O所需的平均时间；</p>
-<p><strong>pidstat</strong> 的输出大部分和 <strong>iostat</strong> 类似，区别在于它可以实时查看每个进程的 I/O 情况。</p>
-<p><strong>如何判断磁盘的指标出现了异常？</strong></p>
-<p>1、当 <strong>%util</strong> （磁盘利用率）长时间超过<strong>80%</strong>，或者响应时间过大（<strong>SSD，从0.0x毫秒到1.x毫秒不等，机械硬盘一般为5毫秒到10毫秒</strong>），通常意味着磁盘I/O存在性能瓶颈。</p>
-<p>2、如果 <strong>%util</strong> 很大，而rKB/s和wKB/s很小，一般因为存在较多的磁盘随机读写，<strong>最好把随机读写优化成顺序读写</strong>，可以通过<strong>strace</strong>或<strong>blktrace</strong>观察I/O是否连续判断是否是顺序读写行为，<strong>随机读写应该关注IOPS指标，顺序读写可以关注吞吐量指标。</strong></p>
-<p>3、如果<strong>avgqu-sz</strong> 比较大，说明有很多I/O<strong>在请求队列中等待</strong>。如果单块磁盘的队列长度持续<strong>超过2</strong>，一般认为该磁盘存在I/O性能问题。</p>
-<h2 id="2-3-3-CPU和线程"><a href="#2-3-3-CPU和线程" class="headerlink" title="2.3.3 CPU和线程"></a>2.3.3 CPU和线程</h2><p>CPU关注的指标主要有以下几个。常用的命令有top、ps、uptime、vmstat、pidstat等。</p>
-<ul>
-<li>CPU利用率（CPU Utilization）</li>
-<li>CPU平均负载（Load Average）</li>
-<li>上下文切换次数（Context Switch）</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">top - 14:58:36 up 18 days,  1:31,  1 user,  load average: 0.00, 0.01, 0.05</span><br><span class="line">Tasks:  63 total,   1 running,  62 sleeping,   0 stopped,   0 zombie</span><br><span class="line">%Cpu(s):  0.3 us,  0.3 sy,  0.0 ni, 99.3 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st</span><br><span class="line">KiB Mem :  1883420 total,   109840 free,   187712 used,  1585868 buff&#x2F;cache</span><br><span class="line">KiB Swap:        0 total,        0 free,        0 used.  1494900 avail Mem </span><br><span class="line"></span><br><span class="line">  PID USER      PR  NI    VIRT    RES    SHR S %CPU %MEM     TIME+ COMMAND                                                              </span><br><span class="line"> 1008 root      10 -10  132300  14672   9420 S  1.0  0.8 210:54.23 AliYunDun                                                            </span><br><span class="line">    1 root      20   0   43264   3708   2500 S  0.0  0.2   0:12.20 systemd</span><br></pre></td></tr></table></figure>
-<p>第一行显示内容：当前时间、系统运行时间以及正在登录的用户数。<strong>load average</strong>后的三个数字，依次表示过去1分钟、5分钟、15分钟的平均负载。<strong>CPU的平均负载和CPU的使用率没有直接的关系</strong>。</p>
-<p>第三行显示内容：表示CPU利用率，计算公式：<strong>CPU利用率 = 1 - CPU空闲时间/CPU总的时间。</strong> 注：top工具显示的CPU利用率是把所有的CPU核的数值加起来，即<strong>8核CPU的利用率最大可以达到800%</strong>，可以用（<strong>htop命令代替top进行查看</strong>）。</p>
-<p>查看<strong>CPU上下文切换次数</strong>可以用<strong>vmstat</strong>命令进行查看：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@iz2zea13o0oyywo7z5hawlz ~]# vmstat</span><br><span class="line">procs -----------memory---------- ---swap-- -----io---- -system-- ------cpu-----</span><br><span class="line"> r  b   swpd   free   buff  cache   si   so    bi    bo   in   cs us sy id wa st</span><br><span class="line"> 2  0      0 109592 141200 1445092    0    0     0     3   12   22  0  0 99  0  0</span><br></pre></td></tr></table></figure>
-
-<p>上面的 <strong>cs（Context Swtich）</strong> 就是每秒上下文切换次数，过多的上下文切换次数，会把CPU时间消耗<strong>在寄存器、内核栈以及虚拟内存等</strong>数据保存和恢复上，从而缩短进程真正的运行时间，导致系统的整体性能大幅下降。</p>
-<p><strong>us、sy分别是用户态和内核态的CPU利用率。</strong></p>
-<p><strong>vmstat</strong>给出的是系统总体的上下文切换情况，想要查看每个进程的上下文切换详情，需要使用<strong>pidstat</strong>命令，<strong>该命令还可以查看某个进程用户态和内核态的CPU利用率。</strong></p>
-<p><strong>CPU相关指标异常的分析思路是什么呢？</strong></p>
-<p><strong>1、CPU利用率：</strong> 观察某段时间系统或者应用进程的CPU利用率一直很高（<strong>单个超过80%</strong>），可以多次使用jstack命令dump应用线程栈查看热点线程代码。</p>
-<p><strong>2、CPU平均负载：</strong> <strong>平均负载高与CPU数量70%</strong>，意味着系统存在瓶颈，通过监控系统检测平均负载的变化趋势，更容易定位问题，有时候加载大文件的时候，也会导致平均负载瞬时升高。<strong>如果1分钟/5分钟/15分钟的三个值相差不是很大，则说明系统负载很平稳，如果这三个值逐渐降低，说明负载在逐渐升高</strong>，需要重点关注。</p>
-<p><strong>3、CPU上下文切换次数：</strong> 这个指标取决于系统本身的CPU性能，以及当前应用的工作情况。<strong>如果系统或者应用的上下文切换次数出现数量级的增长的时候，则说明有很大概率存在性能问题，如果是非自愿的上下文切换次数大幅度上升，说明有太多的线程竞争CPU。</strong></p>
-<p><strong>这三个指标是密切相关的，如频繁的CPU上下文切换，可能会导致平均负载升高。</strong></p>
-<p><strong>关于线程，可关注的异常有：</strong></p>
-<ul>
-<li><strong>线程的总数是否过多。</strong> 线程过多，就会在CPU上频繁的进行上下文切换，同时线程过多也会消耗内存，线程的总数大小和应用本身和机器配置相关。</li>
-<li><strong>线程的状态是否异常。</strong> 观察<strong>WAITING/BLOCKED</strong> 状态线程是否过多（线程数量设置过多或锁竞争剧烈），综合应用内部锁使用的情况进行进一步分析。</li>
-<li><strong>结合CPU利用率，观察是否存在大量消耗CPU的线程。</strong></li>
-</ul>
-<h2 id="2-3-4-内存和堆"><a href="#2-3-4-内存和堆" class="headerlink" title="2.3.4 内存和堆"></a>2.3.4 内存和堆</h2><p>和内存相关的指标主要有以下几个，常用命令是<strong>top、free、vmstat、pidstat</strong>以及JDK自带的一些工具。</p>
-<ul>
-<li>系统内存使用情况，包括剩余内存、已用内存、可用内存、缓存/缓冲区；</li>
-<li>进程（包含Java进程）的虚拟内存、常驻内存、共享内存；</li>
-<li>进程的缺页异常数、包含主缺页异常和次缺页异常；</li>
-<li>Swap换入和换出的内存大小、Swap参数配置；</li>
-<li>JVM堆的分配、JVM启动参数；</li>
-<li>JVM堆的回收、GC情况。</li>
-</ul>
-<p>使用free查看系统内存使用情况和Swap分区使用情况。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@iz2zea13o0oyywo7z5hawlz ~]# free -h</span><br><span class="line">              total        used        free      shared  buff&#x2F;cache   available</span><br><span class="line">Mem:           1.8G        182M        106M        364K        1.5G        1.4G</span><br><span class="line">Swap:            0B          0B          0B</span><br></pre></td></tr></table></figure>
-<p>Swap：把一个本地文件或者一块磁盘的空间作为内存来使用，包括换入和换出两个过程。<strong>Swap分区的升高一般和磁盘的使用强相关，具体分析，需要结合缓存的使用情况，swappiness阈值以及匿名页和文件页的活跃情况综合分析。</strong></p>
-<p>buff/cache：缓存和缓冲区大小。<strong>缓存（cache）：</strong> 从磁盘读取的文件或者向磁盘写文件的临时存储数据，面向文件。<strong>使用cachestat可以查看真个系统缓存的读写命中情况，使用cachetop可以观察每个进程缓存的读写命中情况。</strong> <strong>缓冲区（buff）：</strong> 写入磁盘数据或者从磁盘直接读取的数据的临时存储，面向块设备。<strong>free 命令的输出中，这两个指标是加在一起的，使用 vmstat 命令可以区分缓存和缓冲区，还可以看到 Swap 分区换入和换出的内存大小。</strong></p>
-<p><strong>性能优化中常见的内存问题有哪些呢？</strong></p>
-<p>1、系统剩余内存/可用内存不足（某个进程占用太多、系统本身内存不足），内存溢出；</p>
-<p>2、内存回收异常：内存泄漏（进程在一段时间内内存使用持续走高），GC频率异常；</p>
-<p>3、缓存使用过大（大文件读取或写入）、缓存命中率不高；</p>
-<p>4、缺页异常过多（频繁的I/O读）；</p>
-<p>5、Swap分区使用异常（使用过大）。</p>
-<p><strong>内存相关指标异常后，分析的思路是怎么样的？</strong></p>
-<p>1、使用free发现缓存/缓冲区占用不大，排序缓存/缓冲区对内存的影响；</p>
-<p>2、使用vmstat或者sar观察一下各个进程内存使用变化的趋势，发现某个进程的内存使用持续走高；</p>
-<p>3、Java应用，使用jmap/VisualVM/heap dump等分析工具观察对象内存的分配，或者通过jstat观察GC后应用的内存变化；</p>
-<p>4、结合业务场景，定位内存泄漏/GC参数配置不合理/业务代码异常等。</p>
-<h2 id="2-4-使用总结"><a href="#2-4-使用总结" class="headerlink" title="2.4 使用总结"></a>2.4 使用总结</h2><p>有一些工具频繁出现，总结如下：</p>
-<ul>
-<li><p>CPU：top、vmstat、pidstat、sar、perf、jstack、jstat；</p>
-</li>
-<li><p>内存：top、free、vmstat、cachetop、cachestat、sar、jmap；</p>
-</li>
-<li><p>磁盘：top、iostat、vmstat、pidstat、du/df；</p>
-</li>
-<li><p>网络：netstat、sar、dstat、tcpdump；</p>
-</li>
-<li><p>应用：profiler、dump。</p>
-</li>
-</ul>
-<h1 id="三、-性能优化思路总结"><a href="#三、-性能优化思路总结" class="headerlink" title="三、 性能优化思路总结"></a>三、 性能优化思路总结</h1><p><img src="https://user-gold-cdn.xitu.io/2020/2/17/17051e88cc4fdb78?w=1967&h=4959&f=png&s=2143045" alt=""></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://xkjava.github.io/2020/02/17/%E5%A6%82%E4%BD%95%E4%BC%98%E9%9B%85%E7%9A%84%E5%AD%A6%E4%B9%A0JVM%EF%BC%8C%E7%BB%88%E7%BB%93%E7%AF%87%EF%BC%88%E5%85%AD%EF%BC%89/" data-id="ckc8x9v4o000qniracys86qdx" class="article-share-link">Share</a>
+      <a data-url="https://xkjava.github.io/2020/02/19/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E8%BD%AF%E4%BB%B6%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1%E7%9A%84%E4%B8%83%E5%A4%A7%E5%8E%9F%E5%88%99%E7%B2%BE%E9%80%89%E6%A1%88%E4%BE%8B/" data-id="ckd302se7000vcrrabpox9pvn" class="article-share-link">Share</a>
       
       
     </footer>
@@ -1557,6 +1436,10 @@ b、可以Linux基准测试工具，得到文件系统、磁盘I/O、网络等�
       <ul>
         
           <li>
+            <a href="/2020/07/26/CountDownLatch%E3%80%81Semaphore%E3%80%81CyclicBarrier%E3%80%81Condition%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/">CountDownLatch、Semaphore、CyclicBarrier、Condition源码分析</a>
+          </li>
+        
+          <li>
             <a href="/2020/07/05/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E6%A0%B8%E5%BF%83%E9%87%8D%E6%96%B0%E8%AE%A4%E8%AF%86SpringBoot%EF%BC%8C%E6%8E%8C%E6%8F%A1%E6%A0%B8%E5%BF%83%E7%89%B9%E6%80%A7%E5%8F%8A%E8%AE%BE%E8%AE%A1%E6%80%9D%E6%83%B3/">微服务核心重新认识SpringBoot，掌握核心特性及设计思想</a>
           </li>
         
@@ -1570,10 +1453,6 @@ b、可以Linux基准测试工具，得到文件系统、磁盘I/O、网络等�
         
           <li>
             <a href="/2020/05/30/JAVA%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E9%80%92%E8%BF%9B%E7%AF%87%EF%BC%8C%E6%8E%A2%E7%B4%A2%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8%E6%80%A7volatile%E5%85%B3%E9%94%AE%E5%AD%97%E5%A6%82%E4%BD%95%E4%BF%9D%E8%AF%81%E5%8F%AF%E8%A7%81%E6%80%A7/">JAVA并发编程递进篇，探索线程安全性volatile关键字如何保证可见性</a>
-          </li>
-        
-          <li>
-            <a href="/2020/05/23/JAVA%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E5%85%A5%E9%97%A8%E7%AF%87%EF%BC%8C%E6%80%9D%E8%80%83%E5%90%8C%E6%AD%A5%E9%94%81Synchronized%E8%83%8C%E5%90%8E%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%93%B2%E5%AD%A6/">JAVA并发编程入门篇，思考同步锁Synchronized背后的实现哲学</a>
           </li>
         
       </ul>
