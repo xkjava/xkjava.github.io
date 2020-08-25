@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>数据治理的王者Apache-Atlas如何构建自己的API | 来一杯咖啡</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="Apache Atlas是一个优秀的服务治理组件，用于企业Hadoop集群上的数据治理和元数据管理的数据治理工具。接下来我们将讨论构建自己的Java API，这些Java API可使用Apache atlas客户端与Apache Atlas交互以在其中创建新的实体和类型。 一、Atlas客户端Maven依赖关系以下依赖项可用于pom.xml文件 12345678910111213141516171">
+<meta property="og:type" content="article">
+<meta property="og:title" content="数据治理的王者Apache-Atlas如何构建自己的API">
+<meta property="og:url" content="https://xkjava.github.io/2020/08/25/%E6%95%B0%E6%8D%AE%E6%B2%BB%E7%90%86%E7%9A%84%E7%8E%8B%E8%80%85Apache-Atlas%E5%A6%82%E4%BD%95%E6%9E%84%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84API/index.html">
+<meta property="og:site_name" content="来一杯咖啡">
+<meta property="og:description" content="Apache Atlas是一个优秀的服务治理组件，用于企业Hadoop集群上的数据治理和元数据管理的数据治理工具。接下来我们将讨论构建自己的Java API，这些Java API可使用Apache atlas客户端与Apache Atlas交互以在其中创建新的实体和类型。 一、Atlas客户端Maven依赖关系以下依赖项可用于pom.xml文件 12345678910111213141516171">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-08-25T02:44:06.000Z">
+<meta property="article:modified_time" content="2020-08-25T02:44:42.228Z">
+<meta property="article:author" content="Kevin Shaw">
+<meta property="article:tag" content="Java">
+<meta property="article:tag" content="Spring">
+<meta property="article:tag" content="Netty">
+<meta property="article:tag" content="Kafka...">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="来一杯咖啡" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">来一杯咖啡</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">互联网技术无边界，学习与交流</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://xkjava.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-数据治理的王者Apache-Atlas如何构建自己的API" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/08/25/%E6%95%B0%E6%8D%AE%E6%B2%BB%E7%90%86%E7%9A%84%E7%8E%8B%E8%80%85Apache-Atlas%E5%A6%82%E4%BD%95%E6%9E%84%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84API/" class="article-date">
+  <time datetime="2020-08-25T02:44:06.000Z" itemprop="datePublished">2020-08-25</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      数据治理的王者Apache-Atlas如何构建自己的API
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Apache Atlas是一个优秀的服务治理组件，用于企业Hadoop集群上的数据治理和元数据管理的数据治理工具。接下来我们将讨论构建自己的Java API，这些Java API可使用Apache atlas客户端与Apache Atlas交互以在其中创建新的实体和类型。</p>
+<h1 id="一、Atlas客户端Maven依赖关系"><a href="#一、Atlas客户端Maven依赖关系" class="headerlink" title="一、Atlas客户端Maven依赖关系"></a>一、Atlas客户端Maven依赖关系</h1><p>以下依赖项可用于pom.xml文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;org.apache.atlas&lt;&#x2F;groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;atlas-client&lt;&#x2F;artifactId&gt;</span><br><span class="line">    &lt;version&gt;0.7-incubating&lt;&#x2F;version&gt;</span><br><span class="line">&lt;&#x2F;dependency&gt;</span><br><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;org.apache.atlas&lt;&#x2F;groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;atlas-typesystem&lt;&#x2F;artifactId&gt;</span><br><span class="line">    &lt;version&gt;0.7-incubating&lt;&#x2F;version&gt;</span><br><span class="line">&lt;&#x2F;dependency&gt;</span><br><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;org.apache.atlas&lt;&#x2F;groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;atlas-notification&lt;&#x2F;artifactId&gt;</span><br><span class="line">    &lt;version&gt;0.7-incubating&lt;&#x2F;version&gt;</span><br><span class="line">&lt;&#x2F;dependency&gt;</span><br><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;org.apache.atlas&lt;&#x2F;groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;atlas-repository&lt;&#x2F;artifactId&gt;</span><br><span class="line">    &lt;version&gt;0.7-incubating&lt;&#x2F;version&gt;</span><br><span class="line">&lt;&#x2F;dependency&gt;</span><br></pre></td></tr></table></figure>
+
+<h1 id="二、设置atlas-application-properties"><a href="#二、设置atlas-application-properties" class="headerlink" title="二、设置atlas-application.properties"></a>二、设置atlas-application.properties</h1><p>Apache Atlas客户端使用atlas-application属性在我们的API和Apache Atlas服务器之间建立连接。这些属性应放置在resources/atlas-application.properties中</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">#########  Security Properties  #########</span><br><span class="line"></span><br><span class="line"># SSL config</span><br><span class="line">atlas.enableTLS&#x3D;false</span><br><span class="line"></span><br><span class="line">#########  Server Properties  #########</span><br><span class="line">atlas.rest.address&#x3D;http:&#x2F;&#x2F;192.168.5.95:21000</span><br><span class="line"></span><br><span class="line">atlas.hook.demo.kafka.retries&#x3D;1</span><br><span class="line">atlas.kafka.zookeeper.connect&#x3D;192.168.5.93:2181,192.168.5.94:2181,192.168.5.95:2181</span><br><span class="line">atlas.kafka.bootstrap.servers&#x3D;192.168.5.93:9092,192.168.5.94:9092,192.168.5.95:9092</span><br><span class="line">atlas.kafka.zookeeper.session.timeout.ms&#x3D;4000</span><br><span class="line">atlas.kafka.zookeeper.connection.timeout.ms&#x3D;2000</span><br><span class="line">atlas.kafka.zookeeper.sync.time.ms&#x3D;20</span><br><span class="line">atlas.kafka.auto.commit.interval.ms&#x3D;1000</span><br><span class="line">atlas.kafka.hook.group.id&#x3D;atlas</span><br></pre></td></tr></table></figure>
+<h1 id="三、创建与Atlas服务器的连接"><a href="#三、创建与Atlas服务器的连接" class="headerlink" title="三、创建与Atlas服务器的连接"></a>三、创建与Atlas服务器的连接</h1><p>要与Apache atlas Server，baseUrl和用户名创建连接，必须在AtlasClient构造函数中传递密码</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">final AtlasClient atlasClient &#x3D; new AtlasClient</span><br><span class="line">            (new String[]&#123;&quot;http:&#x2F;&#x2F;192.168.5.95:21000&quot;&#125;,</span><br><span class="line">                    new String[]&#123;&quot;admin&quot;,</span><br><span class="line">                            &quot;admin&quot;&#125;);</span><br></pre></td></tr></table></figure>
+
+<h1 id="四、关于Type相关的测试类"><a href="#四、关于Type相关的测试类" class="headerlink" title="四、关于Type相关的测试类"></a>四、关于Type相关的测试类</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br></pre></td><td class="code"><pre><span class="line">public class AtlasTypesTest &#123;</span><br><span class="line"></span><br><span class="line">    final AtlasClient atlasClient &#x3D; new AtlasClient</span><br><span class="line">            (new String[]&#123;&quot;http:&#x2F;&#x2F;192.168.5.95:21000&quot;&#125;,</span><br><span class="line">                    new String[]&#123;&quot;admin&quot;,</span><br><span class="line">                            &quot;admin&quot;&#125;);</span><br><span class="line"></span><br><span class="line">    static final String DATABASE_TYPE &#x3D; &quot;DB_Sync&quot;;</span><br><span class="line">    static final String COLUMN_TYPE &#x3D; &quot;Column_Sync&quot;;</span><br><span class="line">    static final String TABLE_TYPE &#x3D; &quot;Table_Sync&quot;;</span><br><span class="line">    static final String VIEW_TYPE &#x3D; &quot;View_Sync&quot;;</span><br><span class="line">    public static final String DB_ATTRIBUTE &#x3D; &quot;db&quot;;</span><br><span class="line">    static final String STORAGE_DESC_TYPE &#x3D; &quot;StorageDesc&quot;;</span><br><span class="line">    public static final String COLUMNS_ATTRIBUTE &#x3D; &quot;columns&quot;;</span><br><span class="line">    public static final String INPUT_TABLES_ATTRIBUTE &#x3D; &quot;inputTables&quot;;</span><br><span class="line">    private static final String[] TYPES &#x3D;</span><br><span class="line">            &#123;DATABASE_TYPE, TABLE_TYPE, STORAGE_DESC_TYPE, COLUMN_TYPE, VIEW_TYPE, &quot;JdbcAccess&quot;,</span><br><span class="line">                    &quot;ETL&quot;, &quot;Metric&quot;, &quot;PII&quot;, &quot;Fact&quot;, &quot;Dimension&quot;, &quot;Log Data&quot;&#125;;</span><br><span class="line"></span><br><span class="line">    &#x2F;**</span><br><span class="line">     * 组织定义types</span><br><span class="line">     * @return</span><br><span class="line">     *&#x2F;</span><br><span class="line">    TypesDef createTypeDefinitions() &#123;</span><br><span class="line">        HierarchicalTypeDefinition&lt;ClassType&gt; dbClsDef &#x3D; TypesUtil</span><br><span class="line">                .createClassTypeDef(DATABASE_TYPE, DATABASE_TYPE, null,</span><br><span class="line">                        TypesUtil.createUniqueRequiredAttrDef(&quot;name&quot;, DataTypes.STRING_TYPE),</span><br><span class="line">                        attrDef(&quot;description&quot;, DataTypes.STRING_TYPE.getName()), attrDef(&quot;locationUri&quot;, DataTypes.STRING_TYPE.getName()),</span><br><span class="line">                        attrDef(&quot;owner&quot;, DataTypes.STRING_TYPE.getName()), attrDef(&quot;createTime&quot;, DataTypes.LONG_TYPE.getName()));</span><br><span class="line"></span><br><span class="line">        HierarchicalTypeDefinition&lt;ClassType&gt; columnClsDef &#x3D; TypesUtil</span><br><span class="line">                .createClassTypeDef(COLUMN_TYPE, COLUMN_TYPE, null, attrDef(&quot;name&quot;, DataTypes.STRING_TYPE.getName()),</span><br><span class="line">                        attrDef(&quot;dataType&quot;, DataTypes.STRING_TYPE.getName()), attrDef(&quot;comment&quot;, DataTypes.STRING_TYPE.getName()));</span><br><span class="line"></span><br><span class="line">        HierarchicalTypeDefinition&lt;ClassType&gt; tblClsDef &#x3D; TypesUtil</span><br><span class="line">                .createClassTypeDef(TABLE_TYPE, TABLE_TYPE, ImmutableSet.of(&quot;DataSet&quot;),</span><br><span class="line">                        new AttributeDefinition(DB_ATTRIBUTE, DATABASE_TYPE, Multiplicity.REQUIRED, false, null),</span><br><span class="line">                        new AttributeDefinition(&quot;sd&quot;, STORAGE_DESC_TYPE, Multiplicity.REQUIRED, true, null),</span><br><span class="line">                        attrDef(&quot;owner&quot;, DataTypes.STRING_TYPE.getName()), attrDef(&quot;createTime&quot;, DataTypes.LONG_TYPE.getName()),</span><br><span class="line">                        attrDef(&quot;lastAccessTime&quot;, DataTypes.LONG_TYPE.getName()), attrDef(&quot;retention&quot;, DataTypes.LONG_TYPE.getName()),</span><br><span class="line">                        attrDef(&quot;viewOriginalText&quot;, DataTypes.STRING_TYPE.getName()),</span><br><span class="line">                        attrDef(&quot;viewExpandedText&quot;, DataTypes.STRING_TYPE.getName()), attrDef(&quot;tableType&quot;, DataTypes.STRING_TYPE.getName()),</span><br><span class="line">                        attrDef(&quot;temporary&quot;, DataTypes.BOOLEAN_TYPE.getName()),</span><br><span class="line">                        new AttributeDefinition(COLUMNS_ATTRIBUTE, DataTypes.arrayTypeName(COLUMN_TYPE),</span><br><span class="line">                                Multiplicity.COLLECTION, true, null));</span><br><span class="line"></span><br><span class="line">        HierarchicalTypeDefinition&lt;ClassType&gt; viewClsDef &#x3D; TypesUtil</span><br><span class="line">                .createClassTypeDef(VIEW_TYPE, VIEW_TYPE, ImmutableSet.of(&quot;DataSet&quot;),</span><br><span class="line">                        new AttributeDefinition(&quot;db&quot;, DATABASE_TYPE, Multiplicity.REQUIRED, false, null),</span><br><span class="line">                        new AttributeDefinition(&quot;inputTables&quot;, DataTypes.arrayTypeName(TABLE_TYPE),</span><br><span class="line">                                Multiplicity.COLLECTION, false, null));</span><br><span class="line"></span><br><span class="line">        return TypesUtil.getTypesDef(ImmutableList.&lt;EnumTypeDefinition&gt;of(), ImmutableList.&lt;StructTypeDefinition&gt;of(),</span><br><span class="line">                ImmutableList.of(),</span><br><span class="line">                ImmutableList.of(dbClsDef, columnClsDef, tblClsDef, viewClsDef));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private void createTypes() throws Exception &#123;</span><br><span class="line">        TypesDef typesDef &#x3D; createTypeDefinitions();</span><br><span class="line">        String typesAsJSON &#x3D;  TypesSerialization.toJson(typesDef);</span><br><span class="line">        System.out.println(&quot;typesAsJSON &#x3D; &quot; + typesAsJSON);</span><br><span class="line">        atlasClient.createType(typesAsJSON);</span><br><span class="line">        verifyTypesCreated();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private void verifyTypesCreated() throws Exception &#123;</span><br><span class="line">        List&lt;String&gt; types &#x3D; atlasClient.listTypes();</span><br><span class="line">        for (String type : TYPES) &#123;</span><br><span class="line">            assert types.contains(type);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    AttributeDefinition attrDef(String name, String dT) &#123;</span><br><span class="line">        return attrDef(name, dT, Multiplicity.OPTIONAL, false, null);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    AttributeDefinition attrDef(String name, String dT, Multiplicity m, boolean isComposite,</span><br><span class="line">                                String reverseAttributeName) &#123;</span><br><span class="line">        return new AttributeDefinition(name, dT, m, isComposite, reverseAttributeName);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Test</span><br><span class="line">    public void createNewTypes() throws Exception &#123;</span><br><span class="line">        createTypes();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="五、关于Entities相关的测试类"><a href="#五、关于Entities相关的测试类" class="headerlink" title="五、关于Entities相关的测试类"></a>五、关于Entities相关的测试类</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br></pre></td><td class="code"><pre><span class="line">public class AtlasEntitiesTest &#123;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    final AtlasClient atlasClient &#x3D; new AtlasClient</span><br><span class="line">            (new String[]&#123;&quot;http:&#x2F;&#x2F;192.168.5.95:21000&quot;&#125;,</span><br><span class="line">                    new String[]&#123;&quot;admin&quot;,</span><br><span class="line">                            &quot;admin&quot;&#125;);</span><br><span class="line"></span><br><span class="line">    &#x2F;**</span><br><span class="line">     * 创建实例并返创建的Id对象</span><br><span class="line">     * @param referenceable</span><br><span class="line">     * @return</span><br><span class="line">     * @throws Exception</span><br><span class="line">     *&#x2F;</span><br><span class="line">    private Id createInstance(Referenceable referenceable) throws Exception &#123;</span><br><span class="line">        String typeName &#x3D; referenceable.getTypeName();</span><br><span class="line">        String entityJSON &#x3D; InstanceSerialization.toJson(referenceable, true);</span><br><span class="line">        System.out.println(&quot;Submitting new entity&#x3D; &quot; + entityJSON);</span><br><span class="line">        List&lt;String&gt; guids &#x3D; atlasClient.createEntity(entityJSON);</span><br><span class="line">        System.out.println(&quot;created instance for type &quot; + typeName + &quot;, guid: &quot; + guids);</span><br><span class="line">        return new Id(guids.get(guids.size() - 1), referenceable.getId().getVersion(),</span><br><span class="line">                referenceable.getTypeName());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;**</span><br><span class="line">     * 创建数据库实例并返创建的数据库Id对象</span><br><span class="line">     * @param name</span><br><span class="line">     * @param description</span><br><span class="line">     * @param owner</span><br><span class="line">     * @param locationUri</span><br><span class="line">     * @param traitNames</span><br><span class="line">     * @return</span><br><span class="line">     * @throws Exception</span><br><span class="line">     *&#x2F;</span><br><span class="line">    Id database(String name, String description, String owner, String locationUri, String... traitNames)</span><br><span class="line">            throws Exception &#123;</span><br><span class="line">        Referenceable referenceable &#x3D; new Referenceable(DATABASE_TYPE, traitNames);</span><br><span class="line">        referenceable.set(&quot;name&quot;, name);</span><br><span class="line">        referenceable.set(&quot;description&quot;, description);</span><br><span class="line">        referenceable.set(&quot;owner&quot;, owner);</span><br><span class="line">        referenceable.set(&quot;locationUri&quot;, locationUri);</span><br><span class="line">        referenceable.set(&quot;createTime&quot;, System.currentTimeMillis());</span><br><span class="line"></span><br><span class="line">        return createInstance(referenceable);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;**</span><br><span class="line">     * 创建列的实例并返创建的列的实例对象</span><br><span class="line">     * @param name</span><br><span class="line">     * @param dataType</span><br><span class="line">     * @param comment</span><br><span class="line">     * @param traitNames</span><br><span class="line">     * @return</span><br><span class="line">     * @throws Exception</span><br><span class="line">     *&#x2F;</span><br><span class="line">    Referenceable column(String name, String dataType, String comment, String... traitNames) throws Exception &#123;</span><br><span class="line">        Referenceable referenceable &#x3D; new Referenceable(COLUMN_TYPE, traitNames);</span><br><span class="line">        referenceable.set(&quot;name&quot;, name);</span><br><span class="line">        referenceable.set(&quot;dataType&quot;, dataType);</span><br><span class="line">        referenceable.set(&quot;comment&quot;, comment);</span><br><span class="line"></span><br><span class="line">        return referenceable;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;**</span><br><span class="line">     * 创建表的实例并返创建的表的Id对象</span><br><span class="line">     * @param name</span><br><span class="line">     * @param description</span><br><span class="line">     * @param dbId</span><br><span class="line">     * @param sd</span><br><span class="line">     * @param owner</span><br><span class="line">     * @param tableType</span><br><span class="line">     * @param columns</span><br><span class="line">     * @param traitNames</span><br><span class="line">     * @return</span><br><span class="line">     * @throws Exception</span><br><span class="line">     *&#x2F;</span><br><span class="line">    Id table(String name, String description, Id dbId, Referenceable sd, String owner, String tableType,</span><br><span class="line">             List&lt;Referenceable&gt; columns, String... traitNames) throws Exception &#123;</span><br><span class="line">        Referenceable referenceable &#x3D; new Referenceable(TABLE_TYPE, traitNames);</span><br><span class="line">        referenceable.set(&quot;name&quot;, name);</span><br><span class="line">        referenceable.set(AtlasClient.REFERENCEABLE_ATTRIBUTE_NAME, name);</span><br><span class="line">        referenceable.set(&quot;description&quot;, description);</span><br><span class="line">        referenceable.set(&quot;owner&quot;, owner);</span><br><span class="line">        referenceable.set(&quot;tableType&quot;, tableType);</span><br><span class="line">        referenceable.set(&quot;createTime&quot;, System.currentTimeMillis());</span><br><span class="line">        referenceable.set(&quot;lastAccessTime&quot;, System.currentTimeMillis());</span><br><span class="line">        referenceable.set(&quot;retention&quot;, System.currentTimeMillis());</span><br><span class="line">        referenceable.set(&quot;db&quot;, dbId);</span><br><span class="line">        referenceable.set(&quot;sd&quot;, sd);</span><br><span class="line">        referenceable.set(&quot;columns&quot;, columns);</span><br><span class="line"></span><br><span class="line">        return createInstance(referenceable);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;**</span><br><span class="line">     * 创建视图的实例并返创建的视图的Id对象</span><br><span class="line">     * @param name</span><br><span class="line">     * @param dbId</span><br><span class="line">     * @param inputTables</span><br><span class="line">     * @param traitNames</span><br><span class="line">     * @return</span><br><span class="line">     * @throws Exception</span><br><span class="line">     *&#x2F;</span><br><span class="line">    Id view(String name, Id dbId, List&lt;Id&gt; inputTables, String... traitNames) throws Exception &#123;</span><br><span class="line">        Referenceable referenceable &#x3D; new Referenceable(VIEW_TYPE, traitNames);</span><br><span class="line">        referenceable.set(&quot;name&quot;, name);</span><br><span class="line">        referenceable.set(AtlasClient.REFERENCEABLE_ATTRIBUTE_NAME, name);</span><br><span class="line">        referenceable.set(&quot;db&quot;, dbId);</span><br><span class="line"></span><br><span class="line">        referenceable.set(INPUT_TABLES_ATTRIBUTE, inputTables);</span><br><span class="line"></span><br><span class="line">        return createInstance(referenceable);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;**</span><br><span class="line">     * 原始存储描述符</span><br><span class="line">     * @param location</span><br><span class="line">     * @param inputFormat</span><br><span class="line">     * @param outputFormat</span><br><span class="line">     * @param compressed</span><br><span class="line">     * @return</span><br><span class="line">     * @throws Exception</span><br><span class="line">     *&#x2F;</span><br><span class="line">    Referenceable storageDescriptor(String location, String inputFormat, String outputFormat, boolean compressed)</span><br><span class="line">            throws Exception &#123;</span><br><span class="line">        Referenceable referenceable &#x3D; new Referenceable(STORAGE_DESC_TYPE);</span><br><span class="line">        referenceable.set(&quot;location&quot;, location);</span><br><span class="line">        referenceable.set(&quot;inputFormat&quot;, inputFormat);</span><br><span class="line">        referenceable.set(&quot;outputFormat&quot;, outputFormat);</span><br><span class="line">        referenceable.set(&quot;compressed&quot;, compressed);</span><br><span class="line"></span><br><span class="line">        return referenceable;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    @Test</span><br><span class="line">    public void createEntities() throws Exception &#123;</span><br><span class="line">        &#x2F;&#x2F;创建数据库实例</span><br><span class="line">        Id syncDB &#x3D; database(&quot;sy_sync&quot;, &quot;Sync Database&quot;, &quot;root&quot;, &quot;&quot;);</span><br><span class="line">        &#x2F;&#x2F;存储描述符</span><br><span class="line">        Referenceable sd &#x3D;</span><br><span class="line">                storageDescriptor(&quot;&quot;, &quot;TextInputFormat&quot;, &quot;TextOutputFormat&quot;,</span><br><span class="line">                        true);</span><br><span class="line">        &#x2F;&#x2F;创建列实例</span><br><span class="line">        &#x2F;&#x2F;1、数据源</span><br><span class="line">        List&lt;Referenceable&gt; databaseColumns &#x3D; ImmutableList</span><br><span class="line">                .of(column(&quot;id&quot;, &quot;long&quot;, &quot;id&quot;),</span><br><span class="line">                        column(&quot;name&quot;, &quot;string&quot;, &quot;name&quot;),</span><br><span class="line">                        column(&quot;type&quot;, &quot;string&quot;, &quot;type&quot;),</span><br><span class="line">                        column(&quot;url&quot;, &quot;string&quot;, &quot;url&quot;),</span><br><span class="line">                        column(&quot;database_name&quot;, &quot;string&quot;, &quot;database name&quot;),</span><br><span class="line">                        column(&quot;username&quot;, &quot;string&quot;, &quot;username&quot;),</span><br><span class="line">                        column(&quot;password&quot;,&quot;string&quot;,&quot;password&quot;),</span><br><span class="line">                        column(&quot;description&quot;, &quot;string&quot;, &quot;description&quot;),</span><br><span class="line">                        column(&quot;create_time&quot;, &quot;string&quot;, &quot;create time&quot;),</span><br><span class="line">                        column(&quot;update_time&quot;, &quot;string&quot;, &quot;update time&quot;),</span><br><span class="line">                        column(&quot;create_id&quot;, &quot;long&quot;, &quot;user id&quot;),</span><br><span class="line">                        column(&quot;update_id&quot;, &quot;long&quot;, &quot;user id&quot;));</span><br><span class="line">        &#x2F;&#x2F;2、同步文件夹</span><br><span class="line">        List&lt;Referenceable&gt; syncFolderColumns &#x3D; ImmutableList</span><br><span class="line">                .of(column(&quot;id&quot;, &quot;long&quot;, &quot;id&quot;),</span><br><span class="line">                        column(&quot;name&quot;, &quot;string&quot;, &quot;name&quot;),</span><br><span class="line">                        column(&quot;description&quot;, &quot;string&quot;, &quot;description&quot;),</span><br><span class="line">                        column(&quot;create_time&quot;, &quot;string&quot;, &quot;create time&quot;),</span><br><span class="line">                        column(&quot;update_time&quot;, &quot;string&quot;, &quot;update time&quot;),</span><br><span class="line">                        column(&quot;create_id&quot;, &quot;long&quot;, &quot;user id&quot;),</span><br><span class="line">                        column(&quot;update_id&quot;, &quot;long&quot;, &quot;user id&quot;));</span><br><span class="line">        &#x2F;&#x2F;创建表实例</span><br><span class="line">        Id database &#x3D; table(&quot;datasource&quot;, &quot;database table&quot;, syncDB, sd, &quot;root&quot;, &quot;External&quot;, databaseColumns);</span><br><span class="line">        Id syncFolder &#x3D; table(&quot;folder&quot;, &quot;sync folder table&quot;, syncDB, sd, &quot;root&quot;, &quot;External&quot;, syncFolderColumns);</span><br><span class="line">        &#x2F;&#x2F;创建视图实例</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    @Test</span><br><span class="line">    public void getEntity() throws AtlasServiceException &#123;</span><br><span class="line">        Referenceable referenceable &#x3D; atlasClient.getEntity(&quot;1406ddd0-5d51-41d4-b174-859bd4f34a5b&quot;);</span><br><span class="line">        System.out.println(InstanceSerialization.toJson(referenceable, true));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://xkjava.github.io/2020/08/25/%E6%95%B0%E6%8D%AE%E6%B2%BB%E7%90%86%E7%9A%84%E7%8E%8B%E8%80%85Apache-Atlas%E5%A6%82%E4%BD%95%E6%9E%84%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84API/" data-id="cke9cjzd3000ef5ra5b9qgkgv" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2020/07/26/CountDownLatch%E3%80%81Semaphore%E3%80%81CyclicBarrier%E3%80%81Condition%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">CountDownLatch、Semaphore、CyclicBarrier、Condition源码分析</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2020/08/25/%E6%95%B0%E6%8D%AE%E6%B2%BB%E7%90%86%E7%9A%84%E7%8E%8B%E8%80%85Apache-Atlas%E5%A6%82%E4%BD%95%E6%9E%84%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84API/">数据治理的王者Apache-Atlas如何构建自己的API</a>
+          </li>
+        
+          <li>
+            <a href="/2020/07/26/CountDownLatch%E3%80%81Semaphore%E3%80%81CyclicBarrier%E3%80%81Condition%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/">CountDownLatch、Semaphore、CyclicBarrier、Condition源码分析</a>
+          </li>
+        
+          <li>
+            <a href="/2020/07/05/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E6%A0%B8%E5%BF%83%E9%87%8D%E6%96%B0%E8%AE%A4%E8%AF%86SpringBoot%EF%BC%8C%E6%8E%8C%E6%8F%A1%E6%A0%B8%E5%BF%83%E7%89%B9%E6%80%A7%E5%8F%8A%E8%AE%BE%E8%AE%A1%E6%80%9D%E6%83%B3/">微服务核心重新认识SpringBoot，掌握核心特性及设计思想</a>
+          </li>
+        
+          <li>
+            <a href="/2020/06/26/JAVA%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E5%85%B3%E4%BA%8E%E9%94%81%E7%9A%84%E9%82%A3%E4%BA%9B%E4%BA%8B%EF%BC%8CReentantLock%E7%9A%84%E5%BA%95%E5%B1%82%E8%AE%BE%E8%AE%A1%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BA/">JAVA并发编程关于锁的那些事，ReentantLock的底层设计深入浅出</a>
+          </li>
+        
+          <li>
+            <a href="/2020/06/20/JAVA%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E9%98%B6%E6%AE%B5%E6%80%BB%E7%BB%93%E7%AF%87%EF%BC%8C%E8%A7%A3%E5%86%B3%E6%AD%BB%E9%94%81%E9%97%AE%E9%A2%98%E4%BB%A5%E5%8F%8AThreadLocal%E5%8E%9F%E7%90%86%E5%88%86%E6%9E%90/">JAVA并发编程阶段总结篇，解决死锁问题以及ThreadLocal原理分析</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2020 Kevin Shaw<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+  </div>
+</body>
+</html>
