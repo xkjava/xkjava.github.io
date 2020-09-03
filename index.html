@@ -74,6 +74,55 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-时间序列数据库InfluxDB集群方案高级实践经验，请关注" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/09/03/%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97%E6%95%B0%E6%8D%AE%E5%BA%93InfluxDB%E9%9B%86%E7%BE%A4%E6%96%B9%E6%A1%88%E9%AB%98%E7%BA%A7%E5%AE%9E%E8%B7%B5%E7%BB%8F%E9%AA%8C%EF%BC%8C%E8%AF%B7%E5%85%B3%E6%B3%A8/" class="article-date">
+  <time datetime="2020-09-03T09:22:50.000Z" itemprop="datePublished">2020-09-03</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/09/03/%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97%E6%95%B0%E6%8D%AE%E5%BA%93InfluxDB%E9%9B%86%E7%BE%A4%E6%96%B9%E6%A1%88%E9%AB%98%E7%BA%A7%E5%AE%9E%E8%B7%B5%E7%BB%8F%E9%AA%8C%EF%BC%8C%E8%AF%B7%E5%85%B3%E6%B3%A8/">时间序列数据库InfluxDB集群方案高级实践经验，请关注</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>如果监控全部接入单节点influxdb显然不能满足需求，Influxdb免费版不支持集群，商业版按照节点数收费不合理，在查询Influxdb监控数据的时候天然不会跨表（Measurement）查询。</p>
+<h1 id="一、数据处理"><a href="#一、数据处理" class="headerlink" title="一、数据处理"></a>一、数据处理</h1><p>连接kafka/RocketMQ服务从其中获取数据，处理数据之后调用代理网关将数据插入数据库中。</p>
+<h1 id="二、查询代理"><a href="#二、查询代理" class="headerlink" title="二、查询代理"></a>二、查询代理</h1><p>预处理查询语句，过滤危险查询代码，调用查询InfluxDB数据库。</p>
+<h1 id="三、网关层"><a href="#三、网关层" class="headerlink" title="三、网关层"></a>三、网关层</h1><p>网关用proxy模式来做数据分片，它的功能包括：</p>
+<ul>
+<li>按 db 和 measurement 分片写入不同节点</li>
+<li>聚合查询请求</li>
+<li>保存节点配置、转发规则到nacos中</li>
+<li>动态配置和更新网关中的配置</li>
+<li>在某个节点宕机后，下线或者替换某个节点</li>
+<li>基于raft分布式一致性协议实现AP<br><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/64358de4f0194979965c4a084a507609~tplv-k3u1fbpfcp-zoom-1.image" alt=""></li>
+</ul>
+<h1 id="四、简易架构图"><a href="#四、简易架构图" class="headerlink" title="四、简易架构图"></a>四、简易架构图</h1><p><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/1c8da0ced9eb45738b3fcd16f951f78d~tplv-k3u1fbpfcp-zoom-1.image" alt=""></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://xkjava.github.io/2020/09/03/%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97%E6%95%B0%E6%8D%AE%E5%BA%93InfluxDB%E9%9B%86%E7%BE%A4%E6%96%B9%E6%A1%88%E9%AB%98%E7%BA%A7%E5%AE%9E%E8%B7%B5%E7%BB%8F%E9%AA%8C%EF%BC%8C%E8%AF%B7%E5%85%B3%E6%B3%A8/" data-id="ckemlsj0n0002vjra19qrcivx" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-数据治理的王者Apache-Atlas如何构建自己的API" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2020/08/25/%E6%95%B0%E6%8D%AE%E6%B2%BB%E7%90%86%E7%9A%84%E7%8E%8B%E8%80%85Apache-Atlas%E5%A6%82%E4%BD%95%E6%9E%84%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84API/" class="article-date">
@@ -113,7 +162,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://xkjava.github.io/2020/08/25/%E6%95%B0%E6%8D%AE%E6%B2%BB%E7%90%86%E7%9A%84%E7%8E%8B%E8%80%85Apache-Atlas%E5%A6%82%E4%BD%95%E6%9E%84%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84API/" data-id="cke9cjzd3000ef5ra5b9qgkgv" class="article-share-link">Share</a>
+      <a data-url="https://xkjava.github.io/2020/08/25/%E6%95%B0%E6%8D%AE%E6%B2%BB%E7%90%86%E7%9A%84%E7%8E%8B%E8%80%85Apache-Atlas%E5%A6%82%E4%BD%95%E6%9E%84%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84API/" data-id="ckemlsj3j000gvjra79yn77rz" class="article-share-link">Share</a>
       
       
     </footer>
@@ -235,7 +284,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://xkjava.github.io/2020/07/26/CountDownLatch%E3%80%81Semaphore%E3%80%81CyclicBarrier%E3%80%81Condition%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" data-id="cke9cjzcj0005f5racy4ra32s" class="article-share-link">Share</a>
+      <a data-url="https://xkjava.github.io/2020/07/26/CountDownLatch%E3%80%81Semaphore%E3%80%81CyclicBarrier%E3%80%81Condition%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" data-id="ckemlsj200006vjra1riwgvo9" class="article-share-link">Share</a>
       
       
     </footer>
@@ -438,7 +487,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://xkjava.github.io/2020/07/05/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E6%A0%B8%E5%BF%83%E9%87%8D%E6%96%B0%E8%AE%A4%E8%AF%86SpringBoot%EF%BC%8C%E6%8E%8C%E6%8F%A1%E6%A0%B8%E5%BF%83%E7%89%B9%E6%80%A7%E5%8F%8A%E8%AE%BE%E8%AE%A1%E6%80%9D%E6%83%B3/" data-id="cke9cjzd4000ff5rabnboex0e" class="article-share-link">Share</a>
+      <a data-url="https://xkjava.github.io/2020/07/05/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E6%A0%B8%E5%BF%83%E9%87%8D%E6%96%B0%E8%AE%A4%E8%AF%86SpringBoot%EF%BC%8C%E6%8E%8C%E6%8F%A1%E6%A0%B8%E5%BF%83%E7%89%B9%E6%80%A7%E5%8F%8A%E8%AE%BE%E8%AE%A1%E6%80%9D%E6%83%B3/" data-id="ckemlsj3h000fvjra0ndy2i33" class="article-share-link">Share</a>
       
       
     </footer>
@@ -615,7 +664,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://xkjava.github.io/2020/06/26/JAVA%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E5%85%B3%E4%BA%8E%E9%94%81%E7%9A%84%E9%82%A3%E4%BA%9B%E4%BA%8B%EF%BC%8CReentantLock%E7%9A%84%E5%BA%95%E5%B1%82%E8%AE%BE%E8%AE%A1%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BA/" data-id="cke9cjzfh000zf5radbdp9eua" class="article-share-link">Share</a>
+      <a data-url="https://xkjava.github.io/2020/06/26/JAVA%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E5%85%B3%E4%BA%8E%E9%94%81%E7%9A%84%E9%82%A3%E4%BA%9B%E4%BA%8B%EF%BC%8CReentantLock%E7%9A%84%E5%BA%95%E5%B1%82%E8%AE%BE%E8%AE%A1%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BA/" data-id="ckemlsj4y0010vjraar3x6mzd" class="article-share-link">Share</a>
       
       
     </footer>
@@ -696,7 +745,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://xkjava.github.io/2020/06/20/JAVA%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E9%98%B6%E6%AE%B5%E6%80%BB%E7%BB%93%E7%AF%87%EF%BC%8C%E8%A7%A3%E5%86%B3%E6%AD%BB%E9%94%81%E9%97%AE%E9%A2%98%E4%BB%A5%E5%8F%8AThreadLocal%E5%8E%9F%E7%90%86%E5%88%86%E6%9E%90/" data-id="cke9cjzcw0008f5ra0ptpf41m" class="article-share-link">Share</a>
+      <a data-url="https://xkjava.github.io/2020/06/20/JAVA%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E9%98%B6%E6%AE%B5%E6%80%BB%E7%BB%93%E7%AF%87%EF%BC%8C%E8%A7%A3%E5%86%B3%E6%AD%BB%E9%94%81%E9%97%AE%E9%A2%98%E4%BB%A5%E5%8F%8AThreadLocal%E5%8E%9F%E7%90%86%E5%88%86%E6%9E%90/" data-id="ckemlsj240009vjra97pzeiqw" class="article-share-link">Share</a>
       
       
     </footer>
@@ -824,7 +873,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://xkjava.github.io/2020/05/30/JAVA%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E9%80%92%E8%BF%9B%E7%AF%87%EF%BC%8C%E6%8E%A2%E7%B4%A2%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8%E6%80%A7volatile%E5%85%B3%E9%94%AE%E5%AD%97%E5%A6%82%E4%BD%95%E4%BF%9D%E8%AF%81%E5%8F%AF%E8%A7%81%E6%80%A7/" data-id="cke9cjzcv0007f5ra6kr9ehip" class="article-share-link">Share</a>
+      <a data-url="https://xkjava.github.io/2020/05/30/JAVA%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E9%80%92%E8%BF%9B%E7%AF%87%EF%BC%8C%E6%8E%A2%E7%B4%A2%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8%E6%80%A7volatile%E5%85%B3%E9%94%AE%E5%AD%97%E5%A6%82%E4%BD%95%E4%BF%9D%E8%AF%81%E5%8F%AF%E8%A7%81%E6%80%A7/" data-id="ckemlsj230008vjradwmg8hza" class="article-share-link">Share</a>
       
       
     </footer>
@@ -942,7 +991,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://xkjava.github.io/2020/05/23/JAVA%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E5%85%A5%E9%97%A8%E7%AF%87%EF%BC%8C%E6%80%9D%E8%80%83%E5%90%8C%E6%AD%A5%E9%94%81Synchronized%E8%83%8C%E5%90%8E%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%93%B2%E5%AD%A6/" data-id="cke9cjzcl0006f5ra69oe26fo" class="article-share-link">Share</a>
+      <a data-url="https://xkjava.github.io/2020/05/23/JAVA%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E5%85%A5%E9%97%A8%E7%AF%87%EF%BC%8C%E6%80%9D%E8%80%83%E5%90%8C%E6%AD%A5%E9%94%81Synchronized%E8%83%8C%E5%90%8E%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%93%B2%E5%AD%A6/" data-id="ckemlsj220007vjrac972hqid" class="article-share-link">Share</a>
       
       
     </footer>
@@ -1082,7 +1131,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://xkjava.github.io/2020/05/18/JAVA%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E6%8F%AD%E5%BC%80%E7%AF%87%E7%AB%A0%EF%BC%8C%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E5%9F%BA%E6%9C%AC%E8%AE%A4%E8%AF%86%EF%BC%8C%E4%BA%86%E8%A7%A3%E5%A4%9A%E7%BA%BF%E7%A8%8B%E6%84%8F%E4%B9%89%E5%92%8C%E4%BD%BF%E7%94%A8/" data-id="cke9cjzdv000rf5rab6pehbx3" class="article-share-link">Share</a>
+      <a data-url="https://xkjava.github.io/2020/05/18/JAVA%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E6%8F%AD%E5%BC%80%E7%AF%87%E7%AB%A0%EF%BC%8C%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E5%9F%BA%E6%9C%AC%E8%AE%A4%E8%AF%86%EF%BC%8C%E4%BA%86%E8%A7%A3%E5%A4%9A%E7%BA%BF%E7%A8%8B%E6%84%8F%E4%B9%89%E5%92%8C%E4%BD%BF%E7%94%A8/" data-id="ckemlsj4j000svjra6i3hamzy" class="article-share-link">Share</a>
       
       
     </footer>
@@ -1313,136 +1362,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://xkjava.github.io/2020/05/15/%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E9%98%85%E8%AF%BBmybatis%E6%A0%B8%E5%BF%83%E6%BA%90%E7%A0%81%EF%BC%8C%E6%8E%8C%E6%8F%A1%E5%BA%95%E5%B1%82%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86%E4%B8%8E%E8%AE%BE%E8%AE%A1%E6%80%9D%E6%83%B3/" data-id="cke9cjzfx0011f5raewg0ftwo" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-面试官口中的Mybatis，工作流程、架构分层与模块划分以及缓存机制" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2020/05/14/%E9%9D%A2%E8%AF%95%E5%AE%98%E5%8F%A3%E4%B8%AD%E7%9A%84Mybatis%EF%BC%8C%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B%E3%80%81%E6%9E%B6%E6%9E%84%E5%88%86%E5%B1%82%E4%B8%8E%E6%A8%A1%E5%9D%97%E5%88%92%E5%88%86%E4%BB%A5%E5%8F%8A%E7%BC%93%E5%AD%98%E6%9C%BA%E5%88%B6/" class="article-date">
-  <time datetime="2020-05-14T08:30:35.000Z" itemprop="datePublished">2020-05-14</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/05/14/%E9%9D%A2%E8%AF%95%E5%AE%98%E5%8F%A3%E4%B8%AD%E7%9A%84Mybatis%EF%BC%8C%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B%E3%80%81%E6%9E%B6%E6%9E%84%E5%88%86%E5%B1%82%E4%B8%8E%E6%A8%A1%E5%9D%97%E5%88%92%E5%88%86%E4%BB%A5%E5%8F%8A%E7%BC%93%E5%AD%98%E6%9C%BA%E5%88%B6/">面试官口中的Mybatis，工作流程、架构分层与模块划分以及缓存机制</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>在我们平时的业务开发中，经常会使用“半自动化”的ORM框架Mybatis解决程序对数据库操作问题。MyBatis是一个Java持久化框架，它通过XML描述符或注解把对象与存储过程或SQL语句关联起来。MyBatis是在Apache许可证2.0下分发的自由软件，是iBATIS 3.0的分支版本。2001年开始开发的，是“internet”和“abtis（障碍物）”两个单词的组合。2004年捐赠给Apache，2010年更名为MyBatis。</p>
-<p>对于MyBatis在java程序中的使用想必大家一定都比较清楚了，这里主要说说它的工作流程、架构分层与模块划分以及缓存机制。</p>
-<h1 id="一、MyBatis的工作流程"><a href="#一、MyBatis的工作流程" class="headerlink" title="一、MyBatis的工作流程"></a>一、MyBatis的工作流程</h1><h2 id="1-1-解析配置文件（Configuration）"><a href="#1-1-解析配置文件（Configuration）" class="headerlink" title="1.1 解析配置文件（Configuration）"></a>1.1 解析配置文件（Configuration）</h2><p>mybatis启动的时候需要解析配置文件，包括全局配置文件和映射器配置文件，我们会把它们解析成一个Configuration对象。它包含了控制mybatis的行为以及对数据库下达的指令（SQL操作）。</p>
-<p><img src="https://user-gold-cdn.xitu.io/2020/5/13/1720cadf26dc0fb1?w=1170&h=684&f=png&s=60901" alt=""></p>
-<h2 id="1-2-提供操作接口（SqlSession）"><a href="#1-2-提供操作接口（SqlSession）" class="headerlink" title="1.2 提供操作接口（SqlSession）"></a>1.2 提供操作接口（SqlSession）</h2><p>应用程序与数据库进行连接是通过<strong>SqlSession</strong>对象完成的，如果需要获取一个会话，则需要通过会话工厂<strong>SqlSessionFactory</strong>接口来获取。</p>
-<p><img src="https://user-gold-cdn.xitu.io/2020/5/13/1720cb4d24765ed0?w=903&h=723&f=png&s=45946" alt=""></p>
-<p>通过建造者模式<strong>SqlSessionFactoryBuilder</strong>来创建一个工厂类，它包含所有配置文件的配置信息。</p>
-<p><img src="https://user-gold-cdn.xitu.io/2020/5/13/1720cbae2332dcc2?w=1275&h=759&f=png&s=77410" alt=""></p>
-<p><strong>SqlSession</strong>只是提供了一个接口，它还不是真正的操作数据库的SQL执行对象。</p>
-<h2 id="1-3-执行SQL操作"><a href="#1-3-执行SQL操作" class="headerlink" title="1.3 执行SQL操作"></a>1.3 执行SQL操作</h2><p><strong>Executor</strong>接口用来封装对数据库的操作。调用其中query和update接口会创建一系列的对象，来处理参数、执行SQL、处理结果集，把它简化成一个对象接口就是<strong>StatementHandler</strong>。</p>
-<p><img src="https://user-gold-cdn.xitu.io/2020/5/13/1720cc5c5fe3bacd?w=1272&h=774&f=png&s=71911" alt=""></p>
-<p><img src="https://user-gold-cdn.xitu.io/2020/5/13/1720cc6901975614?w=1044&h=660&f=png&s=41739" alt=""></p>
-<p>简要的画一下MyBatis的工作流程图：</p>
-<p><img src="https://user-gold-cdn.xitu.io/2020/5/13/1720cf3d66fbec46?w=1008&h=1113&f=jpeg&s=102937" alt=""></p>
-<h1 id="二、MyBatis的架构分层与模块划分"><a href="#二、MyBatis的架构分层与模块划分" class="headerlink" title="二、MyBatis的架构分层与模块划分"></a>二、MyBatis的架构分层与模块划分</h1><p>我们打开Mybatis的package，发现类似下面的结构：</p>
-<p><img src="https://user-gold-cdn.xitu.io/2020/5/13/1720cd789fedb487?w=426&h=762&f=png&s=33468" alt=""><br>按照不同的功能职责，也可以分成不同的工作层次。</p>
-<p><img src="https://user-gold-cdn.xitu.io/2020/5/13/1720cf2c68d193ce?w=1236&h=708&f=jpeg&s=190304" alt=""></p>
-<h1 id="三、MyBatis的缓存"><a href="#三、MyBatis的缓存" class="headerlink" title="三、MyBatis的缓存"></a>三、MyBatis的缓存</h1><h2 id="3-1-缓存体系结构"><a href="#3-1-缓存体系结构" class="headerlink" title="3.1 缓存体系结构"></a>3.1 缓存体系结构</h2><p>Mybatis缓存的默认实现是<strong>PerpetualCache</strong>类，它是基于HashMap实现的。</p>
-<p><img src="https://user-gold-cdn.xitu.io/2020/5/13/1720d014edda20f5?w=915&h=765&f=png&s=50014" alt=""></p>
-<p><strong>PerpetualCache</strong>在Mybatis是基础缓存，但是缓存有额外的功能，比如策略回收、日志记录、定时刷新等等，如果需要使用这些功能，那么需要在基础缓存的基础上进行添加，需要的时候添加，不需要即可不用添加。在缓存cache包下，有很多装饰器模式的类实现了Cache接口，通过这些实现类可以实现很多缓存额外的功能。</p>
-<p><img src="https://user-gold-cdn.xitu.io/2020/5/13/1720d0db0ca3a36b?w=1758&h=225&f=png&s=19663" alt=""></p>
-<p>所有的缓存实现总体上可以分为三大类：基本缓存、淘汰算法缓存、装饰器缓存。</p>
-<p><img src="https://user-gold-cdn.xitu.io/2020/5/13/1720d13d5a5214ef?w=1326&h=822&f=png&s=163943" alt=""></p>
-<h2 id="3-2-一级缓存（Local-Cache）"><a href="#3-2-一级缓存（Local-Cache）" class="headerlink" title="3.2 一级缓存（Local Cache）"></a>3.2 一级缓存（Local Cache）</h2><p>Mybatis的一级缓存是存放在会话（<strong>SqlSession</strong>）层面的，一级缓存是默认开启的，不需要额外的配置，关闭的话设置<strong>localCacheScope</strong>的值为<strong>STATEMENT</strong>。源码的位置在<strong>BaseExecutor</strong>中，如下图：</p>
-<p><img src="https://user-gold-cdn.xitu.io/2020/5/13/1720d5285b143b74?w=1071&h=294&f=png&s=22388" alt=""><br>如果需要在同一个会话共享一级缓存的话，那么最好的办法是在SqlSession内创建会话对象，让其成为SqlSession的一个属性，这样的话就很方便的操作一级缓存了。在同一个会话里多次执行相同的SQL语句，会直接从内存拿到缓存的结果集，不会再去数据库进行操作。如果在不同的会话中，即使SQL语句一模一样，也不会使用一级缓存的。</p>
-<p><img src="https://user-gold-cdn.xitu.io/2020/5/13/1720d77581caeddf?w=1113&h=448&f=jpeg&s=59003" alt=""></p>
-<p><strong>一级缓存的验证方式</strong></p>
-<p>判断是否命中缓存？如果第二次发送SQL并且到数据库中执行，则说明没有命中缓存；如果直接打印对象，则说明是从内存中获取到的结果。</p>
-<p>测试一级缓存需要先关闭二级缓存，将<strong>LocalCacheScope</strong>设置为<strong>SESSION</strong>。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">public void testCache() throws IOException &#123;</span><br><span class="line">    String resource &#x3D; &quot;mybatis-config.xml&quot;;</span><br><span class="line">    InputStream inputStream &#x3D; Resources.getResourceAsStream(resource);</span><br><span class="line">    SqlSessionFactory sqlSessionFactory &#x3D; new SqlSessionFactoryBuilder().build(inputStream);</span><br><span class="line"></span><br><span class="line">    SqlSession session1 &#x3D; sqlSessionFactory.openSession();</span><br><span class="line">    SqlSession session2 &#x3D; sqlSessionFactory.openSession();</span><br><span class="line">    try &#123;</span><br><span class="line">        &#x2F;&#x2F;在同一个session中共享</span><br><span class="line">        BlogMapper mapper0 &#x3D; session1.getMapper(BlogMapper.class);</span><br><span class="line">        BlogMapper mapper1 &#x3D; session1.getMapper(BlogMapper.class);</span><br><span class="line">        Blog blog &#x3D; mapper0.selectBlogById(1);</span><br><span class="line">        System.out.println(blog);</span><br><span class="line"></span><br><span class="line">        System.out.println(&quot;第二次查询，相同会话，获取到缓存了吗？&quot;);</span><br><span class="line">        System.out.println(mapper1.selectBlogById(1));</span><br><span class="line">        &#x2F;&#x2F;不同的session不能共享</span><br><span class="line">        System.out.println(&quot;第三次查询，不同会话，获取到缓存了吗？&quot;);</span><br><span class="line">        BlogMapper mapper2 &#x3D; session2.getMapper(BlogMapper.class);</span><br><span class="line">        System.out.println(mapper2.selectBlogById(1));</span><br><span class="line"></span><br><span class="line">    &#125; finally &#123;</span><br><span class="line">        session1.close();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>一级缓存在什么时候被清空失效的呢？<strong>在同一个session中update（包括delete）会导致一级缓存被清空。</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">public void testCacheInvalid() throws IOException &#123;</span><br><span class="line">    String resource &#x3D; &quot;mybatis-config.xml&quot;;</span><br><span class="line">    InputStream inputStream &#x3D; Resources.getResourceAsStream(resource);</span><br><span class="line">    SqlSessionFactory sqlSessionFactory &#x3D; new SqlSessionFactoryBuilder().build(inputStream);</span><br><span class="line"></span><br><span class="line">    SqlSession session &#x3D; sqlSessionFactory.openSession();</span><br><span class="line">    try &#123;</span><br><span class="line">        BlogMapper mapper &#x3D; session.getMapper(BlogMapper.class);</span><br><span class="line">        System.out.println(mapper.selectBlogById(1));</span><br><span class="line"></span><br><span class="line">        Blog blog &#x3D; new Blog();</span><br><span class="line">        blog.setBid(1);</span><br><span class="line">        blog.setName(&quot;after modified 666&quot;);</span><br><span class="line">        mapper.updateByPrimaryKey(blog);</span><br><span class="line">        session.commit();</span><br><span class="line"></span><br><span class="line">        &#x2F;&#x2F; 相同会话执行了更新操作，缓存是否被清空？</span><br><span class="line">        System.out.println(&quot;在[同一个会话]执行更新操作之后，是否命中缓存？&quot;);</span><br><span class="line">        System.out.println(mapper.selectBlogById(1));</span><br><span class="line"></span><br><span class="line">    &#125; finally &#123;</span><br><span class="line">        session.close();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>一级缓存的工作范围是一个session中，如果跨session会出现什么问题呢？<strong>如果其它的session更新了数据，会导致读取到过时的数据（一级缓存不能跨session共享）</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">public void testDirtyRead() throws IOException &#123;</span><br><span class="line">    String resource &#x3D; &quot;mybatis-config.xml&quot;;</span><br><span class="line">    InputStream inputStream &#x3D; Resources.getResourceAsStream(resource);</span><br><span class="line">    SqlSessionFactory sqlSessionFactory &#x3D; new SqlSessionFactoryBuilder().build(inputStream);</span><br><span class="line"></span><br><span class="line">    SqlSession session1 &#x3D; sqlSessionFactory.openSession();</span><br><span class="line">    SqlSession session2 &#x3D; sqlSessionFactory.openSession();</span><br><span class="line">    try &#123;</span><br><span class="line">        BlogMapper mapper1 &#x3D; session1.getMapper(BlogMapper.class);</span><br><span class="line">        System.out.println(mapper1.selectBlogById(1));</span><br><span class="line"></span><br><span class="line">        &#x2F;&#x2F; 会话2更新了数据，会话2的一级缓存更新</span><br><span class="line">        Blog blog &#x3D; new Blog();</span><br><span class="line">        blog.setBid(1);</span><br><span class="line">        blog.setName(&quot;after modified 333333333333333333&quot;);</span><br><span class="line">        BlogMapper mapper2 &#x3D; session2.getMapper(BlogMapper.class);</span><br><span class="line">        mapper2.updateByPrimaryKey(blog);</span><br><span class="line">        session2.commit();</span><br><span class="line"></span><br><span class="line">        &#x2F;&#x2F; 其他会话更新了数据，本会话的一级缓存还在么？</span><br><span class="line">        System.out.println(&quot;会话1查到最新的数据了吗？&quot;);</span><br><span class="line">        System.out.println(mapper1.selectBlogById(1));</span><br><span class="line">    &#125; finally &#123;</span><br><span class="line">        session1.close();</span><br><span class="line">        session2.close();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p><strong>一级缓存的不足之处</strong></p>
-<p>一级缓存不能跨会话共享，不同的会话之间对于相同的数据可能有不同的缓存。在分布式环境（多会话）下，会存在查询到过时的数据的情况。如果有解决这个问题，那么需要引进工作范围更为广发的二级缓存。</p>
-<h2 id="3-3-二级缓存"><a href="#3-3-二级缓存" class="headerlink" title="3.3 二级缓存"></a>3.3 二级缓存</h2><p>二级缓存的生命周期和应用同步，它是用来解决一级缓存不能跨会话共享数据的问题，范围是namespace级别的，可以被多个会话共享（只要是同一个接口的相同方法，都可以进行共享）。</p>
-<p><strong>二级缓存的流程图：</strong></p>
-<p><img src="https://user-gold-cdn.xitu.io/2020/5/13/1720e94cf8cced21?w=1113&h=601&f=jpeg&s=83476" alt=""></p>
-<p>一级缓存是默认开始的，二级缓存如何开启呢？<br>1、在mybatis-config.xml中配置（默认是true）</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;!-- 控制全局缓存（二级缓存），默认 true--&gt;</span><br><span class="line">&lt;setting name&#x3D;&quot;cacheEnabled&quot; value&#x3D;&quot;true&quot;&#x2F;&gt;</span><br></pre></td></tr></table></figure>
-
-<p>只要没有显式地设置cacheEnabled为false，都会使用CachingExector装饰基本的执行器（SIMPLE、REUSE、BATCH）。<br><strong>二级缓存总是默认开启的，但是每个Mapper的二级开关是默认关闭的。</strong></p>
-<p>2、在Mapper中配置cache标签</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;!-- 声明这个namespace使用二级缓存 --&gt;</span><br><span class="line">&lt;cache type&#x3D;&quot;org.apache.ibatis.cache.impl.PerpetualCache&quot;</span><br><span class="line">   size&#x3D;&quot;1024&quot;&lt;!-- 最多缓存对象个数，默认是1024 --&gt;</span><br><span class="line">   eviction&#x3D;&quot;LRU&quot;&lt;!-- 缓存策略 --&gt;</span><br><span class="line">   flushInterval&#x3D;&quot;120000&quot;&lt;!-- 自动刷新时间ms，未配置是只有调用时刷新 --&gt;</span><br><span class="line">   readOnly&#x3D;&quot;false&quot;&#x2F;&gt;&lt;!-- 默认是false（安全），改为true可读写时，对象必须支持序列化 --&gt;</span><br></pre></td></tr></table></figure>
-<p><strong>Cache属性详解：</strong></p>
-<p><img src="https://user-gold-cdn.xitu.io/2020/5/13/1720ebad5c692f36?w=1160&h=432&f=png&s=94894" alt=""></p>
-<p>默认的回收内存策略是 LRU。可用的内存回收策略有：</p>
-<ul>
-<li>LRU – 最近最少使用：移除最长时间不被使用的对象。</li>
-<li>FIFO – 先进先出：按对象进入缓存的顺序来移除它们。</li>
-<li>SOFT – 软引用：基于垃圾回收器状态和软引用规则移除对象。</li>
-<li>WEAK – 弱引用：更积极地基于垃圾收集器状态和弱引用规则移除对象。</li>
-</ul>
-<p>Mapper.xml 配置了cache之后，select()会被缓存。update()、delete()、insert()会刷新缓存。：如果cacheEnabled=true，Mapper.xml 没有配置标签，还有二级缓存吗？（没有）还会出现CachingExecutor 包装对象吗？（会）</p>
-<p>只要cacheEnabled=true基本执行器就会被装饰。有没有配置cache，决定了在启动的时候会不会创建这个mapper的Cache对象，只是最终会影响到CachingExecutorquery 方法里面的判断。如果某些查询方法对数据的实时性要求很高，不需要二级缓存，怎么办？我们可以在单个Statement ID 上显式关闭二级缓存（默认是true）：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;select id&#x3D;&quot;selectBlog&quot; resultMap&#x3D;&quot;BaseResultMap&quot; useCache&#x3D;&quot;false&quot;&gt;</span><br></pre></td></tr></table></figure>
-<p><strong>二级缓存的验证方式</strong></p>
-<p>1、事务不提交，二级缓存会写入吗？</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">public void testCache() throws IOException &#123;</span><br><span class="line">    String resource &#x3D; &quot;mybatis-config.xml&quot;;</span><br><span class="line">    InputStream inputStream &#x3D; Resources.getResourceAsStream(resource);</span><br><span class="line">    SqlSessionFactory sqlSessionFactory &#x3D; new SqlSessionFactoryBuilder().build(inputStream);</span><br><span class="line"></span><br><span class="line">    SqlSession session1 &#x3D; sqlSessionFactory.openSession();</span><br><span class="line">    SqlSession session2 &#x3D; sqlSessionFactory.openSession();</span><br><span class="line">    try &#123;</span><br><span class="line">        BlogMapper mapper1 &#x3D; session1.getMapper(BlogMapper.class);</span><br><span class="line">        System.out.println(mapper1.selectBlogById(1));</span><br><span class="line">        &#x2F;&#x2F; 事务不提交的情况下，二级缓存会写入吗？显然不会，为什么呢？</span><br><span class="line">        session1.commit();</span><br><span class="line"></span><br><span class="line">        System.out.println(&quot;第二次查询&quot;);</span><br><span class="line">        BlogMapper mapper2 &#x3D; session2.getMapper(BlogMapper.class);</span><br><span class="line">        System.out.println(mapper2.selectBlogById(1));</span><br><span class="line">    &#125; finally &#123;</span><br><span class="line">        session1.close();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p><strong>为什么事务不提交，二级缓存不生效呢？</strong><br>因为二级缓存使用<strong>TransactionalCacheManager</strong>（TCM）来管理，最后又调用了TransactionalCache 的getObject()、putObject和commit()方法，TransactionalCache里面又持有了真正的Cache对象，比如是经过层层装饰的<strong>PerpetualCache</strong>。在putObject 的时候，只是添加到了entriesToAddOnCommit里面，<strong>只有它的commit()方法被调用的时候才会调用flushPendingEntries()真正写入缓存</strong>。它就是在<strong>DefaultSqlSession</strong> 调用<strong>commit</strong>()的时候被调用的。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">public void commit() &#123;</span><br><span class="line">    if (clearOnCommit) &#123;</span><br><span class="line">      delegate.clear();</span><br><span class="line">    &#125;</span><br><span class="line">    &#x2F;&#x2F; 真正写入二级缓存</span><br><span class="line">    flushPendingEntries();</span><br><span class="line">    reset();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">private void flushPendingEntries() &#123;</span><br><span class="line">   for (Map.Entry&lt;Object, Object&gt; entry : entriesToAddOnCommit.entrySet()) &#123;</span><br><span class="line">     delegate.putObject(entry.getKey(), entry.getValue());</span><br><span class="line">   &#125;</span><br><span class="line">   for (Object entry : entriesMissedInCache) &#123;</span><br><span class="line">     if (!entriesToAddOnCommit.containsKey(entry)) &#123;</span><br><span class="line">       delegate.putObject(entry, null);</span><br><span class="line">     &#125;</span><br><span class="line">   &#125;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
-
-<p>在其它的会话中执行增删改操作，验证缓存被刷新</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">public void testCacheInvalid() throws IOException &#123;</span><br><span class="line">    String resource &#x3D; &quot;mybatis-config.xml&quot;;</span><br><span class="line">    InputStream inputStream &#x3D; Resources.getResourceAsStream(resource);</span><br><span class="line">    SqlSessionFactory sqlSessionFactory &#x3D; new SqlSessionFactoryBuilder().build(inputStream);</span><br><span class="line"></span><br><span class="line">    SqlSession session1 &#x3D; sqlSessionFactory.openSession();</span><br><span class="line">    SqlSession session2 &#x3D; sqlSessionFactory.openSession();</span><br><span class="line">    SqlSession session3 &#x3D; sqlSessionFactory.openSession();</span><br><span class="line">    try &#123;</span><br><span class="line">        BlogMapper mapper1 &#x3D; session1.getMapper(BlogMapper.class);</span><br><span class="line">        BlogMapper mapper2 &#x3D; session2.getMapper(BlogMapper.class);</span><br><span class="line">        BlogMapper mapper3 &#x3D; session3.getMapper(BlogMapper.class);</span><br><span class="line">        System.out.println(mapper1.selectBlogById(1));</span><br><span class="line">        session1.commit();</span><br><span class="line"></span><br><span class="line">        &#x2F;&#x2F; 是否命中二级缓存</span><br><span class="line">        System.out.println(&quot;是否命中二级缓存？&quot;);</span><br><span class="line">        System.out.println(mapper2.selectBlogById(1));</span><br><span class="line"></span><br><span class="line">        Blog blog &#x3D; new Blog();</span><br><span class="line">        blog.setBid(1);</span><br><span class="line">        blog.setName(&quot;2020年5月13日15:03:38&quot;);</span><br><span class="line">        mapper3.updateByPrimaryKey(blog);</span><br><span class="line">        session3.commit();</span><br><span class="line"></span><br><span class="line">        System.out.println(&quot;更新后再次查询，是否命中二级缓存？&quot;);</span><br><span class="line">        &#x2F;&#x2F; 在其他会话中执行了更新操作，二级缓存是否被清空？</span><br><span class="line">        System.out.println(mapper2.selectBlogById(1));</span><br><span class="line"></span><br><span class="line">    &#125; finally &#123;</span><br><span class="line">        session1.close();</span><br><span class="line">        session2.close();</span><br><span class="line">        session3.close();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p><strong>为什么增删改操作会清空缓存？</strong><br>在<strong>CachingExecutor</strong>的update()方法里面会调用flushCacheIfRequired(ms)，<strong>isFlushCacheRequired</strong> 就是从标签里面渠道的flushCache 的值。而增删改操作的<strong>flushCache</strong> 属性默认为true。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">private void flushCacheIfRequired(MappedStatement ms) &#123;</span><br><span class="line">    Cache cache &#x3D; ms.getCache();</span><br><span class="line">    &#x2F;&#x2F; 增删改查的标签上有属性：flushCache&#x3D;&quot;true&quot; （select语句默认是false）</span><br><span class="line">    &#x2F;&#x2F; 一级二级缓存都会被清理</span><br><span class="line">    if (cache !&#x3D; null &amp;&amp; ms.isFlushCacheRequired()) &#123;</span><br><span class="line">      tcm.clear(cache);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p><strong>什么时候开启二级缓存呢？</strong></p>
-<p>一级缓存默认是打开的，二级缓存需要配置才可以开启。那么我们必须思考一个问题，在什么情况下才有必要去开启二级缓存？</p>
-<p>因为所有的增删改都会刷新二级缓存，导致二级缓存失效，所以适合在查询为主的应用中使用，比如历史交易、历史订单的查询。否则缓存就失去了意义。如果多个namespace 中有针对于同一个表的操作，如果在一个namespace中刷新了缓存，另一个namespace中没有刷新，就会出现读到脏数据的情况。所以，推荐在一个Mapper 里面只操作单表的情况使用。如果要让多个namespace共享一个二级缓存，应该怎么做？跨namespace的缓存共享的问题，可以使用cache-ref配置来解决：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;cache-ref namespace&#x3D;&quot;com.sy.crud.dao.DepartmentMapper&quot; &#x2F;&gt;</span><br></pre></td></tr></table></figure>
-<p>　　cache-ref 代表引用别的命名空间的Cache配置，两个命名空间的操作使用的是同一个Cache。在关联的表比较少，或者按照业务可以对表进行分组的时候可以使用。</p>
-<p>注意：在这种情况下，多个Mapper的操作都会引起缓存刷新，缓存的意义已经不大了</p>
-<p><strong>第三方缓存做二级缓存</strong></p>
-<p>除了MyBatis 自带的二级缓存之外，我们也可以通过实现Cache 接口来自定义二级缓存。MyBatis官方提供了一些第三方缓存集成方式，比如ehcache 和redis：</p>
-<p><a href="https://github.com/mybatis/redis-cache" target="_blank" rel="noopener">https://github.com/mybatis/redis-cache</a> </p>
-<p>当然，我们也可以使用独立的缓存服务，不使用MyBatis 自带的二级缓存。</p>
-<p>pom文件引入的依赖：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;org.mybatis.caches&lt;&#x2F;groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;mybatis-redis&lt;&#x2F;artifactId&gt;</span><br><span class="line">    &lt;version&gt;1.0.0-beta2&lt;&#x2F;version&gt;</span><br><span class="line">&lt;&#x2F;dependency&gt;</span><br></pre></td></tr></table></figure>
-<p>mapper.xml配置文件的内容：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;!-- 使用Redis作为二级缓存 --&gt;</span><br><span class="line">   &lt;cache type&#x3D;&quot;org.mybatis.caches.redis.RedisCache&quot;</span><br><span class="line">          eviction&#x3D;&quot;FIFO&quot; flushInterval&#x3D;&quot;60000&quot; size&#x3D;&quot;512&quot; readOnly&#x3D;&quot;true&quot;&#x2F;&gt;</span><br></pre></td></tr></table></figure>
-
-<p>redis.properties配置文件内容：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">host&#x3D;localhost</span><br><span class="line">port&#x3D;6379</span><br><span class="line">connectionTimeout&#x3D;5000</span><br><span class="line">soTimeout&#x3D;5000</span><br><span class="line">database&#x3D;0</span><br></pre></td></tr></table></figure>
-
-<p>当然，我们在分布式的环境中，也可以使用独立的缓存服务，不使用MyBatis自带的二级缓存。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://xkjava.github.io/2020/05/14/%E9%9D%A2%E8%AF%95%E5%AE%98%E5%8F%A3%E4%B8%AD%E7%9A%84Mybatis%EF%BC%8C%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B%E3%80%81%E6%9E%B6%E6%9E%84%E5%88%86%E5%B1%82%E4%B8%8E%E6%A8%A1%E5%9D%97%E5%88%92%E5%88%86%E4%BB%A5%E5%8F%8A%E7%BC%93%E5%AD%98%E6%9C%BA%E5%88%B6/" data-id="cke9cjzee000yf5ra0lsk7wvt" class="article-share-link">Share</a>
+      <a data-url="https://xkjava.github.io/2020/05/15/%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E9%98%85%E8%AF%BBmybatis%E6%A0%B8%E5%BF%83%E6%BA%90%E7%A0%81%EF%BC%8C%E6%8E%8C%E6%8F%A1%E5%BA%95%E5%B1%82%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86%E4%B8%8E%E8%AE%BE%E8%AE%A1%E6%80%9D%E6%83%B3/" data-id="ckemlsj600012vjrae81v8hte" class="article-share-link">Share</a>
       
       
     </footer>
@@ -1475,7 +1395,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li></ul>
     </div>
   </div>
 
@@ -1486,6 +1406,10 @@
     <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2020/09/03/%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97%E6%95%B0%E6%8D%AE%E5%BA%93InfluxDB%E9%9B%86%E7%BE%A4%E6%96%B9%E6%A1%88%E9%AB%98%E7%BA%A7%E5%AE%9E%E8%B7%B5%E7%BB%8F%E9%AA%8C%EF%BC%8C%E8%AF%B7%E5%85%B3%E6%B3%A8/">时间序列数据库InfluxDB集群方案高级实践经验，请关注</a>
+          </li>
         
           <li>
             <a href="/2020/08/25/%E6%95%B0%E6%8D%AE%E6%B2%BB%E7%90%86%E7%9A%84%E7%8E%8B%E8%80%85Apache-Atlas%E5%A6%82%E4%BD%95%E6%9E%84%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84API/">数据治理的王者Apache-Atlas如何构建自己的API</a>
@@ -1501,10 +1425,6 @@
         
           <li>
             <a href="/2020/06/26/JAVA%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E5%85%B3%E4%BA%8E%E9%94%81%E7%9A%84%E9%82%A3%E4%BA%9B%E4%BA%8B%EF%BC%8CReentantLock%E7%9A%84%E5%BA%95%E5%B1%82%E8%AE%BE%E8%AE%A1%E6%B7%B1%E5%85%A5%E6%B5%85%E5%87%BA/">JAVA并发编程关于锁的那些事，ReentantLock的底层设计深入浅出</a>
-          </li>
-        
-          <li>
-            <a href="/2020/06/20/JAVA%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E9%98%B6%E6%AE%B5%E6%80%BB%E7%BB%93%E7%AF%87%EF%BC%8C%E8%A7%A3%E5%86%B3%E6%AD%BB%E9%94%81%E9%97%AE%E9%A2%98%E4%BB%A5%E5%8F%8AThreadLocal%E5%8E%9F%E7%90%86%E5%88%86%E6%9E%90/">JAVA并发编程阶段总结篇，解决死锁问题以及ThreadLocal原理分析</a>
           </li>
         
       </ul>

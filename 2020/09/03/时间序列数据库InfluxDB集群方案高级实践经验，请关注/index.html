@@ -5,21 +5,26 @@
   
 
   
-  <title>Archives: 2020/2 | 来一杯咖啡</title>
+  <title>时间序列数据库InfluxDB集群方案高级实践经验，请关注 | 来一杯咖啡</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="互联网Java体系平台架构，分布式系统，中间件技术等">
-<meta property="og:type" content="website">
-<meta property="og:title" content="来一杯咖啡">
-<meta property="og:url" content="https://xkjava.github.io/archives/2020/02/page/2/index.html">
+  <meta name="description" content="如果监控全部接入单节点influxdb显然不能满足需求，Influxdb免费版不支持集群，商业版按照节点数收费不合理，在查询Influxdb监控数据的时候天然不会跨表（Measurement）查询。 一、数据处理连接kafka&#x2F;RocketMQ服务从其中获取数据，处理数据之后调用代理网关将数据插入数据库中。 二、查询代理预处理查询语句，过滤危险查询代码，调用查询InfluxDB数据库。 三、网关层">
+<meta property="og:type" content="article">
+<meta property="og:title" content="时间序列数据库InfluxDB集群方案高级实践经验，请关注">
+<meta property="og:url" content="https://xkjava.github.io/2020/09/03/%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97%E6%95%B0%E6%8D%AE%E5%BA%93InfluxDB%E9%9B%86%E7%BE%A4%E6%96%B9%E6%A1%88%E9%AB%98%E7%BA%A7%E5%AE%9E%E8%B7%B5%E7%BB%8F%E9%AA%8C%EF%BC%8C%E8%AF%B7%E5%85%B3%E6%B3%A8/index.html">
 <meta property="og:site_name" content="来一杯咖啡">
-<meta property="og:description" content="互联网Java体系平台架构，分布式系统，中间件技术等">
+<meta property="og:description" content="如果监控全部接入单节点influxdb显然不能满足需求，Influxdb免费版不支持集群，商业版按照节点数收费不合理，在查询Influxdb监控数据的时候天然不会跨表（Measurement）查询。 一、数据处理连接kafka&#x2F;RocketMQ服务从其中获取数据，处理数据之后调用代理网关将数据插入数据库中。 二、查询代理预处理查询语句，过滤危险查询代码，调用查询InfluxDB数据库。 三、网关层">
 <meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/64358de4f0194979965c4a084a507609~tplv-k3u1fbpfcp-zoom-1.image">
+<meta property="og:image" content="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/1c8da0ced9eb45738b3fcd16f951f78d~tplv-k3u1fbpfcp-zoom-1.image">
+<meta property="article:published_time" content="2020-09-03T09:22:50.000Z">
+<meta property="article:modified_time" content="2020-09-03T09:24:09.020Z">
 <meta property="article:author" content="Kevin Shaw">
 <meta property="article:tag" content="Java">
 <meta property="article:tag" content="Spring">
 <meta property="article:tag" content="Netty">
 <meta property="article:tag" content="Kafka...">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/64358de4f0194979965c4a084a507609~tplv-k3u1fbpfcp-zoom-1.image">
   
     <link rel="alternate" href="/atom.xml" title="来一杯咖啡" type="application/atom+xml">
   
@@ -72,64 +77,64 @@
   </div>
 </header>
       <div class="outer">
-        <section id="main">
-  
-  
-    
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2020" class="archive-year">2020</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2020/02/08/%E5%A6%82%E4%BD%95%E4%BC%98%E9%9B%85%E7%9A%84%E5%AD%A6%E4%B9%A0JVM%EF%BC%8C%E8%BF%9B%E8%A1%8C%E7%AF%87%EF%BC%88%E4%BA%8C%EF%BC%89/" class="archive-article-date">
-  <time datetime="2020-02-08T10:10:01.000Z" itemprop="datePublished">Feb 8</time>
+        <section id="main"><article id="post-时间序列数据库InfluxDB集群方案高级实践经验，请关注" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/09/03/%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97%E6%95%B0%E6%8D%AE%E5%BA%93InfluxDB%E9%9B%86%E7%BE%A4%E6%96%B9%E6%A1%88%E9%AB%98%E7%BA%A7%E5%AE%9E%E8%B7%B5%E7%BB%8F%E9%AA%8C%EF%BC%8C%E8%AF%B7%E5%85%B3%E6%B3%A8/" class="article-date">
+  <time datetime="2020-09-03T09:22:50.000Z" itemprop="datePublished">2020-09-03</time>
 </a>
-      
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2020/02/08/%E5%A6%82%E4%BD%95%E4%BC%98%E9%9B%85%E7%9A%84%E5%AD%A6%E4%B9%A0JVM%EF%BC%8C%E8%BF%9B%E8%A1%8C%E7%AF%87%EF%BC%88%E4%BA%8C%EF%BC%89/">如何优雅的学习JVM，进行篇（二）</a>
+    <h1 class="article-title" itemprop="name">
+      时间序列数据库InfluxDB集群方案高级实践经验，请关注
     </h1>
   
 
-    </header>
-  </div>
-</article>
-  
+      </header>
     
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2020/02/05/%E5%A6%82%E4%BD%95%E4%BC%98%E9%9B%85%E7%9A%84%E5%AD%A6%E4%B9%A0JVM%EF%BC%8C%E6%8F%AD%E5%BC%80%E7%AF%87%EF%BC%88%E4%B8%80%EF%BC%89/" class="archive-article-date">
-  <time datetime="2020-02-05T05:39:38.000Z" itemprop="datePublished">Feb 5</time>
-</a>
+    <div class="article-entry" itemprop="articleBody">
       
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2020/02/05/%E5%A6%82%E4%BD%95%E4%BC%98%E9%9B%85%E7%9A%84%E5%AD%A6%E4%B9%A0JVM%EF%BC%8C%E6%8F%AD%E5%BC%80%E7%AF%87%EF%BC%88%E4%B8%80%EF%BC%89/">如何优雅的学习JVM，揭开篇（一）</a>
-    </h1>
-  
+        <p>如果监控全部接入单节点influxdb显然不能满足需求，Influxdb免费版不支持集群，商业版按照节点数收费不合理，在查询Influxdb监控数据的时候天然不会跨表（Measurement）查询。</p>
+<h1 id="一、数据处理"><a href="#一、数据处理" class="headerlink" title="一、数据处理"></a>一、数据处理</h1><p>连接kafka/RocketMQ服务从其中获取数据，处理数据之后调用代理网关将数据插入数据库中。</p>
+<h1 id="二、查询代理"><a href="#二、查询代理" class="headerlink" title="二、查询代理"></a>二、查询代理</h1><p>预处理查询语句，过滤危险查询代码，调用查询InfluxDB数据库。</p>
+<h1 id="三、网关层"><a href="#三、网关层" class="headerlink" title="三、网关层"></a>三、网关层</h1><p>网关用proxy模式来做数据分片，它的功能包括：</p>
+<ul>
+<li>按 db 和 measurement 分片写入不同节点</li>
+<li>聚合查询请求</li>
+<li>保存节点配置、转发规则到nacos中</li>
+<li>动态配置和更新网关中的配置</li>
+<li>在某个节点宕机后，下线或者替换某个节点</li>
+<li>基于raft分布式一致性协议实现AP<br><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/64358de4f0194979965c4a084a507609~tplv-k3u1fbpfcp-zoom-1.image" alt=""></li>
+</ul>
+<h1 id="四、简易架构图"><a href="#四、简易架构图" class="headerlink" title="四、简易架构图"></a>四、简易架构图</h1><p><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/1c8da0ced9eb45738b3fcd16f951f78d~tplv-k3u1fbpfcp-zoom-1.image" alt=""></p>
 
-    </header>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://xkjava.github.io/2020/09/03/%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97%E6%95%B0%E6%8D%AE%E5%BA%93InfluxDB%E9%9B%86%E7%BE%A4%E6%96%B9%E6%A1%88%E9%AB%98%E7%BA%A7%E5%AE%9E%E8%B7%B5%E7%BB%8F%E9%AA%8C%EF%BC%8C%E8%AF%B7%E5%85%B3%E6%B3%A8/" data-id="ckemlsj0n0002vjra19qrcivx" class="article-share-link">Share</a>
+      
+      
+    </footer>
   </div>
-</article>
   
-  
-    </div></section>
-  
-
-
-  <nav id="page-nav">
     
-    <a class="extend prev" rel="prev" href="/archives/2020/02/">&amp;laquo; Prev</a><a class="page-number" href="/archives/2020/02/">1</a><span class="page-number current">2</span>
-  </nav>
+<nav id="article-nav">
+  
+  
+    <a href="/2020/08/25/%E6%95%B0%E6%8D%AE%E6%B2%BB%E7%90%86%E7%9A%84%E7%8E%8B%E8%80%85Apache-Atlas%E5%A6%82%E4%BD%95%E6%9E%84%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84API/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">数据治理的王者Apache-Atlas如何构建自己的API</div>
+    </a>
+  
+</nav>
+
+  
+</article>
 
 </section>
         
