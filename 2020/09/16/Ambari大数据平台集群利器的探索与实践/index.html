@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>Ambari大数据平台集群利器的探索与实践 | 来一杯咖啡</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="一、简介Ambari是 Apache Software Foundation 中的一个顶级项目，它是用来创建、管理、监视Hadoop整个生态圈的工具。 Ambari是分布式架构，主要由Ambari Server和Ambari Agent组成。 HDP是hortonworks的软件栈，里面包含了hadoop生态系统的所有软件项目，其实就是软件包合集。 HDP-UTILS是工具类库。各软件版本对照表：">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Ambari大数据平台集群利器的探索与实践">
+<meta property="og:url" content="https://xkjava.github.io/2020/09/16/Ambari%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%B9%B3%E5%8F%B0%E9%9B%86%E7%BE%A4%E5%88%A9%E5%99%A8%E7%9A%84%E6%8E%A2%E7%B4%A2%E4%B8%8E%E5%AE%9E%E8%B7%B5/index.html">
+<meta property="og:site_name" content="来一杯咖啡">
+<meta property="og:description" content="一、简介Ambari是 Apache Software Foundation 中的一个顶级项目，它是用来创建、管理、监视Hadoop整个生态圈的工具。 Ambari是分布式架构，主要由Ambari Server和Ambari Agent组成。 HDP是hortonworks的软件栈，里面包含了hadoop生态系统的所有软件项目，其实就是软件包合集。 HDP-UTILS是工具类库。各软件版本对照表：">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/e9af9108183e4b27afd5d08486eec6e5~tplv-k3u1fbpfcp-zoom-1.image">
+<meta property="og:image" content="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/c4c39ef626164219be1568987dba237f~tplv-k3u1fbpfcp-zoom-1.image">
+<meta property="og:image" content="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/5968fb8ba5704939ace3014a5a10a6bd~tplv-k3u1fbpfcp-zoom-1.image">
+<meta property="og:image" content="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/8e3ac6dc623544508032c29fddd3bf16~tplv-k3u1fbpfcp-zoom-1.image">
+<meta property="og:image" content="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/c1d992f1cc1e4fbfba2806f81b33d531~tplv-k3u1fbpfcp-zoom-1.image">
+<meta property="og:image" content="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/bb4482e463ea40e6a13135b072fdfa07~tplv-k3u1fbpfcp-zoom-1.image">
+<meta property="og:image" content="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/2092ab25469c4a268be9c6b91ae4e17a~tplv-k3u1fbpfcp-zoom-1.image">
+<meta property="og:image" content="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/fe2b3e217f53481c8aaa52b87915e034~tplv-k3u1fbpfcp-zoom-1.image">
+<meta property="og:image" content="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/f728e5d99c4f4b6987049a03b81b2565~tplv-k3u1fbpfcp-zoom-1.image">
+<meta property="og:image" content="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/69a24ff077c341098b01575b8414e2a5~tplv-k3u1fbpfcp-zoom-1.image">
+<meta property="og:image" content="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/224b5998f1e7423480777d9324d11334~tplv-k3u1fbpfcp-zoom-1.image">
+<meta property="og:image" content="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/f72d7e51bfee4bf2a5fbfd01a79998ae~tplv-k3u1fbpfcp-zoom-1.image">
+<meta property="og:image" content="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/51fcc85f6a5e4627a01aef1bafe1e26e~tplv-k3u1fbpfcp-zoom-1.image">
+<meta property="og:image" content="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/71a92b78ef5c4f79ac45eca4e0c83b46~tplv-k3u1fbpfcp-zoom-1.image">
+<meta property="og:image" content="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/7c7454bf473941e3a3f9e403f2d96328~tplv-k3u1fbpfcp-zoom-1.image">
+<meta property="og:image" content="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/497f60f441b74fdead707516a736f6ef~tplv-k3u1fbpfcp-zoom-1.image">
+<meta property="og:image" content="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/7bf0c5646bf145008839facd353b0f3c~tplv-k3u1fbpfcp-zoom-1.image">
+<meta property="og:image" content="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/071e17b7023142668fa8c58603eddb2c~tplv-k3u1fbpfcp-zoom-1.image">
+<meta property="og:image" content="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/e8121b4b855c40a6af1fa61d2a2e6941~tplv-k3u1fbpfcp-zoom-1.image">
+<meta property="og:image" content="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/6cd42dfaa6ab45bb89a3a49a4f460ac5~tplv-k3u1fbpfcp-zoom-1.image">
+<meta property="og:image" content="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/bd7fa948348347429a4eabcad267b613~tplv-k3u1fbpfcp-zoom-1.image">
+<meta property="og:image" content="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/f4d708f1bc2e499fb07be3297782bfc5~tplv-k3u1fbpfcp-zoom-1.image">
+<meta property="og:image" content="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/5de66eded065467bbd807303aadda296~tplv-k3u1fbpfcp-zoom-1.image">
+<meta property="og:image" content="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/28a1d7e1bf27435484a3ae0fce2daab4~tplv-k3u1fbpfcp-zoom-1.image">
+<meta property="og:image" content="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/6d463712c7e3446c90b3439cffb0182b~tplv-k3u1fbpfcp-zoom-1.image">
+<meta property="og:image" content="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/f81f8b396a3a4e2a87749bac4028a95a~tplv-k3u1fbpfcp-zoom-1.image">
+<meta property="og:image" content="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/97b509c6e3c141dd87722f15f673d45a~tplv-k3u1fbpfcp-zoom-1.image">
+<meta property="og:image" content="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/68c2faa8a3194e6986198a8eeee181d2~tplv-k3u1fbpfcp-zoom-1.image">
+<meta property="og:image" content="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/fae0e6faadaf41cfb769b81f445cf245~tplv-k3u1fbpfcp-zoom-1.image">
+<meta property="og:image" content="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/7ac9651e60ed42b9b170be87f4533f06~tplv-k3u1fbpfcp-zoom-1.image">
+<meta property="article:published_time" content="2020-09-16T07:03:01.000Z">
+<meta property="article:modified_time" content="2020-09-16T07:03:49.626Z">
+<meta property="article:author" content="Kevin Shaw">
+<meta property="article:tag" content="Java">
+<meta property="article:tag" content="Spring">
+<meta property="article:tag" content="Netty">
+<meta property="article:tag" content="Kafka...">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/e9af9108183e4b27afd5d08486eec6e5~tplv-k3u1fbpfcp-zoom-1.image">
+  
+    <link rel="alternate" href="/atom.xml" title="来一杯咖啡" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">来一杯咖啡</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">互联网技术无边界，学习与交流</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://xkjava.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Ambari大数据平台集群利器的探索与实践" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/09/16/Ambari%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%B9%B3%E5%8F%B0%E9%9B%86%E7%BE%A4%E5%88%A9%E5%99%A8%E7%9A%84%E6%8E%A2%E7%B4%A2%E4%B8%8E%E5%AE%9E%E8%B7%B5/" class="article-date">
+  <time datetime="2020-09-16T07:03:01.000Z" itemprop="datePublished">2020-09-16</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Ambari大数据平台集群利器的探索与实践
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="一、简介"><a href="#一、简介" class="headerlink" title="一、简介"></a>一、简介</h1><p>Ambari是 Apache Software Foundation 中的一个顶级项目，它是用来创建、管理、监视Hadoop整个生态圈的工具。 Ambari是分布式架构，主要由Ambari Server和Ambari Agent组成。</p>
+<p>HDP是hortonworks的软件栈，里面包含了hadoop生态系统的所有软件项目，其实就是软件包合集。</p>
+<p>HDP-UTILS是工具类库。各软件版本对照表：</p>
+<p><a href="https://supportmatrix.hortonworks.com/" target="_blank" rel="noopener">https://supportmatrix.hortonworks.com/</a></p>
+<p><strong>hadoop生态圈示图：</strong><br><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/e9af9108183e4b27afd5d08486eec6e5~tplv-k3u1fbpfcp-zoom-1.image" alt=""></p>
+<h1 id="二、环境准备"><a href="#二、环境准备" class="headerlink" title="二、环境准备"></a>二、环境准备</h1><h2 id="2-1-资源要求"><a href="#2-1-资源要求" class="headerlink" title="2.1 资源要求"></a>2.1 资源要求</h2><p><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/c4c39ef626164219be1568987dba237f~tplv-k3u1fbpfcp-zoom-1.image" alt=""></p>
+<h2 id="2-2-软件要求"><a href="#2-2-软件要求" class="headerlink" title="2.2 软件要求"></a>2.2 软件要求</h2><p><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/5968fb8ba5704939ace3014a5a10a6bd~tplv-k3u1fbpfcp-zoom-1.image" alt=""></p>
+<h2 id="2-3-软件下载地址"><a href="#2-3-软件下载地址" class="headerlink" title="2.3 软件下载地址"></a>2.3 软件下载地址</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@ambari-server01 ~]# wget http:&#x2F;&#x2F;public-repo-1.hortonworks.com&#x2F;ambari&#x2F;centos7&#x2F;2.x&#x2F;updates&#x2F;2.7.1.0&#x2F;ambari-2.7.1.0-centos7.tar.gz</span><br><span class="line">[root@ambari-server01 ~]# wget http:&#x2F;&#x2F;public-repo-1.hortonworks.com&#x2F;HDP&#x2F;centos7&#x2F;3.x&#x2F;updates&#x2F;3.0.1.0&#x2F;HDP-3.0.1.0-centos7-rpm.tar.gz</span><br><span class="line">[root@ambari-server01 ~]# wget http:&#x2F;&#x2F;public-repo-1.hortonworks.com&#x2F;HDP-UTILS-1.1.0.22&#x2F;repos&#x2F;centos7&#x2F;HDP-UTILS-1.1.0.22-centos7.tar.gz</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-4-系统初始化，执行以下脚本（所有节点）"><a href="#2-4-系统初始化，执行以下脚本（所有节点）" class="headerlink" title="2.4 系统初始化，执行以下脚本（所有节点）"></a>2.4 系统初始化，执行以下脚本（所有节点）</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">#!&#x2F;bin&#x2F;bash</span><br><span class="line">#</span><br><span class="line">#服务器初始化脚本</span><br><span class="line"> </span><br><span class="line"># 关闭防火墙</span><br><span class="line">systemctl stop firewalld</span><br><span class="line">systemctl disable firewalld</span><br><span class="line"> </span><br><span class="line"># 关闭 SeLinux</span><br><span class="line">setenforce 0</span><br><span class="line">sed -i &quot;s&#x2F;SELINUX&#x3D;enforcing&#x2F;SELINUX&#x3D;disabled&#x2F;g&quot; &#x2F;etc&#x2F;selinux&#x2F;config</span><br><span class="line"> </span><br><span class="line"># 关闭 swap</span><br><span class="line">swapoff -a</span><br><span class="line">sed -i &#39;s&#x2F;.*swap.*&#x2F;#&amp;&#x2F;&#39; &#x2F;etc&#x2F;fstab</span><br><span class="line"># echo &quot;1&quot; &gt;&#x2F;proc&#x2F;sys&#x2F;net&#x2F;bridge&#x2F;bridge-nf-call-iptables</span><br><span class="line"> </span><br><span class="line"># 安装必要的调试程序</span><br><span class="line">yum install -y vim lrzsz telnet net-tools tar wget</span><br><span class="line">yum install -y java-1.8.0-openjdk*</span><br><span class="line"> </span><br><span class="line"># 安装配置时间同步服务</span><br><span class="line">yum install -y ntp</span><br><span class="line">systemctl start ntpd.service</span><br><span class="line">systemctl enable ntpd.service</span><br><span class="line"> </span><br><span class="line"># 设置进程文件最大打开数量</span><br><span class="line">echo &quot;* soft nofile 65535&quot;  &gt;&gt; &#x2F;etc&#x2F;security&#x2F;limits.conf</span><br><span class="line">echo &quot;* hard nofile 65535&quot;  &gt;&gt; &#x2F;etc&#x2F;security&#x2F;limits.conf</span><br><span class="line"> </span><br><span class="line"># 设置系统总限制文件最大打开数量</span><br><span class="line">echo  6553560 &gt; &#x2F;proc&#x2F;sys&#x2F;fs&#x2F;file-max</span><br><span class="line">echo &quot;fs.file-max &#x3D; 6553560&quot; &gt;&gt;  &#x2F;etc&#x2F;sysctl.conf</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-5-设置主机名（所有节点）"><a href="#2-5-设置主机名（所有节点）" class="headerlink" title="2.5 设置主机名（所有节点）"></a>2.5 设置主机名（所有节点）</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"># 三台主机分别设置hostname</span><br><span class="line">[root@ambari-server01 ~]# hostnamectl set-hostname ambari-server01.test.com</span><br><span class="line">[root@ambari-node01 ~]# hostnamectl set-hostname ambari-node01.test.com</span><br><span class="line">[root@ambari-node02 ~]# hostnamectl set-hostname ambari-node02.test.com</span><br><span class="line"> </span><br><span class="line"># 添加hosts解析（所有节点）</span><br><span class="line">[root@ambari-server01 ~]# cat &gt;&gt; &#x2F;etc&#x2F;hosts &lt;&lt; EOF</span><br><span class="line">192.168.2.111  ambari-server01.test.com</span><br><span class="line">192.168.2.112  ambari-node01.test.com</span><br><span class="line">192.168.2.113  ambari-node02.test.com</span><br><span class="line">EOF</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-6-设置免密登陆（ambari-server01节点）"><a href="#2-6-设置免密登陆（ambari-server01节点）" class="headerlink" title="2.6 设置免密登陆（ambari-server01节点）"></a>2.6 设置免密登陆（ambari-server01节点）</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"># 在192.168.2.111节点执行：</span><br><span class="line">[root@ambari-server01 ~]# ssh-keygen</span><br><span class="line">[root@ambari-server01 ~]# ssh-copy-id  ambari-server01.test.com</span><br><span class="line">[root@ambari-server01 ~]# ssh-copy-id  ambari-node01.test.com</span><br><span class="line">[root@ambari-server01 ~]# ssh-copy-id  ambari-node02.test.com</span><br><span class="line">[root@ambari-server01 ~]# scp -r .ssh&#x2F; ambari-node01.test.com:&#x2F;root</span><br><span class="line">[root@ambari-server01 ~]# scp -r .ssh&#x2F; ambari-node02.test.com:&#x2F;root</span><br></pre></td></tr></table></figure>
+
+<h1 id="三、安装mysql相关（ambari-server01节点）"><a href="#三、安装mysql相关（ambari-server01节点）" class="headerlink" title="三、安装mysql相关（ambari-server01节点）"></a>三、安装mysql相关（ambari-server01节点）</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"># 下载并安装mysql</span><br><span class="line">[root@ambari-server01 ~]# wget -i -c http:&#x2F;&#x2F;dev.mysql.com&#x2F;get&#x2F;mysql-community-release-el7-5.noarch.rpm</span><br><span class="line">[root@ambari-server01 ~]# yum -y install mysql-community-release-el7-5.noarch.rpm</span><br><span class="line">[root@ambari-server01 ~]# yum -y install mysql-community-server</span><br><span class="line"> </span><br><span class="line"># 启动mysql</span><br><span class="line">[root@ambari-server01 ~]# systemctl start mysqld.service    # 启动mysql</span><br><span class="line">[root@ambari-server01 ~]# systemctl status mysqld.service  # 查看mysql状态</span><br><span class="line">[root@ambari-server01 ~]# systemctl enable mysqld.service   # 开机自启</span><br><span class="line"> </span><br><span class="line"># 设置mysql密码</span><br><span class="line">&gt; set password for root@localhost &#x3D; password(&#39;root123&#39;);   # 方法一，需要登陆mysql执行</span><br><span class="line"> </span><br><span class="line"># 创建ambari数据库及用户名和密码</span><br><span class="line">mysql&gt; create database ambari character set utf8;</span><br><span class="line">mysql&gt; CREATE USER &#39;ambari&#39;@&#39;%&#39;IDENTIFIED BY &#39;Ambari123&#39;;</span><br><span class="line">mysql&gt; GRANT ALL PRIVILEGES ON ambari.* TO &#39;ambari&#39;@&#39;%&#39;;</span><br><span class="line">mysql&gt; GRANT ALL PRIVILEGES ON ambari.* TO &#39;ambari&#39;@&#39;ambari-server01.test.com&#39;IDENTIFIED BY &#39;Ambari123&#39;;</span><br><span class="line">mysql&gt; FLUSH PRIVILEGES;</span><br><span class="line"> </span><br><span class="line"># 创建hive数据库及用户名和密码（如果不需要安装hive服务，则不需要配置以下数据库）</span><br><span class="line">mysql&gt; create database hive character set utf8;</span><br><span class="line">mysql&gt; CREATE USER &#39;hive&#39;@&#39;%&#39;IDENTIFIED BY &#39;Hive123&#39;;</span><br><span class="line">mysql&gt; GRANT ALL PRIVILEGES ON hive.* TO &#39;hive&#39;@&#39;%&#39;;</span><br><span class="line">mysql&gt; GRANT ALL PRIVILEGES ON hive.* TO &#39;ambari&#39;@&#39;ambari-server01.test.com&#39;IDENTIFIED BY &#39;Hive123&#39;;</span><br><span class="line">mysql&gt; FLUSH PRIVILEGES;</span><br><span class="line"> </span><br><span class="line"># 如果需要安装oozie、ranger服务，创建数据库方法同上。</span><br><span class="line"> </span><br><span class="line"># 下载 mysql-connector-java-5.1.46-bin.jar包</span><br><span class="line"># 复制到&#x2F;var&#x2F;lib&#x2F;ambari-server&#x2F;resources&#x2F;mysql-connector-java-5.1.46-bin.jar目录；</span><br><span class="line"># 再复制到&#x2F;usr&#x2F;share&#x2F;java&#x2F;mysql-connector-java-5.1.46-bin.jar到这个目录一份。</span><br></pre></td></tr></table></figure>
+
+<h1 id="四、利用httpd创建本地yum的repo源（ambari-server01节点）"><a href="#四、利用httpd创建本地yum的repo源（ambari-server01节点）" class="headerlink" title="四、利用httpd创建本地yum的repo源（ambari-server01节点）"></a>四、利用httpd创建本地yum的repo源（ambari-server01节点）</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"># 安装软件</span><br><span class="line">[root@ambari-server01 ~]# yum -y install yum-utils createrepo httpd</span><br><span class="line"># 创建目录</span><br><span class="line">[root@ambari-server01 ~]# mkdir -p &#x2F;var&#x2F;www&#x2F;html&#x2F;ambari&#x2F;</span><br><span class="line">[root@ambari-server01 ~]# mkdir -p &#x2F;var&#x2F;www&#x2F;html&#x2F;hdp&#x2F;</span><br><span class="line">[root@ambari-server01 ~]# mkdir -p &#x2F;var&#x2F;www&#x2F;html&#x2F;hdp&#x2F;HDP-UTILS&#x2F;</span><br><span class="line"># 解压tar包</span><br><span class="line">[root@ambari-server01 ~]# tar -zxvf ambari-2.7.1.0-centos7.tar.gz -C &#x2F;var&#x2F;www&#x2F;html&#x2F;ambari&#x2F;</span><br><span class="line">[root@ambari-server01 ~]# tar -zxvf HDP-3.0.1.0-centos7-rpm.tar.gz -C &#x2F;var&#x2F;www&#x2F;html&#x2F;hdp&#x2F;</span><br><span class="line">[root@ambari-server01 ~]# tar -zxvf HDP-UTILS-1.1.0.22-centos7.tar.gz -C &#x2F;var&#x2F;www&#x2F;html&#x2F;hdp&#x2F;HDP-UTILS&#x2F;</span><br><span class="line"># 启动httpd</span><br><span class="line">[root@ambari-server01 ~]# systemctl start httpd</span><br><span class="line">[root@ambari-server01 ~]# systemctl enable httpd</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">**浏览器查看，如下即为正常**</span><br><span class="line"></span><br><span class="line">![](https:&#x2F;&#x2F;p1-juejin.byteimg.com&#x2F;tos-cn-i-k3u1fbpfcp&#x2F;6eda665d14c04ee9bb69a5dbbe28b23a~tplv-k3u1fbpfcp-zoom-1.image)</span><br><span class="line"></span><br><span class="line"># 配置本地repo</span><br><span class="line">[root@ambari-server01 ~]# wget -O &#x2F;etc&#x2F;yum.repos.d&#x2F;ambari.repo http:&#x2F;&#x2F;public-repo-1.hortonworks.com&#x2F;ambari&#x2F;centos7&#x2F;2.x&#x2F;updates&#x2F;2.7.1.0&#x2F;ambari.repo</span><br><span class="line"> </span><br><span class="line"># 将下载的repo修改内容为如下</span><br><span class="line">[root@ambari-server01 ~]# vim &#x2F;etc&#x2F;yum.repos.d&#x2F;ambari.repo</span><br><span class="line">#VERSION_NUMBER&#x3D;2.7.1.0-139</span><br><span class="line">[ambari-2.7.1.0]</span><br><span class="line">#json.url &#x3D; http:&#x2F;&#x2F;public-repo-1.hortonworks.com&#x2F;HDP&#x2F;hdp_urlinfo.json</span><br><span class="line">name&#x3D;ambari Version - ambari-2.7.1.0</span><br><span class="line">baseurl&#x3D;http:&#x2F;&#x2F;192.168.2.111&#x2F;ambari&#x2F;ambari&#x2F;centos7&#x2F;2.7.1.0-169</span><br><span class="line">gpgcheck&#x3D;1</span><br><span class="line">gpgkey&#x3D;http:&#x2F;&#x2F;192.168.2.111&#x2F;ambari&#x2F;ambari&#x2F;centos7&#x2F;2.7.1.0-169&#x2F;RPM-GPG-KEY&#x2F;RPM-GPG-KEY-Jenkins</span><br><span class="line">enabled&#x3D;1</span><br><span class="line">priority&#x3D;1</span><br><span class="line"> </span><br><span class="line"># 配置HDP和HDP-UTILS的repo</span><br><span class="line">[root@ambari-server01 ~]# vim &#x2F;etc&#x2F;yum.repos.d&#x2F;HDP.repo</span><br><span class="line">#VERSION_NUMBER&#x3D;3.0.1.0-187</span><br><span class="line">[HDP-3.0.1.0]</span><br><span class="line">name&#x3D;HDP Version - HDP-3.0.1.0</span><br><span class="line">baseurl&#x3D;http:&#x2F;&#x2F;192.168.2.111&#x2F;hdp&#x2F;HDP&#x2F;centos7</span><br><span class="line">gpgcheck&#x3D;1</span><br><span class="line">gpgkey&#x3D;http:&#x2F;&#x2F;192.168.2.111&#x2F;hdp&#x2F;HDP&#x2F;centos7&#x2F;3.0.1.0-187&#x2F;RPM-GPG-KEY&#x2F;RPM-GPG-KEY-Jenkins</span><br><span class="line">enabled&#x3D;1</span><br><span class="line">priority&#x3D;1</span><br><span class="line">[HDP-UTILS-1.1.0.22]</span><br><span class="line">name&#x3D;HDP-UTILS Version - HDP-UTILS-1.1.0.22</span><br><span class="line">baseurl&#x3D;http:&#x2F;&#x2F;192.168.2.111&#x2F;hdp&#x2F;HDP-UTILS&#x2F;centos7&#x2F;1.1.0.22</span><br><span class="line">gpgcheck&#x3D;1</span><br><span class="line">gpgkey&#x3D;http:&#x2F;&#x2F;192.168.2.111&#x2F;hdp&#x2F;HDP-UTILS&#x2F;centos7&#x2F;1.1.0.22&#x2F;RPM-GPG-KEY&#x2F;RPM-GPG-KEY-Jenkins</span><br><span class="line">enabled&#x3D;1</span><br><span class="line">priority&#x3D;1</span><br><span class="line"> </span><br><span class="line"># 将repo拷贝到其他节点</span><br><span class="line">[root@ambari-server01 ~]# cd &#x2F;etc&#x2F;yum.repos.d&#x2F;</span><br><span class="line">[root@ambari-server01 ~]# scp ambari.repo HDP.repo root@192.168.2.112:&#x2F;etc&#x2F;yum.repos.d&#x2F;</span><br><span class="line">[root@ambari-server01 ~]# scp ambari.repo HDP.repo root@192.168.2.113:&#x2F;etc&#x2F;yum.repos.d&#x2F;</span><br><span class="line"> </span><br><span class="line"># 生成本地源</span><br><span class="line">[root@ambari-server01 ~]# createrepo &#x2F;var&#x2F;www&#x2F;html&#x2F;hdp&#x2F;HDP&#x2F;centos7&#x2F;</span><br><span class="line">[root@ambari-server01 ~]# createrepo  &#x2F;var&#x2F;www&#x2F;html&#x2F;hdp&#x2F;HDP-UTILS&#x2F;</span><br></pre></td></tr></table></figure>
+
+<h1 id="五、安装ambari集群"><a href="#五、安装ambari集群" class="headerlink" title="五、安装ambari集群"></a>五、安装ambari集群</h1><h2 id="5-1-安装ambari-server（ambari-server01节点）"><a href="#5-1-安装ambari-server（ambari-server01节点）" class="headerlink" title="5.1 安装ambari-server（ambari-server01节点）"></a>5.1 安装ambari-server（ambari-server01节点）</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">[root@ambari-server01 ~]# yum -y install ambari-server</span><br><span class="line">[root@ambari-server01 ~]# ambari-server setup</span><br><span class="line">Using python  &#x2F;usr&#x2F;bin&#x2F;python</span><br><span class="line">Setup ambari-server</span><br><span class="line">Checking SELinux...</span><br><span class="line">SELinux status is &#39;disabled&#39;</span><br><span class="line">Customize user account for ambari-server daemon [y&#x2F;n] (n)? y</span><br><span class="line">Enter user account for ambari-server daemon (root):root # 用户</span><br><span class="line">Adjusting ambari-server permissions and ownership...</span><br><span class="line">Checking firewall status...</span><br><span class="line">Checking JDK...</span><br><span class="line">[1] Oracle JDK 1.8 + Java Cryptography Extension (JCE) Policy Files 8</span><br><span class="line">[2] Custom JDK</span><br><span class="line">&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;</span><br><span class="line">Enter choice (1): 2 # 选择自定义jdk</span><br><span class="line">WARNING: JDK must be installed on all hosts and JAVA_HOME must be valid on all hosts.</span><br><span class="line">WARNING: JCE Policy files are required for configuring Kerberos security. If you plan to use Kerberos,please make sure JCE Unlimited Strength Jurisdiction Policy Files are valid on all hosts.</span><br><span class="line">Path to JAVA_HOME: &#x2F;usr&#x2F;lib&#x2F;jvm&#x2F;java-1.8.0-openjdk-1.8.0.262.b10-0.el7_8.x86_64&#x2F;     #jdk安装路径</span><br><span class="line">Validating JDK on Ambari Server...done.</span><br><span class="line">Check JDK version for Ambari Server...</span><br><span class="line">JDK version found: 8</span><br><span class="line">Minimum JDK version is 8 for Ambari. Skipping to setup different JDK for Ambari Server.</span><br><span class="line">Checking GPL software agreement...</span><br><span class="line">GPL License for LZO: https:&#x2F;&#x2F;www.gnu.org&#x2F;licenses&#x2F;old-licenses&#x2F;gpl-2.0.en.html</span><br><span class="line">Enable Ambari Server to download and install GPL Licensed LZO packages [y&#x2F;n] (n)? y</span><br><span class="line">Completing setup...</span><br><span class="line">Configuring database...</span><br><span class="line">Enter advanced database configuration [y&#x2F;n] (n)? y</span><br><span class="line">Configuring database...</span><br><span class="line">&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;</span><br><span class="line">Choose one of the following options:</span><br><span class="line">[1] - PostgreSQL (Embedded)</span><br><span class="line">[2] - Oracle</span><br><span class="line">[3] - MySQL &#x2F; MariaDB</span><br><span class="line">[4] - PostgreSQL</span><br><span class="line">[5] - Microsoft SQL Server (Tech Preview)</span><br><span class="line">[6] - SQL Anywhere</span><br><span class="line">[7] - BDB</span><br><span class="line">&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;</span><br><span class="line">Enter choice (1): 3 # 选择安装的mysql</span><br><span class="line">Hostname (localhost): ambari-server01.test.com  # 配置hostname</span><br><span class="line">Port (3306):    # 默认</span><br><span class="line">Database name (ambari):       # 默认</span><br><span class="line">Username (ambari):       # 默认</span><br><span class="line">Enter Database Password (bigdata):  # 输入密码</span><br><span class="line">Re-enter password:</span><br><span class="line">Configuring ambari database...</span><br><span class="line">Should ambari use existing default jdbc &#x2F;usr&#x2F;share&#x2F;java&#x2F;mysql-connector-java.jar [y&#x2F;n] (y)? y</span><br><span class="line">Configuring remote database connection properties...</span><br><span class="line">WARNING: Before starting Ambari Server, you must run the following DDL directly from the database shell to create the schema: &#x2F;var&#x2F;lib&#x2F;ambari-server&#x2F;resources&#x2F;Ambari-DDL-MySQL-CREATE.sql      # 此处需注意，启动ambari之前需要执行此句</span><br><span class="line">Proceed with configuring remote database connection properties [y&#x2F;n] (y)? y</span><br><span class="line">Extracting system views...</span><br><span class="line">ambari-admin-2.7.3.0.139.jar</span><br><span class="line">....</span><br><span class="line">Ambari repo file contains latest json url http:&#x2F;&#x2F;public-repo-1.hortonworks.com&#x2F;HDP&#x2F;hdp_urlinfo.json, updating stacks repoinfos with it...</span><br><span class="line">Adjusting ambari-server permissions and ownership...</span><br><span class="line">Ambari Server &#39;setup&#39; completed successfully.   # 安装成功</span><br></pre></td></tr></table></figure>
+
+<h2 id="5-2-使用ambari用户登陆mysql"><a href="#5-2-使用ambari用户登陆mysql" class="headerlink" title="5.2 使用ambari用户登陆mysql"></a>5.2 使用ambari用户登陆mysql</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@ambari-server01 ~]# mysql -u ambari -pAmbari123 -h ambari-server01.test.com</span><br><span class="line">mysql&gt; source &#x2F;var&#x2F;lib&#x2F;ambari-server&#x2F;resources&#x2F;Ambari-DDL-MySQL-CREATE.sql;</span><br><span class="line">mysql&gt; show tables;</span><br></pre></td></tr></table></figure>
+
+<h2 id="5-3-启动ambari-Server"><a href="#5-3-启动ambari-Server" class="headerlink" title="5.3 启动ambari-Server"></a>5.3 启动ambari-Server</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@ambari-server01 ~]# ambari-server start</span><br></pre></td></tr></table></figure>
+
+<h2 id="5-4-安装ambari-agent（ambari-node01、ambari-node02节点）"><a href="#5-4-安装ambari-agent（ambari-node01、ambari-node02节点）" class="headerlink" title="5.4 安装ambari-agent（ambari-node01、ambari-node02节点）"></a>5.4 安装ambari-agent（ambari-node01、ambari-node02节点）</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@ambari-node01 ~]# yum -y install ambari-agent</span><br></pre></td></tr></table></figure>
+
+<h1 id="六、Ambari-web页面配置"><a href="#六、Ambari-web页面配置" class="headerlink" title="六、Ambari web页面配置"></a>六、Ambari web页面配置</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">访问地址：http:&#x2F;&#x2F;192.168.2.111:8080&#x2F;</span><br><span class="line">默认账号：admin</span><br><span class="line">默认密码：admin</span><br></pre></td></tr></table></figure>
+<p>进行web页面配置时没有截图，以下截图为网上下载，仅供参考</p>
+<p><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/8e3ac6dc623544508032c29fddd3bf16~tplv-k3u1fbpfcp-zoom-1.image" alt=""></p>
+<p><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/c1d992f1cc1e4fbfba2806f81b33d531~tplv-k3u1fbpfcp-zoom-1.image" alt=""></p>
+<h2 id="6-1-选择版本"><a href="#6-1-选择版本" class="headerlink" title="6.1 选择版本"></a>6.1 选择版本</h2><p><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/bb4482e463ea40e6a13135b072fdfa07~tplv-k3u1fbpfcp-zoom-1.image" alt=""></p>
+<h2 id="6-2-配置节点、密钥"><a href="#6-2-配置节点、密钥" class="headerlink" title="6.2 配置节点、密钥"></a>6.2 配置节点、密钥</h2><p><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/2092ab25469c4a268be9c6b91ae4e17a~tplv-k3u1fbpfcp-zoom-1.image" alt=""></p>
+<h2 id="6-3-主机确认"><a href="#6-3-主机确认" class="headerlink" title="6.3 主机确认"></a>6.3 主机确认</h2><p><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/fe2b3e217f53481c8aaa52b87915e034~tplv-k3u1fbpfcp-zoom-1.image" alt=""></p>
+<h2 id="6-4-选择要安装的组件"><a href="#6-4-选择要安装的组件" class="headerlink" title="6.4 选择要安装的组件"></a>6.4 选择要安装的组件</h2><p><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/f728e5d99c4f4b6987049a03b81b2565~tplv-k3u1fbpfcp-zoom-1.image" alt=""></p>
+<h2 id="6-5-节点分配"><a href="#6-5-节点分配" class="headerlink" title="6.5 节点分配"></a>6.5 节点分配</h2><p><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/69a24ff077c341098b01575b8414e2a5~tplv-k3u1fbpfcp-zoom-1.image" alt=""></p>
+<h2 id="6-6-分配从属和客户端"><a href="#6-6-分配从属和客户端" class="headerlink" title="6.6 分配从属和客户端"></a>6.6 分配从属和客户端</h2><p><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/224b5998f1e7423480777d9324d11334~tplv-k3u1fbpfcp-zoom-1.image" alt=""></p>
+<h2 id="6-7-定制服务"><a href="#6-7-定制服务" class="headerlink" title="6.7 定制服务"></a>6.7 定制服务</h2><p><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/f72d7e51bfee4bf2a5fbfd01a79998ae~tplv-k3u1fbpfcp-zoom-1.image" alt=""><br><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/51fcc85f6a5e4627a01aef1bafe1e26e~tplv-k3u1fbpfcp-zoom-1.image" alt=""></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 执行以下命令（ambari-server01节点）</span><br><span class="line">[root@ambari-server01 ~]# ambari-server setup --jdbc-db&#x3D;mysql --jdbc-driver&#x3D;&#x2F;usr&#x2F;share&#x2F;java&#x2F;mysql-connector-java-5.1.46-bin.jar</span><br></pre></td></tr></table></figure>
+
+<h2 id="6-8-设置存储路径等"><a href="#6-8-设置存储路径等" class="headerlink" title="6.8 设置存储路径等"></a>6.8 设置存储路径等</h2><p><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/71a92b78ef5c4f79ac45eca4e0c83b46~tplv-k3u1fbpfcp-zoom-1.image" alt=""><br><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/7c7454bf473941e3a3f9e403f2d96328~tplv-k3u1fbpfcp-zoom-1.image" alt=""><br><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/497f60f441b74fdead707516a736f6ef~tplv-k3u1fbpfcp-zoom-1.image" alt=""></p>
+<h2 id="6-9-集群情况预览并部署"><a href="#6-9-集群情况预览并部署" class="headerlink" title="6.9 集群情况预览并部署"></a>6.9 集群情况预览并部署</h2><p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/7bf0c5646bf145008839facd353b0f3c~tplv-k3u1fbpfcp-zoom-1.image" alt=""><br><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/071e17b7023142668fa8c58603eddb2c~tplv-k3u1fbpfcp-zoom-1.image" alt=""><br><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/e8121b4b855c40a6af1fa61d2a2e6941~tplv-k3u1fbpfcp-zoom-1.image" alt=""><br><strong>等待启动完毕，不用担心警告，后期可以调整，搭建完成，可以在展示页面进行查看集群状态</strong><br><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/6cd42dfaa6ab45bb89a3a49a4f460ac5~tplv-k3u1fbpfcp-zoom-1.image" alt=""><br><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/bd7fa948348347429a4eabcad267b613~tplv-k3u1fbpfcp-zoom-1.image" alt=""></p>
+<p><strong>可以查看监控界面，可以看到大数据组件中出现错误，单个组件点开处理</strong><br><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/f4d708f1bc2e499fb07be3297782bfc5~tplv-k3u1fbpfcp-zoom-1.image" alt=""></p>
+<h2 id="6-10-监控面板"><a href="#6-10-监控面板" class="headerlink" title="6.10 监控面板"></a>6.10 监控面板</h2><p><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/5de66eded065467bbd807303aadda296~tplv-k3u1fbpfcp-zoom-1.image" alt=""></p>
+<h2 id="6-10-1-监控面板-主机状态"><a href="#6-10-1-监控面板-主机状态" class="headerlink" title="6.10.1 监控面板-主机状态"></a>6.10.1 监控面板-主机状态</h2><p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/28a1d7e1bf27435484a3ae0fce2daab4~tplv-k3u1fbpfcp-zoom-1.image" alt=""></p>
+<h2 id="6-10-2-监控面板-配置历史（可针对单个服务调整配置）"><a href="#6-10-2-监控面板-配置历史（可针对单个服务调整配置）" class="headerlink" title="6.10.2 监控面板-配置历史（可针对单个服务调整配置）"></a>6.10.2 监控面板-配置历史（可针对单个服务调整配置）</h2><p><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/6d463712c7e3446c90b3439cffb0182b~tplv-k3u1fbpfcp-zoom-1.image" alt=""></p>
+<h2 id="6-11-新部署其他服务"><a href="#6-11-新部署其他服务" class="headerlink" title="6.11 新部署其他服务"></a>6.11 新部署其他服务</h2><p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/f81f8b396a3a4e2a87749bac4028a95a~tplv-k3u1fbpfcp-zoom-1.image" alt=""></p>
+<h2 id="6-12-添加node节点"><a href="#6-12-添加node节点" class="headerlink" title="6.12 添加node节点"></a>6.12 添加node节点</h2><p><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/97b509c6e3c141dd87722f15f673d45a~tplv-k3u1fbpfcp-zoom-1.image" alt=""></p>
+<h2 id="6-13-配置邮件报警"><a href="#6-13-配置邮件报警" class="headerlink" title="6.13 配置邮件报警"></a>6.13 配置邮件报警</h2><p><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/68c2faa8a3194e6986198a8eeee181d2~tplv-k3u1fbpfcp-zoom-1.image" alt=""></p>
+<h2 id="6-14-ambari会自动安装grafana作为监控面板"><a href="#6-14-ambari会自动安装grafana作为监控面板" class="headerlink" title="6.14 ambari会自动安装grafana作为监控面板"></a>6.14 ambari会自动安装grafana作为监控面板</h2><p><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/fae0e6faadaf41cfb769b81f445cf245~tplv-k3u1fbpfcp-zoom-1.image" alt=""><br><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/7ac9651e60ed42b9b170be87f4533f06~tplv-k3u1fbpfcp-zoom-1.image" alt=""></p>
+<p><strong>至此，搭建完成！</strong></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://xkjava.github.io/2020/09/16/Ambari%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%B9%B3%E5%8F%B0%E9%9B%86%E7%BE%A4%E5%88%A9%E5%99%A8%E7%9A%84%E6%8E%A2%E7%B4%A2%E4%B8%8E%E5%AE%9E%E8%B7%B5/" data-id="ckf51hwxj0006sara6u2fg48y" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2020/09/03/%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97%E6%95%B0%E6%8D%AE%E5%BA%93InfluxDB%E9%9B%86%E7%BE%A4%E6%96%B9%E6%A1%88%E9%AB%98%E7%BA%A7%E5%AE%9E%E8%B7%B5%E7%BB%8F%E9%AA%8C%EF%BC%8C%E8%AF%B7%E5%85%B3%E6%B3%A8/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">时间序列数据库InfluxDB集群方案高级实践经验，请关注</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2020/09/16/Ambari%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%B9%B3%E5%8F%B0%E9%9B%86%E7%BE%A4%E5%88%A9%E5%99%A8%E7%9A%84%E6%8E%A2%E7%B4%A2%E4%B8%8E%E5%AE%9E%E8%B7%B5/">Ambari大数据平台集群利器的探索与实践</a>
+          </li>
+        
+          <li>
+            <a href="/2020/09/03/%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97%E6%95%B0%E6%8D%AE%E5%BA%93InfluxDB%E9%9B%86%E7%BE%A4%E6%96%B9%E6%A1%88%E9%AB%98%E7%BA%A7%E5%AE%9E%E8%B7%B5%E7%BB%8F%E9%AA%8C%EF%BC%8C%E8%AF%B7%E5%85%B3%E6%B3%A8/">时间序列数据库InfluxDB集群方案高级实践经验，请关注</a>
+          </li>
+        
+          <li>
+            <a href="/2020/08/25/%E6%95%B0%E6%8D%AE%E6%B2%BB%E7%90%86%E7%9A%84%E7%8E%8B%E8%80%85Apache-Atlas%E5%A6%82%E4%BD%95%E6%9E%84%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84API/">数据治理的王者Apache-Atlas如何构建自己的API</a>
+          </li>
+        
+          <li>
+            <a href="/2020/07/26/CountDownLatch%E3%80%81Semaphore%E3%80%81CyclicBarrier%E3%80%81Condition%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/">CountDownLatch、Semaphore、CyclicBarrier、Condition源码分析</a>
+          </li>
+        
+          <li>
+            <a href="/2020/07/05/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E6%A0%B8%E5%BF%83%E9%87%8D%E6%96%B0%E8%AE%A4%E8%AF%86SpringBoot%EF%BC%8C%E6%8E%8C%E6%8F%A1%E6%A0%B8%E5%BF%83%E7%89%B9%E6%80%A7%E5%8F%8A%E8%AE%BE%E8%AE%A1%E6%80%9D%E6%83%B3/">微服务核心重新认识SpringBoot，掌握核心特性及设计思想</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2020 Kevin Shaw<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+  </div>
+</body>
+</html>
