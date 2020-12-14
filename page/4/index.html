@@ -74,6 +74,102 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-架构师内功心法，只是单纯听说过的原型模式详解" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/02/22/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E5%8F%AA%E6%98%AF%E5%8D%95%E7%BA%AF%E5%90%AC%E8%AF%B4%E8%BF%87%E7%9A%84%E5%8E%9F%E5%9E%8B%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" class="article-date">
+  <time datetime="2020-02-22T13:12:08.000Z" itemprop="datePublished">2020-02-22</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/02/22/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E5%8F%AA%E6%98%AF%E5%8D%95%E7%BA%AF%E5%90%AC%E8%AF%B4%E8%BF%87%E7%9A%84%E5%8E%9F%E5%9E%8B%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/">架构师内功心法，只是单纯听说过的原型模式详解</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="一、原型模式的应用场景"><a href="#一、原型模式的应用场景" class="headerlink" title="一、原型模式的应用场景"></a>一、原型模式的应用场景</h1><p>你一定遇到过这样的代码场景，有大量的getter、setter赋值的场景。例如这样的代码片段：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">private SafetyStockMessage createKafkaMessage(SafetyStock safetyStock, HttpServletRequest request) &#123;</span><br><span class="line">        SafetyStockMessage safetyStockMessage &#x3D; new SafetyStockMessage();</span><br><span class="line">        safetyStockMessage.setId(safetyStock.getId());</span><br><span class="line">        safetyStockMessage.setProvinceCode(safetyStock.getProvinceCode());</span><br><span class="line">        safetyStockMessage.setRequestId(CodeConstants.REQUEST_ID);</span><br><span class="line">        safetyStockMessage.setRequestIp(CodeConstants.REQUEST_IP);</span><br><span class="line">        safetyStockMessage.setSerial(IdMakerUtil.make32Id());</span><br><span class="line">        safetyStockMessage.setStockMax(safetyStock.getStockMax());</span><br><span class="line">        safetyStockMessage.setStockMin(safetyStock.getStockMin());</span><br><span class="line">        safetyStockMessage.setProvince(safetyStock.getProvince());</span><br><span class="line">        safetyStockMessage.setCategoryName(safetyStock.getCategoryName());</span><br><span class="line">        safetyStockMessage.setUpdateTime(new Date());</span><br><span class="line">        safetyStockMessage.setUpdateBy(getLoginUser(request));</span><br><span class="line">        return safetyStockMessage;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>代码看起来非常工整，命名也很规范，大家觉得这样的代码优雅吗？这样的代码属于纯体力劳动。如果使用原型模式，可以帮助我们解决这样的问题。</p>
+<p>原型模式（Prototype Pattern）是指原型实例指定创建对象的种类，并且通过拷贝这样原型创建新的对象。</p>
+<p>原型模式主要适用于以下场景：</p>
+<p>1、类初始化消耗的资源较多；</p>
+<p>2、new产生的一个对象需要非常繁琐的过程（数据准备、访问权限等）；</p>
+<p>3、构造函数比较复杂；</p>
+<p>4、循环体中生产大量对象。</p>
+<p>原型模型的类结构图：</p>
+<p><img src="https://user-gold-cdn.xitu.io/2020/2/21/17067d2c6f3719e9?w=912&h=299&f=png&s=164629" alt=""></p>
+<h1 id="二、简单克隆"><a href="#二、简单克隆" class="headerlink" title="二、简单克隆"></a>二、简单克隆</h1><p>一个标准的原型模式代码，应该是这样的设计的。先创建原型Prototype接口：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">public interface Prototype &#123;</span><br><span class="line">    Prototype clone();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>创建具体需要克隆的对象ConcretePrototype：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">public class ConcretePrototype implements Prototype &#123;</span><br><span class="line"></span><br><span class="line">    private String name;</span><br><span class="line">    private int age;</span><br><span class="line">    private List&lt;String&gt; hobbies;</span><br><span class="line"></span><br><span class="line">    public String getName() &#123;</span><br><span class="line">        return name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void setName(String name) &#123;</span><br><span class="line">        this.name &#x3D; name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public int getAge() &#123;</span><br><span class="line">        return age;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void setAge(int age) &#123;</span><br><span class="line">        this.age &#x3D; age;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public List&lt;String&gt; getHobbies() &#123;</span><br><span class="line">        return hobbies;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void setHobbies(List&lt;String&gt; hobbies) &#123;</span><br><span class="line">        this.hobbies &#x3D; hobbies;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public ConcretePrototype clone() &#123;</span><br><span class="line">        ConcretePrototype concretePrototype &#x3D; new ConcretePrototype();</span><br><span class="line">        concretePrototype.setName(this.name);</span><br><span class="line">        concretePrototype.setAge(this.age);</span><br><span class="line">        concretePrototype.setHobbies(this.hobbies);</span><br><span class="line">        return concretePrototype;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>创建Client对象：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">public class Client &#123;</span><br><span class="line"></span><br><span class="line">    private Prototype prototype;</span><br><span class="line"></span><br><span class="line">    public Client(Prototype prototype) &#123;</span><br><span class="line">        this.prototype &#x3D; prototype;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public Prototype startClone(Prototype concretePrototype) &#123;</span><br><span class="line">        return (Prototype)concretePrototype.clone();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>测试代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">public static void main(String[] args) &#123;</span><br><span class="line">        &#x2F;&#x2F;创建一个具体的需要克隆的对象</span><br><span class="line">        ConcretePrototype concretePrototype &#x3D; new ConcretePrototype();</span><br><span class="line">        &#x2F;&#x2F;填充属性，准备测试</span><br><span class="line">        concretePrototype.setName(&quot;Kevin&quot;);</span><br><span class="line">        concretePrototype.setAge(18);</span><br><span class="line">        List&lt;String&gt; hobbies &#x3D; new ArrayList&lt;&gt;();</span><br><span class="line">        concretePrototype.setHobbies(hobbies);</span><br><span class="line">        System.out.println(concretePrototype);</span><br><span class="line"></span><br><span class="line">        &#x2F;&#x2F;创建Client对象，准备进行克隆</span><br><span class="line">        Client client &#x3D; new Client(concretePrototype);</span><br><span class="line">        ConcretePrototype concretePrototypeClone &#x3D; (ConcretePrototype)</span><br><span class="line">                client.startClone(concretePrototype);</span><br><span class="line">        System.out.println(concretePrototypeClone);</span><br><span class="line"></span><br><span class="line">        System.out.println(&quot;克隆对象中的引用类型地址值是：&quot; +</span><br><span class="line">                concretePrototypeClone.getHobbies());</span><br><span class="line">        System.out.println(&quot;原对象中的引用类型地址值是：&quot; +</span><br><span class="line">                concretePrototype.getHobbies());</span><br><span class="line">        System.out.println(&quot;对象地址比较：&quot; + (concretePrototypeClone.getHobbies() &#x3D;&#x3D;</span><br><span class="line">                concretePrototype.getHobbies()));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>运行结果：</p>
+<p><img src="https://user-gold-cdn.xitu.io/2020/2/21/1706804761bd93d1?w=640&h=223&f=png&s=29218" alt=""></p>
+<p>从测试结果看出hobbies的引用地址是相同的，意味着不是复制值，而复制的是引用的地址。如果我们修改任何一个对象的属性值，concretePrototype和concretePrototypeClone的hobbies的值都会改变。这就是我们常说的浅克隆。只是完整复制了值类型数据，没有复制引用对象。换言之，所有的引用对象还是指向原来的对象，显然不是我们想要的结果。</p>
+<p>下面我们继续改造代码，使用深度克隆。</p>
+<h1 id="三、深度克隆"><a href="#三、深度克隆" class="headerlink" title="三、深度克隆"></a>三、深度克隆</h1><p>我们来换一个场景，大家都知道齐天大圣孙悟空。首先它是一只猴子，有着七十二般变化，把一根毫毛放在嘴里一吹就变出千万个泼猴，手里还拿着金箍棒，金箍棒可变大变小。这就是我们耳熟能详的原型模式的经典体现。</p>
+<p>创建原型猴子 Monkey 类：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">public class Monkey &#123;</span><br><span class="line"></span><br><span class="line">    public int height;</span><br><span class="line">    public int weight;</span><br><span class="line">    public Date birthday;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>创建引用对象金箍棒GoldenCudgel类：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">public class GoldenCudgel implements Serializable &#123;</span><br><span class="line"></span><br><span class="line">    public float h &#x3D; 100f;</span><br><span class="line"></span><br><span class="line">    public float d &#x3D; 10f;</span><br><span class="line"></span><br><span class="line">    public void changeBig() &#123;</span><br><span class="line">        this.d *&#x3D; 2;</span><br><span class="line">        this.h *&#x3D; 2;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void changeSmall() &#123;</span><br><span class="line">        this.d &#x2F;&#x3D; 2;</span><br><span class="line">        this.h &#x2F;&#x3D; 2;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>创建具体的对象齐天大圣孙悟空MonkeyKing类：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line">public class MonkeyKing extends Monkey implements Cloneable, Serializable &#123;</span><br><span class="line"></span><br><span class="line">    public GoldenCudgel goldenCudgel;</span><br><span class="line"></span><br><span class="line">    public MonkeyKing() &#123;</span><br><span class="line">        this.birthday &#x3D; new Date();</span><br><span class="line">        this.goldenCudgel &#x3D; new GoldenCudgel();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    protected Object clone() &#123;</span><br><span class="line">        return this.deepClone();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;**</span><br><span class="line">     * 深克隆</span><br><span class="line">     * @return</span><br><span class="line">     *&#x2F;</span><br><span class="line">    protected Object deepClone()  &#123;</span><br><span class="line"></span><br><span class="line">        try &#123;</span><br><span class="line">            ByteArrayOutputStream bos &#x3D; new ByteArrayOutputStream();</span><br><span class="line">            ObjectOutputStream oos &#x3D; new ObjectOutputStream(bos);</span><br><span class="line">            oos.writeObject(this);</span><br><span class="line"></span><br><span class="line">            ByteArrayInputStream bis &#x3D; new ByteArrayInputStream(bos.toByteArray());</span><br><span class="line">            ObjectInputStream ois &#x3D; new ObjectInputStream(bis);</span><br><span class="line"></span><br><span class="line">            MonkeyKing copy &#x3D; (MonkeyKing) ois.readObject();</span><br><span class="line">            copy.birthday &#x3D; new Date();</span><br><span class="line">            return copy;</span><br><span class="line"></span><br><span class="line">        &#125; catch (IOException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">            return null;</span><br><span class="line">        &#125; catch (ClassNotFoundException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">            return null;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;**</span><br><span class="line">     * 浅克隆</span><br><span class="line">     *&#x2F;</span><br><span class="line">    public MonkeyKing shallowClone(MonkeyKing target) &#123;</span><br><span class="line">        MonkeyKing monkeyKing &#x3D; new MonkeyKing();</span><br><span class="line">        monkeyKing.height &#x3D; target.height;</span><br><span class="line">        monkeyKing.weight &#x3D; target.weight;</span><br><span class="line"></span><br><span class="line">        monkeyKing.goldenCudgel &#x3D; target.goldenCudgel;</span><br><span class="line">        monkeyKing.birthday &#x3D; new Date();</span><br><span class="line"></span><br><span class="line">        return monkeyKing;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>测试代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"> public static void main(String[] args) throws Exception &#123;</span><br><span class="line">        MonkeyKing monkeyKing &#x3D; new MonkeyKing();</span><br><span class="line"></span><br><span class="line">        MonkeyKing clone &#x3D; (MonkeyKing)monkeyKing.clone();</span><br><span class="line">        System.out.println(&quot;深克隆：&quot; + (monkeyKing.goldenCudgel &#x3D;&#x3D; clone.goldenCudgel));</span><br><span class="line"></span><br><span class="line">        MonkeyKing shallow &#x3D; new MonkeyKing();</span><br><span class="line">        MonkeyKing newMonkeyKing &#x3D; shallow.shallowClone(shallow);</span><br><span class="line">        System.out.println(&quot;浅克隆&quot; + (shallow.goldenCudgel &#x3D;  newMonkeyKing.goldenCudgel));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>运行结果：</p>
+<p><img src="https://user-gold-cdn.xitu.io/2020/2/22/1706cb7b5846bd38?w=214&h=103&f=png&s=4529" alt=""></p>
+<ul>
+<li>克隆破坏单例模式</li>
+</ul>
+<p>如果我们克隆的目标是单例模式创建的对象，那么意味着深克隆会破坏单例模式。如何防止克隆破坏单例，禁止深克隆便可。我们在单例的类中不实现Cloneable接口，在重写clone()方法中返回单例对象即可，代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">@Override</span><br><span class="line">protected Object clone() throws CloneNotSupportedException &#123;</span><br><span class="line">    return INSTANCE;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<ul>
+<li>Cloneable 源码分析</li>
+</ul>
+<p>先看我们常用的 ArrayList 就实现了 Cloneable 接口，来看代码clone()方法的实现：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">public Object clone() &#123;</span><br><span class="line">        try &#123;</span><br><span class="line">            ArrayList&lt;?&gt; v &#x3D; (ArrayList&lt;?&gt;) super.clone();</span><br><span class="line">            v.elementData &#x3D; Arrays.copyOf(elementData, size);</span><br><span class="line">            v.modCount &#x3D; 0;</span><br><span class="line">            return v;</span><br><span class="line">        &#125; catch (CloneNotSupportedException e) &#123;</span><br><span class="line">            &#x2F;&#x2F; this shouldn&#39;t happen, since we are Cloneable</span><br><span class="line">            throw new InternalError(e);</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://xkjava.github.io/2020/02/22/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E5%8F%AA%E6%98%AF%E5%8D%95%E7%BA%AF%E5%90%AC%E8%AF%B4%E8%BF%87%E7%9A%84%E5%8E%9F%E5%9E%8B%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" data-id="ckiohtc7d000mryra10rv73q9" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-架构师内功心法，经典高频面试的单例模式详解" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2020/02/21/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E7%BB%8F%E5%85%B8%E9%AB%98%E9%A2%91%E9%9D%A2%E8%AF%95%E7%9A%84%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" class="article-date">
@@ -236,7 +332,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://xkjava.github.io/2020/02/21/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E7%BB%8F%E5%85%B8%E9%AB%98%E9%A2%91%E9%9D%A2%E8%AF%95%E7%9A%84%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" data-id="ckf51hx1z0012sara1qv7gqw6" class="article-share-link">Share</a>
+      <a data-url="https://xkjava.github.io/2020/02/21/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E7%BB%8F%E5%85%B8%E9%AB%98%E9%A2%91%E9%9D%A2%E8%AF%95%E7%9A%84%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" data-id="ckiohtc9h0013ryra7a2cehnx" class="article-share-link">Share</a>
       
       
     </footer>
@@ -357,7 +453,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://xkjava.github.io/2020/02/21/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E7%BB%8F%E5%85%B8%E6%A1%86%E6%9E%B6%E9%83%BD%E5%9C%A8%E7%94%A8%E7%9A%84%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" data-id="ckf51hwzv000psara9i08e77f" class="article-share-link">Share</a>
+      <a data-url="https://xkjava.github.io/2020/02/21/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E7%BB%8F%E5%85%B8%E6%A1%86%E6%9E%B6%E9%83%BD%E5%9C%A8%E7%94%A8%E7%9A%84%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3/" data-id="ckiohtc7j000qryra21jsd9ag" class="article-share-link">Share</a>
       
       
     </footer>
@@ -564,7 +660,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://xkjava.github.io/2020/02/19/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E8%BD%AF%E4%BB%B6%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1%E7%9A%84%E4%B8%83%E5%A4%A7%E5%8E%9F%E5%88%99%E7%B2%BE%E9%80%89%E6%A1%88%E4%BE%8B/" data-id="ckf51hx0o000ysara452w3td9" class="article-share-link">Share</a>
+      <a data-url="https://xkjava.github.io/2020/02/19/%E6%9E%B6%E6%9E%84%E5%B8%88%E5%86%85%E5%8A%9F%E5%BF%83%E6%B3%95%EF%BC%8C%E8%BD%AF%E4%BB%B6%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1%E7%9A%84%E4%B8%83%E5%A4%A7%E5%8E%9F%E5%88%99%E7%B2%BE%E9%80%89%E6%A1%88%E4%BE%8B/" data-id="ckiohtc9b000zryra32g366se" class="article-share-link">Share</a>
       
       
     </footer>
@@ -795,7 +891,7 @@ b、可以Linux基准测试工具，得到文件系统、磁盘I/O、网络等�
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://xkjava.github.io/2020/02/17/%E5%A6%82%E4%BD%95%E4%BC%98%E9%9B%85%E7%9A%84%E5%AD%A6%E4%B9%A0JVM%EF%BC%8C%E7%BB%88%E7%BB%93%E7%AF%87%EF%BC%88%E5%85%AD%EF%BC%89/" data-id="ckf51hx0l000usarafqdz3y5w" class="article-share-link">Share</a>
+      <a data-url="https://xkjava.github.io/2020/02/17/%E5%A6%82%E4%BD%95%E4%BC%98%E9%9B%85%E7%9A%84%E5%AD%A6%E4%B9%A0JVM%EF%BC%8C%E7%BB%88%E7%BB%93%E7%AF%87%EF%BC%88%E5%85%AD%EF%BC%89/" data-id="ckiohtc99000vryra3089f0az" class="article-share-link">Share</a>
       
       
     </footer>
@@ -931,7 +1027,7 @@ b、可以Linux基准测试工具，得到文件系统、磁盘I/O、网络等�
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://xkjava.github.io/2020/02/13/%E5%A6%82%E4%BD%95%E4%BC%98%E9%9B%85%E7%9A%84%E5%AD%A6%E4%B9%A0JVM%EF%BC%8C%E7%BB%BC%E5%90%88%E7%AF%87%EF%BC%88%E4%BA%94%EF%BC%89/" data-id="ckf51hwz9000esara5kod0bip" class="article-share-link">Share</a>
+      <a data-url="https://xkjava.github.io/2020/02/13/%E5%A6%82%E4%BD%95%E4%BC%98%E9%9B%85%E7%9A%84%E5%AD%A6%E4%B9%A0JVM%EF%BC%8C%E7%BB%BC%E5%90%88%E7%AF%87%EF%BC%88%E4%BA%94%EF%BC%89/" data-id="ckiohtc6z000fryraf4kq1mdf" class="article-share-link">Share</a>
       
       
     </footer>
@@ -1163,7 +1259,7 @@ Root以及原因</code></p>
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://xkjava.github.io/2020/02/12/%E5%A6%82%E4%BD%95%E4%BC%98%E9%9B%85%E7%9A%84%E5%AD%A6%E4%B9%A0JVM%EF%BC%8C%E5%AE%9E%E6%88%98%E7%AF%87%EF%BC%88%E5%9B%9B%EF%BC%89/" data-id="ckf51hwz6000csaraawrlhv86" class="article-share-link">Share</a>
+      <a data-url="https://xkjava.github.io/2020/02/12/%E5%A6%82%E4%BD%95%E4%BC%98%E9%9B%85%E7%9A%84%E5%AD%A6%E4%B9%A0JVM%EF%BC%8C%E5%AE%9E%E6%88%98%E7%AF%87%EF%BC%88%E5%9B%9B%EF%BC%89/" data-id="ckiohtc6u000dryra3ql3794c" class="article-share-link">Share</a>
       
       
     </footer>
@@ -1312,7 +1408,7 @@ Root以及原因</code></p>
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://xkjava.github.io/2020/02/10/%E5%A6%82%E4%BD%95%E4%BC%98%E9%9B%85%E7%9A%84%E5%AD%A6%E4%B9%A0JVM%EF%BC%8C%E5%8D%87%E5%8D%8E%E7%AF%87%EF%BC%88%E4%B8%89%EF%BC%89/" data-id="ckf51hwz5000bsaragob000d3" class="article-share-link">Share</a>
+      <a data-url="https://xkjava.github.io/2020/02/10/%E5%A6%82%E4%BD%95%E4%BC%98%E9%9B%85%E7%9A%84%E5%AD%A6%E4%B9%A0JVM%EF%BC%8C%E5%8D%87%E5%8D%8E%E7%AF%87%EF%BC%88%E4%B8%89%EF%BC%89/" data-id="ckiohtc6s000cryrae2i6hihb" class="article-share-link">Share</a>
       
       
     </footer>
@@ -1457,7 +1553,7 @@ Root以及原因</code></p>
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://xkjava.github.io/2020/02/08/%E5%A6%82%E4%BD%95%E4%BC%98%E9%9B%85%E7%9A%84%E5%AD%A6%E4%B9%A0JVM%EF%BC%8C%E8%BF%9B%E8%A1%8C%E7%AF%87%EF%BC%88%E4%BA%8C%EF%BC%89/" data-id="ckf51hwza000fsara1nw4avrn" class="article-share-link">Share</a>
+      <a data-url="https://xkjava.github.io/2020/02/08/%E5%A6%82%E4%BD%95%E4%BC%98%E9%9B%85%E7%9A%84%E5%AD%A6%E4%B9%A0JVM%EF%BC%8C%E8%BF%9B%E8%A1%8C%E7%AF%87%EF%BC%88%E4%BA%8C%EF%BC%89/" data-id="ckiohtc76000gryrad9blhs8z" class="article-share-link">Share</a>
       
       
     </footer>
@@ -1632,56 +1728,7 @@ Root以及原因</code></p>
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://xkjava.github.io/2020/02/05/%E5%A6%82%E4%BD%95%E4%BC%98%E9%9B%85%E7%9A%84%E5%AD%A6%E4%B9%A0JVM%EF%BC%8C%E6%8F%AD%E5%BC%80%E7%AF%87%EF%BC%88%E4%B8%80%EF%BC%89/" data-id="ckf51hwz7000dsara8llc8ver" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-hello-world" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2020/01/29/hello-world/" class="article-date">
-  <time datetime="2020-01-29T07:03:24.955Z" itemprop="datePublished">2020-01-29</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/01/29/hello-world/">Hello World</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html" target="_blank" rel="noopener">Deployment</a></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://xkjava.github.io/2020/01/29/hello-world/" data-id="ckf51hww90001saraarlaht8i" class="article-share-link">Share</a>
+      <a data-url="https://xkjava.github.io/2020/02/05/%E5%A6%82%E4%BD%95%E4%BC%98%E9%9B%85%E7%9A%84%E5%AD%A6%E4%B9%A0JVM%EF%BC%8C%E6%8F%AD%E5%BC%80%E7%AF%87%EF%BC%88%E4%B8%80%EF%BC%89/" data-id="ckiohtc6y000eryra6thb268e" class="article-share-link">Share</a>
       
       
     </footer>
@@ -1695,7 +1742,7 @@ Root以及原因</code></p>
 
   <nav id="page-nav">
     
-    <a class="extend prev" rel="prev" href="/page/3/">&amp;laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span>
+    <a class="extend prev" rel="prev" href="/page/3/">&amp;laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><a class="extend next" rel="next" href="/page/5/">Next &amp;raquo;</a>
   </nav>
 
 </section>
@@ -1714,7 +1761,7 @@ Root以及原因</code></p>
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li></ul>
     </div>
   </div>
 
@@ -1725,6 +1772,10 @@ Root以及原因</code></p>
     <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2020/12/14/%E8%BF%88%E5%87%BAspring5%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB%E7%AC%AC%E4%B8%80%E6%AD%A5%EF%BC%8C%E5%A6%82%E4%BD%95%E7%BC%96%E8%AF%91%E6%BA%90%E7%A0%81%E5%B9%B6%E4%BD%BF%E7%94%A8IDEA%E6%89%93%E5%BC%80/">迈出spring5源码阅读第一步，如何编译源码并使用IDEA打开</a>
+          </li>
         
           <li>
             <a href="/2020/09/16/Ambari%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%B9%B3%E5%8F%B0%E9%9B%86%E7%BE%A4%E5%88%A9%E5%99%A8%E7%9A%84%E6%8E%A2%E7%B4%A2%E4%B8%8E%E5%AE%9E%E8%B7%B5/">Ambari大数据平台集群利器的探索与实践</a>
@@ -1740,10 +1791,6 @@ Root以及原因</code></p>
         
           <li>
             <a href="/2020/07/26/CountDownLatch%E3%80%81Semaphore%E3%80%81CyclicBarrier%E3%80%81Condition%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/">CountDownLatch、Semaphore、CyclicBarrier、Condition源码分析</a>
-          </li>
-        
-          <li>
-            <a href="/2020/07/05/%E5%BE%AE%E6%9C%8D%E5%8A%A1%E6%A0%B8%E5%BF%83%E9%87%8D%E6%96%B0%E8%AE%A4%E8%AF%86SpringBoot%EF%BC%8C%E6%8E%8C%E6%8F%A1%E6%A0%B8%E5%BF%83%E7%89%B9%E6%80%A7%E5%8F%8A%E8%AE%BE%E8%AE%A1%E6%80%9D%E6%83%B3/">微服务核心重新认识SpringBoot，掌握核心特性及设计思想</a>
           </li>
         
       </ul>

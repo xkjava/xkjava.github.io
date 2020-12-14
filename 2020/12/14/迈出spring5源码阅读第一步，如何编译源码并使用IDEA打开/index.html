@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>迈出spring5源码阅读第一步，如何编译源码并使用IDEA打开 | 来一杯咖啡</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="一、下载源码这里使用的是5.2.8.RELEASE版本！ 1git clone --branch v5.2.8.RELEASE https:&#x2F;&#x2F;gitee.com&#x2F;Z201&#x2F;spring-framework.git  二、安装gradle这里使用的是6.0.1版本！ 三、修改源码下的文件内容3.1 修改settings.gradle文件 加入阿里云的地址 1">
+<meta property="og:type" content="article">
+<meta property="og:title" content="迈出spring5源码阅读第一步，如何编译源码并使用IDEA打开">
+<meta property="og:url" content="https://xkjava.github.io/2020/12/14/%E8%BF%88%E5%87%BAspring5%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB%E7%AC%AC%E4%B8%80%E6%AD%A5%EF%BC%8C%E5%A6%82%E4%BD%95%E7%BC%96%E8%AF%91%E6%BA%90%E7%A0%81%E5%B9%B6%E4%BD%BF%E7%94%A8IDEA%E6%89%93%E5%BC%80/index.html">
+<meta property="og:site_name" content="来一杯咖啡">
+<meta property="og:description" content="一、下载源码这里使用的是5.2.8.RELEASE版本！ 1git clone --branch v5.2.8.RELEASE https:&#x2F;&#x2F;gitee.com&#x2F;Z201&#x2F;spring-framework.git  二、安装gradle这里使用的是6.0.1版本！ 三、修改源码下的文件内容3.1 修改settings.gradle文件 加入阿里云的地址 1">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/f516267442954b6f9de5602a36fe11d5~tplv-k3u1fbpfcp-watermark.image">
+<meta property="og:image" content="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/46708e3ee2574abb8358843d5556b7df~tplv-k3u1fbpfcp-watermark.image">
+<meta property="og:image" content="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/a65b71d656024fa19861ad0a8691dd02~tplv-k3u1fbpfcp-watermark.image">
+<meta property="og:image" content="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/6bd7757de786411c870482f264b27516~tplv-k3u1fbpfcp-watermark.image">
+<meta property="og:image" content="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/398695239a4a4e8da1b37c187348477b~tplv-k3u1fbpfcp-watermark.image">
+<meta property="og:image" content="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/33ba2837993b48c4b897f7a3a8f38b95~tplv-k3u1fbpfcp-watermark.image">
+<meta property="og:image" content="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/16cdcd008f3b4812ad873af4bf8aab0e~tplv-k3u1fbpfcp-watermark.image">
+<meta property="og:image" content="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/ef75cb79d9e84efebc2f15b6f9668e6d~tplv-k3u1fbpfcp-watermark.image">
+<meta property="og:image" content="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/7c197ca504ce4927976b85c988eb749f~tplv-k3u1fbpfcp-watermark.image">
+<meta property="og:image" content="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/f923961818234057811f40d66126b73a~tplv-k3u1fbpfcp-watermark.image">
+<meta property="article:published_time" content="2020-12-14T11:46:51.000Z">
+<meta property="article:modified_time" content="2020-12-14T11:47:28.501Z">
+<meta property="article:author" content="Kevin Shaw">
+<meta property="article:tag" content="Java">
+<meta property="article:tag" content="Spring">
+<meta property="article:tag" content="Netty">
+<meta property="article:tag" content="Kafka...">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/f516267442954b6f9de5602a36fe11d5~tplv-k3u1fbpfcp-watermark.image">
+  
+    <link rel="alternate" href="/atom.xml" title="来一杯咖啡" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">来一杯咖啡</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">互联网技术无边界，学习与交流</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://xkjava.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-迈出spring5源码阅读第一步，如何编译源码并使用IDEA打开" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/12/14/%E8%BF%88%E5%87%BAspring5%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB%E7%AC%AC%E4%B8%80%E6%AD%A5%EF%BC%8C%E5%A6%82%E4%BD%95%E7%BC%96%E8%AF%91%E6%BA%90%E7%A0%81%E5%B9%B6%E4%BD%BF%E7%94%A8IDEA%E6%89%93%E5%BC%80/" class="article-date">
+  <time datetime="2020-12-14T11:46:51.000Z" itemprop="datePublished">2020-12-14</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      迈出spring5源码阅读第一步，如何编译源码并使用IDEA打开
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="一、下载源码"><a href="#一、下载源码" class="headerlink" title="一、下载源码"></a>一、下载源码</h1><p>这里使用的是5.2.8.RELEASE版本！</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone --branch v5.2.8.RELEASE https:&#x2F;&#x2F;gitee.com&#x2F;Z201&#x2F;spring-framework.git</span><br></pre></td></tr></table></figure>
+<p><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/f516267442954b6f9de5602a36fe11d5~tplv-k3u1fbpfcp-watermark.image" alt=""></p>
+<h1 id="二、安装gradle"><a href="#二、安装gradle" class="headerlink" title="二、安装gradle"></a>二、安装gradle</h1><p>这里使用的是6.0.1版本！<br><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/46708e3ee2574abb8358843d5556b7df~tplv-k3u1fbpfcp-watermark.image" alt=""><br><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/a65b71d656024fa19861ad0a8691dd02~tplv-k3u1fbpfcp-watermark.image" alt=""></p>
+<h1 id="三、修改源码下的文件内容"><a href="#三、修改源码下的文件内容" class="headerlink" title="三、修改源码下的文件内容"></a>三、修改源码下的文件内容</h1><h2 id="3-1-修改settings-gradle文件"><a href="#3-1-修改settings-gradle文件" class="headerlink" title="3.1 修改settings.gradle文件"></a>3.1 修改settings.gradle文件</h2><p><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/6bd7757de786411c870482f264b27516~tplv-k3u1fbpfcp-watermark.image" alt=""></p>
+<p>加入阿里云的地址</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">repositories &#123;</span><br><span class="line">   gradlePluginPortal()</span><br><span class="line">   maven &#123; url &#39;https:&#x2F;&#x2F;maven.aliyun.com&#x2F;repository&#x2F;public&#39; &#125;</span><br><span class="line">   maven &#123; url &#39;https:&#x2F;&#x2F;repo.spring.io&#x2F;plugins-release&#39; &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="3-2-修改gradle-properties文件"><a href="#3-2-修改gradle-properties文件" class="headerlink" title="3.2 修改gradle.properties文件"></a>3.2 修改gradle.properties文件</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">version&#x3D;5.2.8.RELEASE</span><br><span class="line">org.gradle.jvmargs&#x3D;-Xmx2048M</span><br><span class="line">org.gradle.caching&#x3D;true</span><br><span class="line">org.gradle.parallel&#x3D;true</span><br><span class="line">org.gradle.configureondemand&#x3D;true</span><br><span class="line">org.gradle.daemon&#x3D;true</span><br></pre></td></tr></table></figure>
+<h2 id="3-3-修改build-gradle文件"><a href="#3-3-修改build-gradle文件" class="headerlink" title="3.3 修改build.gradle文件"></a>3.3 修改build.gradle文件</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">maven &#123; url &#39;https:&#x2F;&#x2F;maven.aliyun.com&#x2F;nexus&#x2F;content&#x2F;groups&#x2F;public&#x2F;&#39; &#125;</span><br><span class="line">maven &#123; url &#39;https:&#x2F;&#x2F;maven.aliyun.com&#x2F;nexus&#x2F;content&#x2F;repositories&#x2F;jcenter&#39;&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="3-4-编译源码"><a href="#3-4-编译源码" class="headerlink" title="3.4 编译源码"></a>3.4 编译源码</h2><p>编译spring-oxm模块，编译命令：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gradlew :spring-oxm:compileTestJava</span><br></pre></td></tr></table></figure>
+<p>编译成功后的截图</p>
+<p><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/398695239a4a4e8da1b37c187348477b~tplv-k3u1fbpfcp-watermark.image" alt=""></p>
+<h1 id="四、IDEA导入源码"><a href="#四、IDEA导入源码" class="headerlink" title="四、IDEA导入源码"></a>四、IDEA导入源码</h1><h2 id="4-1-下载Idea-kotlin插件安装"><a href="#4-1-下载Idea-kotlin插件安装" class="headerlink" title="4.1 下载Idea kotlin插件安装"></a>4.1 下载Idea kotlin插件安装</h2><p><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/33ba2837993b48c4b897f7a3a8f38b95~tplv-k3u1fbpfcp-watermark.image" alt=""></p>
+<h2 id="4-2-IDEA导入Spring源码"><a href="#4-2-IDEA导入Spring源码" class="headerlink" title="4.2 IDEA导入Spring源码"></a>4.2 IDEA导入Spring源码</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">File -&gt; New -&gt; Project from Existing Souces...</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/16cdcd008f3b4812ad873af4bf8aab0e~tplv-k3u1fbpfcp-watermark.image" alt=""></p>
+<p><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/ef75cb79d9e84efebc2f15b6f9668e6d~tplv-k3u1fbpfcp-watermark.image" alt=""><br><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/7c197ca504ce4927976b85c988eb749f~tplv-k3u1fbpfcp-watermark.image" alt=""></p>
+<p>最终编译成功后的截图：</p>
+<p><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/f923961818234057811f40d66126b73a~tplv-k3u1fbpfcp-watermark.image" alt=""></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://xkjava.github.io/2020/12/14/%E8%BF%88%E5%87%BAspring5%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB%E7%AC%AC%E4%B8%80%E6%AD%A5%EF%BC%8C%E5%A6%82%E4%BD%95%E7%BC%96%E8%AF%91%E6%BA%90%E7%A0%81%E5%B9%B6%E4%BD%BF%E7%94%A8IDEA%E6%89%93%E5%BC%80/" data-id="ckiohtc5s0006ryraay289bdt" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2020/09/16/Ambari%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%B9%B3%E5%8F%B0%E9%9B%86%E7%BE%A4%E5%88%A9%E5%99%A8%E7%9A%84%E6%8E%A2%E7%B4%A2%E4%B8%8E%E5%AE%9E%E8%B7%B5/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Ambari大数据平台集群利器的探索与实践</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/09/">September 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/07/">July 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2020/12/14/%E8%BF%88%E5%87%BAspring5%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB%E7%AC%AC%E4%B8%80%E6%AD%A5%EF%BC%8C%E5%A6%82%E4%BD%95%E7%BC%96%E8%AF%91%E6%BA%90%E7%A0%81%E5%B9%B6%E4%BD%BF%E7%94%A8IDEA%E6%89%93%E5%BC%80/">迈出spring5源码阅读第一步，如何编译源码并使用IDEA打开</a>
+          </li>
+        
+          <li>
+            <a href="/2020/09/16/Ambari%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%B9%B3%E5%8F%B0%E9%9B%86%E7%BE%A4%E5%88%A9%E5%99%A8%E7%9A%84%E6%8E%A2%E7%B4%A2%E4%B8%8E%E5%AE%9E%E8%B7%B5/">Ambari大数据平台集群利器的探索与实践</a>
+          </li>
+        
+          <li>
+            <a href="/2020/09/03/%E6%97%B6%E9%97%B4%E5%BA%8F%E5%88%97%E6%95%B0%E6%8D%AE%E5%BA%93InfluxDB%E9%9B%86%E7%BE%A4%E6%96%B9%E6%A1%88%E9%AB%98%E7%BA%A7%E5%AE%9E%E8%B7%B5%E7%BB%8F%E9%AA%8C%EF%BC%8C%E8%AF%B7%E5%85%B3%E6%B3%A8/">时间序列数据库InfluxDB集群方案高级实践经验，请关注</a>
+          </li>
+        
+          <li>
+            <a href="/2020/08/25/%E6%95%B0%E6%8D%AE%E6%B2%BB%E7%90%86%E7%9A%84%E7%8E%8B%E8%80%85Apache-Atlas%E5%A6%82%E4%BD%95%E6%9E%84%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84API/">数据治理的王者Apache-Atlas如何构建自己的API</a>
+          </li>
+        
+          <li>
+            <a href="/2020/07/26/CountDownLatch%E3%80%81Semaphore%E3%80%81CyclicBarrier%E3%80%81Condition%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/">CountDownLatch、Semaphore、CyclicBarrier、Condition源码分析</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2020 Kevin Shaw<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+  </div>
+</body>
+</html>
